@@ -22,11 +22,11 @@ export default function TherapistPage() {
 
   return (
     <div className="max-w-2xl">
-      <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-navy/50">
+      <p className="flex items-center gap-2 text-h4-label text-navy/50">
         <Heart size={14} /> Acompañamiento profesional
       </p>
-      <h1 className="mt-2 text-2xl font-semibold">Agenda con tu Terapeuta 🧠</h1>
-      <p className="mt-2 text-navy/70">
+      <h1 className="mt-2 text-h3-lg text-navy">Agenda con tu Terapeuta 🧠</h1>
+      <p className="mt-2 text-p-body text-navy/70">
         Sabemos que no todo es digital. Por eso tenemos profesionales de la salud
         mental para apoyarte en todo momento. Agenda una sesión y te acompañamos.
       </p>
@@ -36,16 +36,16 @@ export default function TherapistPage() {
           <Heart size={20} />
         </span>
         <div>
-          <p className="font-semibold">Jessica Lagno</p>
-          <p className="text-sm text-navy/60">Profesional de salud mental · Pelo a Pelo</p>
-          <p className="text-sm text-navy/50">jessica.lagno@beehrteam.com</p>
+          <p className="text-h3-sm text-navy">Jessica Lagno</p>
+          <p className="text-p-small text-navy/60">Profesional de salud mental · Pelo a Pelo</p>
+          <p className="text-p-small text-navy/50">jessica.lagno@beehrteam.com</p>
         </div>
       </div>
 
       {submitted ? (
         <div className="mt-6 rounded-card-md bg-accent/10 p-6 text-center">
-          <p className="font-semibold text-accent">¡Solicitud enviada!</p>
-          <p className="mt-1 text-sm text-navy/70">
+          <p className="text-h3-sm text-accent">¡Solicitud enviada!</p>
+          <p className="mt-1 text-p-small text-navy/70">
             Esta función todavía no está conectada a un sistema de agendamiento
             real — por ahora, escríbenos directo para coordinar tu sesión.
           </p>
@@ -53,25 +53,25 @@ export default function TherapistPage() {
       ) : (
         <form onSubmit={handleSubmit} className="mt-6 space-y-6 rounded-card-md bg-white p-6 shadow-sm">
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-navy/70">Selecciona una fecha</label>
+            <label className="mb-1.5 block text-p-small font-medium text-navy/70">Selecciona una fecha</label>
             <input
               type="date"
               required
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-pill border border-navy/10 bg-cream px-4 py-3 text-sm outline-none"
+              className="w-full rounded-pill border border-navy/10 bg-cream px-4 py-3 text-p-small outline-none"
             />
           </div>
 
           <div>
-            <p className="mb-2 text-sm font-medium text-navy/70">Horario disponible</p>
+            <p className="mb-2 text-p-small font-medium text-navy/70">Horario disponible</p>
             <div className="flex flex-wrap gap-2">
               {[...MORNING_SLOTS, ...AFTERNOON_SLOTS].map((time) => (
                 <button
                   key={time}
                   type="button"
                   onClick={() => setSlot(time)}
-                  className={`rounded-pill border px-3.5 py-1.5 text-sm transition-colors ${
+                  className={`rounded-pill border px-3.5 py-1.5 text-p-small transition-colors ${
                     slot === time
                       ? "border-accent bg-accent text-white"
                       : "border-navy/10 text-navy/70 hover:border-accent/40"
@@ -84,14 +84,14 @@ export default function TherapistPage() {
           </div>
 
           <div>
-            <label className="mb-1.5 block text-sm font-medium text-navy/70">
+            <label className="mb-1.5 block text-p-small font-medium text-navy/70">
               ¿Sobre qué te gustaría hablar? (opcional)
             </label>
             <textarea
               value={note}
               onChange={(e) => setNote(e.target.value)}
               rows={3}
-              className="w-full rounded-2xl border border-navy/10 bg-cream px-4 py-3 text-sm outline-none"
+              className="w-full rounded-2xl border border-navy/10 bg-cream px-4 py-3 text-p-small outline-none"
             />
           </div>
 
@@ -99,12 +99,12 @@ export default function TherapistPage() {
             Agendar sesión
           </Button>
 
-          <div className="text-center text-sm text-navy/60">
+          <div className="text-center text-p-small text-navy/60">
             ¿Prefieres agendar directamente?
             <br />
             <a
               href="mailto:jessica.lagno@beehrteam.com"
-              className="mt-1 inline-flex items-center gap-1.5 font-semibold text-accent"
+              className="mt-1 inline-flex items-center gap-1.5 text-a-inline font-semibold text-accent"
             >
               <Mail size={14} /> Escribir directo
             </a>
@@ -112,7 +112,7 @@ export default function TherapistPage() {
         </form>
       )}
 
-      <p className="mt-6 flex items-start gap-2 text-sm text-navy/60">
+      <p className="mt-6 flex items-start gap-2 text-p-caption text-navy/60">
         <CalendarIcon size={16} className="mt-0.5 shrink-0 text-accent" />
         Este servicio es un complemento a tu proceso. Las sesiones son orientativas
         y no reemplazan un tratamiento clínico formal. Si estás en crisis, acude a

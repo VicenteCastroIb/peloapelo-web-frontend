@@ -15,10 +15,10 @@ export default function Estadisticas() {
   return (
     <section className="px-6 py-24 lg:px-12 lg:py-28">
       <FadeInOnScroll className="mx-auto max-w-4xl text-center">
-        <h2 className="text-3xl font-semibold sm:text-4xl">
+        <h2 className="text-h2-md text-navy">
           La realidad que <span className="italic text-accent">nadie cuenta</span>
         </h2>
-        <p className="mt-3 text-navy/70">
+        <p className="mt-3 text-p-body text-navy/70">
           Cifras reales sobre la pérdida de cabello y la importancia del apoyo.
         </p>
 
@@ -34,10 +34,10 @@ export default function Estadisticas() {
                   <Icon size={20} />
                 </span>
                 <div>
-                  <p className="text-2xl font-semibold">
+                  <p className="text-h3-md text-navy">
                     <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                   </p>
-                  <p className="text-sm text-navy/60">{stat.label}</p>
+                  <p className="text-p-small text-navy/60">{stat.label}</p>
                 </div>
               </div>
             );

@@ -4,8 +4,8 @@ import { courses } from "@/lib/data/courses";
 export default function CoursesPage() {
   return (
     <div className="max-w-5xl">
-      <h1 className="text-2xl font-semibold">Tu camino de bienestar 🌱</h1>
-      <p className="mt-1 text-navy/60">
+      <h1 className="text-h3-lg text-navy">Tu camino de bienestar 🌱</h1>
+      <p className="mt-1 text-p-body text-navy/60">
         Cursos diseñados por profesionales para acompañarte en cada etapa.
       </p>
 
@@ -13,7 +13,7 @@ export default function CoursesPage() {
         {courses.map((course) => (
           <div key={course.id} className="overflow-hidden rounded-card-lg bg-white shadow-sm">
             <div className="relative flex h-36 items-center justify-center bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]">
-              <span className="absolute left-3 top-3 rounded-pill bg-white/90 px-2.5 py-1 text-[11px] font-semibold text-navy">
+              <span className="absolute left-3 top-3 rounded-pill bg-white/90 px-2.5 py-1 text-p-caption font-semibold text-navy">
                 {course.level}
               </span>
               {/* Boton decorativo: en el sitio real tampoco abre una leccion */}
@@ -22,9 +22,9 @@ export default function CoursesPage() {
               </span>
             </div>
             <div className="p-5">
-              <p className="font-semibold">{course.title}</p>
-              <p className="mt-1 text-sm text-navy/60">{course.description}</p>
-              <div className="mt-4 flex items-center gap-4 text-xs text-navy/50">
+              <p className="text-h3-sm text-navy">{course.title}</p>
+              <p className="mt-1 text-p-small text-navy/60">{course.description}</p>
+              <div className="mt-4 flex items-center gap-4 text-p-caption text-navy/50">
                 <span className="flex items-center gap-1">
                   <Clock3 size={14} /> {course.durationMinutes} min
                 </span>

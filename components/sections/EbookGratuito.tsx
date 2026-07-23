@@ -18,11 +18,11 @@ export default function EbookGratuito() {
           </div>
 
           <div>
-            <span className="inline-flex items-center gap-1 rounded-pill bg-accent/10 px-3 py-1 text-xs font-semibold text-accent">
+            <span className="inline-flex items-center gap-1 rounded-pill bg-accent/10 px-3 py-1 text-h4-label text-accent">
               ✨ Ebook gratis
             </span>
-            <h2 className="mt-4 text-3xl font-semibold">¿Qué dice tu pelo sobre ti?</h2>
-            <p className="mt-3 text-navy/70">
+            <h2 className="mt-4 text-h2-md text-navy">¿Qué dice tu pelo sobre ti?</h2>
+            <p className="mt-3 text-p-body text-navy/70">
               El nuevo ebook de Jessica Lagno: 10 capítulos para entender la alopecia
               desde el cuerpo, la emoción y la comunidad.
             </p>

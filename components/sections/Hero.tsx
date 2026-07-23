@@ -10,19 +10,19 @@ export default function Hero() {
       />
 
       <FadeInOnScroll className="relative mx-auto max-w-4xl">
-        <div className="mb-6 flex items-center gap-3 text-xs font-semibold uppercase tracking-widest text-navy/50">
+        <div className="mb-6 flex items-center gap-3 text-h4-label text-navy/50">
           <span className="h-px w-8 bg-navy/20" />
           Fundación Pelo a Pelo · Chile
         </div>
 
-        <h1 className="text-5xl font-normal leading-tight sm:text-6xl lg:text-[112px] lg:leading-[1.02]">
+        <h1 className="text-h1 text-navy">
           Te guiamos en la pérdida de pelo,{" "}
           <span className="italic text-accent">sin prisa</span>,{" "}
           <span className="italic text-accent">sin juicios</span>.
         </h1>
 
         <div className="mt-8 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <p className="max-w-md text-navy/70">
+          <p className="max-w-md text-p-lead text-navy/70">
             Acompañamiento integral creado por quien ha vivido la alopecia toda su
             vida. Cuerpo, emoción y hábitos — a tu ritmo.
           </p>

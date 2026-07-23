@@ -23,15 +23,15 @@ export default function QuePelo() {
   return (
     <section className="px-6 py-24 text-center lg:px-12 lg:py-28">
       <FadeInOnScroll className="mx-auto max-w-3xl">
-        <h2 className="text-3xl font-semibold sm:text-4xl">
+        <h2 className="text-h2-md text-navy">
           ¿Qué es <span className="italic text-accent">Pelo a Pelo</span>?
         </h2>
 
-        <span className="mt-4 inline-flex items-center gap-2 rounded-pill bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent">
+        <span className="mt-4 inline-flex items-center gap-2 rounded-pill bg-accent/10 px-4 py-1.5 text-a-inline font-medium text-accent">
           🤝 Fundación sin fines de lucro
         </span>
 
-        <p className="mx-auto mt-6 max-w-xl text-navy/70">
+        <p className="mx-auto mt-6 max-w-xl text-p-body text-navy/70">
           Pelo a Pelo es una <strong className="text-navy">fundación</strong> cuyo fin
           es aportar a la comunidad de personas que atraviesan la pérdida de cabello.
           Desde una mirada integral — mental, física y emocional — ofrecemos una guía
@@ -44,8 +44,8 @@ export default function QuePelo() {
               <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-icon bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] text-white">
                 <Icon size={22} />
               </span>
-              <h3 className="font-semibold">{title}</h3>
-              <p className="mt-1 text-sm text-navy/70">{description}</p>
+              <h3 className="text-h3-md text-navy">{title}</h3>
+              <p className="mt-1 text-p-small text-navy/70">{description}</p>
             </div>
           ))}
         </div>

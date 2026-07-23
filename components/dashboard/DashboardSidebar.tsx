@@ -33,7 +33,7 @@ export default function DashboardSidebar() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center gap-3 rounded-pill px-3 py-2.5 text-sm transition-colors ${
+                className={`flex items-center gap-3 rounded-pill px-3 py-2.5 text-a-nav transition-colors ${
                   isActive
                     ? "bg-accent/10 font-semibold text-accent"
                     : "text-navy/70 hover:bg-navy/5"
@@ -48,11 +48,11 @@ export default function DashboardSidebar() {
       </div>
 
       <div className="border-t border-navy/10 pt-4">
-        <p className="truncate px-2 text-xs text-navy/50">{user?.email}</p>
+        <p className="truncate px-2 text-p-caption text-navy/50">{user?.email}</p>
         <button
           type="button"
           onClick={logout}
-          className="mt-3 flex w-full items-center gap-3 rounded-pill px-3 py-2.5 text-sm text-navy/70 hover:bg-navy/5"
+          className="mt-3 flex w-full items-center gap-3 rounded-pill px-3 py-2.5 text-a-nav text-navy/70 hover:bg-navy/5"
         >
           <LogOut size={18} />
           Cerrar sesión

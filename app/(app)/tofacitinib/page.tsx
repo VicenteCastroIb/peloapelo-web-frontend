@@ -7,8 +7,8 @@ export default function TofacitinibPage() {
       <span className="flex h-14 w-14 items-center justify-center rounded-full bg-navy/5 text-navy/40">
         <Lock size={24} />
       </span>
-      <h1 className="mt-4 text-xl font-semibold">Guía Tofacitinib</h1>
-      <p className="mt-2 text-navy/60">Esta sección estará disponible próximamente.</p>
+      <h1 className="mt-4 text-h3-md text-navy">Guía Tofacitinib</h1>
+      <p className="mt-2 text-p-body text-navy/60">Esta sección estará disponible próximamente.</p>
       <Button href="/dashboard" variant="gradient" className="mt-6">
         Volver al Dashboard
       </Button>

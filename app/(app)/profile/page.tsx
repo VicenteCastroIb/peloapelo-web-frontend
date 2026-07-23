@@ -29,16 +29,16 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-2xl">
-      <h1 className="text-2xl font-semibold">Mi perfil</h1>
-      <p className="mt-1 text-navy/60">Gestiona tu cuenta y suscripción</p>
+      <h1 className="text-h3-lg text-navy">Mi perfil</h1>
+      <p className="mt-1 text-p-body text-navy/60">Gestiona tu cuenta y suscripción</p>
 
       <div className="mt-6 flex items-center gap-4 rounded-card-md bg-white p-5 shadow-sm">
         <span className="flex h-12 w-12 items-center justify-center rounded-full bg-accent/10 text-accent">
           <User size={20} />
         </span>
         <div>
-          <p className="font-semibold">{user?.fullName}</p>
-          <p className="text-sm text-navy/60">{user?.email}</p>
+          <p className="text-h3-sm text-navy">{user?.fullName}</p>
+          <p className="text-p-small text-navy/60">{user?.email}</p>
         </div>
       </div>
 
@@ -51,8 +51,8 @@ export default function ProfilePage() {
             <Shield size={18} />
           </span>
           <div>
-            <p className="font-semibold">Suscripción</p>
-            <p className="text-sm text-navy/60">
+            <p className="text-h3-sm text-navy">Suscripción</p>
+            <p className="text-p-small text-navy/60">
               {current ? STATUS_LABEL[current.status] : subscriptions === null ? "Cargando…" : "Sin plan activo"}
             </p>
           </div>
@@ -61,14 +61,14 @@ export default function ProfilePage() {
       </Link>
 
       <div className="mt-4 rounded-card-md bg-white p-5 shadow-sm">
-        <p className="font-semibold">Accesos rápidos</p>
+        <p className="text-h3-sm text-navy">Accesos rápidos</p>
         <div className="mt-3 flex flex-wrap gap-3">
-          <span className="flex items-center gap-2 rounded-pill bg-navy/5 px-4 py-2 text-sm text-navy/50">
+          <span className="flex items-center gap-2 rounded-pill bg-navy/5 px-4 py-2 text-a-inline text-navy/50">
             <Heart size={14} /> Programa 12 semanas
           </span>
           <Link
             href="/therapist"
-            className="flex items-center gap-2 rounded-pill bg-navy/5 px-4 py-2 text-sm hover:bg-navy/10"
+            className="flex items-center gap-2 rounded-pill bg-navy/5 px-4 py-2 text-a-inline hover:bg-navy/10"
           >
             <Calendar size={14} /> Agendar terapeuta
           </Link>

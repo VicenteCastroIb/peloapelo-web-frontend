@@ -7,11 +7,11 @@ export default function Manifiesto() {
       <FadeInOnScroll className="mx-auto max-w-3xl text-center">
         <SectionBadge label="Manifiesto · I" />
 
-        <h2 className="mx-auto text-4xl font-normal leading-tight sm:text-5xl">
+        <h2 className="mx-auto text-h2-lg text-navy">
           Nada te hará cambiar más que <span className="italic text-accent">tú mism@</span>.
         </h2>
 
-        <div className="mx-auto mt-8 max-w-xl space-y-4 text-navy/70">
+        <div className="mx-auto mt-8 max-w-xl space-y-4 text-p-body text-navy/70">
           <p>No pongas afuera lo que debes trabajar por dentro.</p>
           <p>
             La invitación es darte <strong className="text-navy">foco y estructura</strong> a
@@ -30,8 +30,8 @@ export default function Manifiesto() {
           ver docs/scan-22-07-2026). Placeholder funcional mientras tanto.
         */}
         <div className="mx-auto mt-12 max-w-2xl rounded-card-lg bg-white p-10">
-          <p className="mb-8 text-lg italic">Línea predecible de tu realidad conocida</p>
-          <div className="flex items-center justify-between text-sm font-semibold">
+          <p className="mb-8 text-p-lead italic">Línea predecible de tu realidad conocida</p>
+          <div className="flex items-center justify-between text-h3-sm">
             <div className="text-left">
               <p>AYER</p>
               <p className="font-normal italic text-navy/50">Pasado</p>
@@ -46,7 +46,7 @@ export default function Manifiesto() {
           </div>
         </div>
 
-        <p className="mt-8 italic text-navy/50">
+        <p className="mt-8 text-p-body italic text-navy/50">
           El verdadero cambio ocurre en el momento presente.
         </p>
       </FadeInOnScroll>

@@ -6,10 +6,10 @@ export default function PainPoints() {
   return (
     <section className="px-6 py-24 text-center lg:px-12 lg:py-28">
       <FadeInOnScroll className="mx-auto max-w-4xl">
-        <h2 className="text-3xl font-semibold sm:text-4xl">
+        <h2 className="text-h2-md text-navy">
           ¿Quieres decir <span className="italic text-accent">ADIÓS</span> a…?
         </h2>
-        <p className="mt-3 text-navy/70">Si te identificas, este programa es para ti.</p>
+        <p className="mt-3 text-p-body text-navy/70">Si te identificas, este programa es para ti.</p>
 
         <div className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {painPoints.map((point) => (
@@ -17,7 +17,7 @@ export default function PainPoints() {
               <span className="mx-auto mb-3 flex h-10 w-10 items-center justify-center rounded-full bg-coral-soft text-coral">
                 <Frown size={18} />
               </span>
-              <p className="text-sm text-navy/80">{point}</p>
+              <p className="text-p-small text-navy/80">{point}</p>
             </div>
           ))}
         </div>

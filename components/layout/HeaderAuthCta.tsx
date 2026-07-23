@@ -15,7 +15,7 @@ export default function HeaderAuthCta() {
     const firstName = user.fullName?.split(" ")[0] || user.email;
     return (
       <div className="flex items-center gap-3">
-        <Link href="/dashboard" className="hidden text-sm text-navy/70 hover:text-navy sm:inline">
+        <Link href="/dashboard" className="hidden text-a-nav text-navy/70 hover:text-navy sm:inline">
           Hola, {firstName}
         </Link>
         <Button variant="outline" onClick={logout}>

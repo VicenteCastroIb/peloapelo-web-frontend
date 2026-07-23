@@ -19,20 +19,20 @@ function Cell({ value }: { value: string | boolean }) {
       <X size={16} className="mx-auto text-navy/25" />
     );
   }
-  return <span className="text-sm">{value}</span>;
+  return <span className="text-p-small">{value}</span>;
 }
 
 export default function PricingPage() {
   return (
     <>
       <section className="px-6 py-20 text-center lg:px-12">
-        <p className="text-xs font-semibold uppercase tracking-widest text-navy/50">
+        <p className="text-h4-label text-navy/50">
           Planes y precios
         </p>
-        <h1 className="mx-auto mt-4 max-w-2xl text-4xl font-normal sm:text-5xl">
+        <h1 className="mx-auto mt-4 max-w-2xl text-h2-lg text-navy">
           Invierte en tu <span className="italic text-accent">bienestar</span>.
         </h1>
-        <p className="mx-auto mt-4 max-w-lg text-navy/70">
+        <p className="mx-auto mt-4 max-w-lg text-p-body text-navy/70">
           Cada suscripción sostiene nuestra comunidad y permite que otra persona
           reciba apoyo. Sin tarjeta para empezar.
         </p>
@@ -41,10 +41,10 @@ export default function PricingPage() {
       <section className="px-6 pb-16 lg:px-12">
         <div className="mx-auto max-w-5xl">
           <SectionBadge label="Planes · IV" />
-          <h2 className="text-4xl font-normal sm:text-5xl">
+          <h2 className="text-h2-lg text-navy">
             Elige <span className="italic text-accent">tu camino</span>.
           </h2>
-          <p className="mt-4 max-w-lg text-navy/70">
+          <p className="mt-4 max-w-lg text-p-body text-navy/70">
             Somos una fundación sin fines de lucro. Cada plan que eliges permite que
             otra persona reciba apoyo sin costo.
           </p>
@@ -59,12 +59,12 @@ export default function PricingPage() {
 
       <section className="px-6 pb-24 lg:px-12">
         <div className="mx-auto max-w-4xl">
-          <h2 className="text-center text-3xl font-semibold">
+          <h2 className="text-center text-h2-md text-navy">
             Tabla <span className="italic text-accent">comparativa</span>
           </h2>
 
           <div className="mt-10 overflow-hidden rounded-card-lg border border-navy/10 bg-white">
-            <table className="w-full text-left text-sm">
+            <table className="w-full text-left text-p-small">
               <thead>
                 <tr className="border-b border-navy/10">
                   <th className="p-4 font-semibold">Característica</th>
@@ -106,7 +106,7 @@ export default function PricingPage() {
             </table>
           </div>
 
-          <p className="mt-6 text-center text-sm text-navy/60">
+          <p className="mt-6 text-center text-p-small text-navy/60">
             Todos los pagos se procesan de forma segura con Mercado Pago. Puedes
             cancelar en cualquier momento. Garantía: si no es lo que esperabas dentro
             de los primeros 14 días, te devolvemos tu dinero.

@@ -13,7 +13,7 @@ export default function Faq() {
     <section id="preguntas" className="px-6 py-24 lg:px-12 lg:py-28">
       <FadeInOnScroll className="mx-auto max-w-3xl">
         <SectionBadge label="Preguntas · VII" />
-        <h2 className="text-4xl font-normal sm:text-5xl">
+        <h2 className="text-h2-lg text-navy">
           Lo que <span className="italic text-accent">te preguntas</span>.
         </h2>
 
@@ -26,7 +26,7 @@ export default function Faq() {
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between py-5 text-left font-medium"
+                  className="flex w-full items-center justify-between py-5 text-left text-h3-sm font-medium"
                 >
                   {item.question}
                   <ChevronDown
@@ -36,7 +36,7 @@ export default function Faq() {
                     }`}
                   />
                 </button>
-                {isOpen && <p className="pb-5 text-navy/70">{item.answer}</p>}
+                {isOpen && <p className="pb-5 text-p-body text-navy/70">{item.answer}</p>}
               </div>
             );
           })}

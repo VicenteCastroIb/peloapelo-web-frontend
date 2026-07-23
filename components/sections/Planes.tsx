@@ -8,10 +8,10 @@ export default function Planes() {
     <section className="px-6 py-24 lg:px-12 lg:py-28">
       <FadeInOnScroll className="mx-auto max-w-5xl">
         <SectionBadge label="Planes · IV" />
-        <h2 className="text-4xl font-normal sm:text-5xl">
+        <h2 className="text-h2-lg text-navy">
           Elige <span className="italic text-accent">tu camino</span>.
         </h2>
-        <p className="mt-4 max-w-lg text-navy/70">
+        <p className="mt-4 max-w-lg text-p-body text-navy/70">
           Somos una fundación sin fines de lucro. Cada plan que eliges permite que otra
           persona reciba apoyo sin costo.
         </p>

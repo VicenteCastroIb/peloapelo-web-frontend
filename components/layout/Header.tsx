@@ -21,7 +21,7 @@ export default function Header() {
           </span>
         </Link>
 
-        <nav className="hidden items-center gap-8 text-sm text-navy/70 md:flex">
+        <nav className="hidden items-center gap-8 text-a-nav text-navy/70 md:flex">
           {NAV_LINKS.map((link) => (
             <Link key={link.href} href={link.href} className="hover:text-navy">
               {link.label}
