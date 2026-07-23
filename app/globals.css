@@ -47,3 +47,17 @@ body {
 .animate-fade-in-blur {
   animation: fade-in-blur 0.7s ease-out both;
 }
+
+/* Evita el fondo azul/amarillo que Chrome impone al autorellenar inputs.
+   El truco del box-shadow inset + transition delay es la única forma
+   confiable de sobreescribir ese estilo forzado por el navegador. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0px 1000px var(--color-cream) inset;
+  box-shadow: 0 0 0px 1000px var(--color-cream) inset;
+  -webkit-text-fill-color: var(--color-navy);
+  caret-color: var(--color-navy);
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
