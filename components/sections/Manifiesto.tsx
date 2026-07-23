@@ -1,3 +1,4 @@
+import Image from "next/image";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 
@@ -24,31 +25,47 @@ export default function Manifiesto() {
           </p>
         </div>
 
-        {/*
-          TODO: reemplazar por el diagrama ilustrado real
-          (/assets/timeline-presente-CoJC-3XL.png en el sitio original,
-          ver docs/scan-22-07-2026). Placeholder funcional mientras tanto.
-        */}
-        <div className="mx-auto mt-12 max-w-2xl rounded-card-lg bg-white p-10">
-          <p className="mb-8 text-p-lead italic">Línea predecible de tu realidad conocida</p>
-          <div className="flex items-center justify-between text-h3-sm">
-            <div className="text-left">
-              <p>AYER</p>
-              <p className="font-normal italic text-navy/50">Pasado</p>
-            </div>
-            <div className="flex h-10 w-10 items-center justify-center rounded-full bg-navy text-cream">
-              Ahora
-            </div>
-            <div className="text-right">
-              <p>MAÑANA</p>
-              <p className="font-normal italic text-navy/50">Futuro</p>
-            </div>
-          </div>
-        </div>
+        <div className="mx-auto mt-12 max-w-2xl rounded-card-lg bg-white p-6 sm:p-10">
+          <p className="mb-6 text-p-lead italic">Línea predecible de tu realidad conocida</p>
 
-        <p className="mt-8 text-p-body italic text-navy/50">
-          El verdadero cambio ocurre en el momento presente.
-        </p>
+          <div className="relative mx-auto aspect-[1344/768] w-full">
+            <Image
+              src="/images/manifiesto-diagrama.jpg"
+              alt="Diagrama: entre el pasado (programa automático) y el futuro (programa automático) está el momento presente, donde puede ocurrir un evento desconocido que te cambia."
+              fill
+              sizes="(min-width: 640px) 640px, 90vw"
+              className="rounded-card-md object-contain"
+            />
+
+            <span className="absolute left-[12%] top-[16%] text-p-caption text-coral sm:text-p-small">
+              Evento desconocido
+            </span>
+
+            <span className="absolute left-[12%] top-[46%] -translate-y-1/2 text-h4-label text-navy sm:text-h3-sm sm:font-bold">
+              AYER
+            </span>
+            <span className="absolute left-[12%] top-[58%] -translate-y-1/2 text-[9px] italic text-navy/50 sm:text-p-caption">
+              Programa automático
+            </span>
+            <span className="absolute bottom-[6%] left-[3%] text-[9px] italic text-navy/50 sm:text-p-caption">
+              Pasado
+            </span>
+
+            <span className="absolute right-[10%] top-[46%] -translate-y-1/2 text-h4-label text-navy sm:text-h3-sm sm:font-bold">
+              MAÑANA
+            </span>
+            <span className="absolute right-[8%] top-[58%] -translate-y-1/2 text-[9px] italic text-navy/50 sm:text-p-caption">
+              Programa automático
+            </span>
+            <span className="absolute bottom-[6%] right-[2%] text-[9px] italic text-navy/50 sm:text-p-caption">
+              Futuro
+            </span>
+          </div>
+
+          <p className="mt-6 text-p-body italic text-navy/50">
+            El verdadero cambio ocurre en el <span className="text-navy">momento presente</span>.
+          </p>
+        </div>
       </FadeInOnScroll>
     </section>
   );
