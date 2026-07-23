@@ -32,7 +32,7 @@ export default function AuthPage() {
       } else {
         await register(email, password, fullName);
       }
-      router.push("/");
+      router.push("/dashboard");
     } catch (err) {
       if (err instanceof ApiError) {
         setError(err.message);
