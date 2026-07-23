@@ -52,7 +52,7 @@ export default function Manifiesto() {
           <span className="absolute left-[12%] top-[60%] -translate-y-1/2 text-p-caption italic text-navy/50 sm:text-p-small">
             Programa automático
           </span>
-          <span className="absolute bottom-[4%] left-[3%] text-p-caption italic text-navy/50 sm:text-p-small">
+          <span className="absolute left-[12%] top-[72%] -translate-y-1/2 text-p-small italic text-navy/50 sm:text-h3-sm">
             Pasado
           </span>
 
@@ -62,7 +62,7 @@ export default function Manifiesto() {
           <span className="absolute right-[8%] top-[60%] -translate-y-1/2 text-p-caption italic text-navy/50 sm:text-p-small">
             Programa automático
           </span>
-          <span className="absolute bottom-[4%] right-[2%] text-p-caption italic text-navy/50 sm:text-p-small">
+          <span className="absolute right-[10%] top-[72%] -translate-y-1/2 text-p-small italic text-navy/50 sm:text-h3-sm">
             Futuro
           </span>
         </div>
