@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+:root {
+  /* Paleta real de peloapelo.cl (ver docs/scan-22-07-2026) */
+  --color-cream: #f8f6f2;
+  --color-navy: #2b3d4f;
+  --color-accent: #60498d;
+  --color-gradient-from: #8f7cb6;
+  --color-gradient-to: #89cfeb;
+  --color-coral: #ef4343;
+  --color-coral-soft: rgba(239, 67, 67, 0.1);
+}
+
+@theme inline {
+  --color-cream: var(--color-cream);
+  --color-navy: var(--color-navy);
+  --color-accent: var(--color-accent);
+  --color-gradient-from: var(--color-gradient-from);
+  --color-gradient-to: var(--color-gradient-to);
+  --color-coral: var(--color-coral);
+  --color-coral-soft: var(--color-coral-soft);
+  --font-sans: var(--font-lato);
+  --radius-pill: 9999px;
+  --radius-card-lg: 24px;
+  --radius-card-md: 20px;
+  --radius-icon: 16px;
+}
+
+body {
+  background: var(--color-cream);
+  color: var(--color-navy);
+}
+
+@keyframes fade-in-blur {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-blur {
+  animation: fade-in-blur 0.7s ease-out both;
+}

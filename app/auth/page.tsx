@@ -1,0 +1,112 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import Button from "@/components/ui/Button";
+
+export default function AuthPage() {
+  const [mode, setMode] = useState<"login" | "register">("login");
+  const [showPassword, setShowPassword] = useState(false);
+  const isLogin = mode === "login";
+
+  return (
+    <section className="relative flex min-h-[calc(100vh-72px)] items-center justify-center overflow-hidden px-6 py-16">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute -left-32 bottom-0 h-96 w-96 rounded-full bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] opacity-10 blur-3xl"
+      />
+
+      <div className="relative w-full max-w-md">
+        <Link
+          href="/"
+          className="mb-8 inline-flex items-center gap-2 text-sm text-navy/60 hover:text-navy"
+        >
+          <ArrowLeft size={16} />
+          Volver al inicio
+        </Link>
+
+        <div className="rounded-card-lg bg-white p-8 text-center shadow-sm sm:p-10">
+          <span
+            aria-hidden
+            className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]"
+          />
+
+          <h1 className="text-2xl font-semibold">
+            {isLogin ? "Bienvenido de vuelta" : "Crea tu cuenta"}
+          </h1>
+          <p className="mt-1 text-sm text-navy/60">
+            {isLogin
+              ? "Inicia sesión para continuar tu proceso"
+              : "Comienza tu camino con nosotros"}
+          </p>
+
+          <form
+            className="mt-8 space-y-4 text-left"
+            onSubmit={(event) => event.preventDefault()}
+          >
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-navy/70">
+                Correo electrónico
+              </label>
+              <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3">
+                <Mail size={16} className="text-navy/40" />
+                <input
+                  type="email"
+                  required
+                  placeholder="tu@email.com"
+                  className="w-full bg-transparent text-sm outline-none"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="mb-1.5 block text-sm font-medium text-navy/70">
+                Contraseña
+              </label>
+              <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3">
+                <Lock size={16} className="text-navy/40" />
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  minLength={8}
+                  placeholder="••••••••"
+                  className="w-full bg-transparent text-sm outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((value) => !value)}
+                  aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  className="text-navy/40 hover:text-navy/70"
+                >
+                  {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
+            </div>
+
+            {isLogin && (
+              <Link href="/auth/forgot" className="inline-block text-sm text-accent">
+                ¿Olvidaste tu contraseña?
+              </Link>
+            )}
+
+            <Button type="submit" variant="gradient" className="w-full">
+              {isLogin ? "Iniciar sesión" : "Crear cuenta"}
+            </Button>
+          </form>
+
+          <p className="mt-6 text-sm text-navy/60">
+            {isLogin ? "¿No tienes cuenta? " : "¿Ya tienes cuenta? "}
+            <button
+              type="button"
+              onClick={() => setMode(isLogin ? "register" : "login")}
+              className="font-semibold text-accent"
+            >
+              {isLogin ? "Regístrate" : "Inicia sesión"}
+            </button>
+          </p>
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -1,0 +1,120 @@
+import type { Metadata } from "next";
+import { Check, X } from "lucide-react";
+import SectionBadge from "@/components/shared/SectionBadge";
+import PlanCard from "@/components/sections/PlanCard";
+import Faq from "@/components/sections/Faq";
+import { plans, comparisonTable } from "@/lib/data/plans";
+
+export const metadata: Metadata = {
+  title: "Planes y precios · Pelo a Pelo",
+  description:
+    "Cada suscripción sostiene nuestra comunidad y permite que otra persona reciba apoyo. Sin tarjeta para empezar.",
+};
+
+function Cell({ value }: { value: string | boolean }) {
+  if (typeof value === "boolean") {
+    return value ? (
+      <Check size={16} className="mx-auto text-accent" />
+    ) : (
+      <X size={16} className="mx-auto text-navy/25" />
+    );
+  }
+  return <span className="text-sm">{value}</span>;
+}
+
+export default function PricingPage() {
+  return (
+    <>
+      <section className="px-6 py-20 text-center lg:px-12">
+        <p className="text-xs font-semibold uppercase tracking-widest text-navy/50">
+          Planes y precios
+        </p>
+        <h1 className="mx-auto mt-4 max-w-2xl text-4xl font-normal sm:text-5xl">
+          Invierte en tu <span className="italic text-accent">bienestar</span>.
+        </h1>
+        <p className="mx-auto mt-4 max-w-lg text-navy/70">
+          Cada suscripción sostiene nuestra comunidad y permite que otra persona
+          reciba apoyo. Sin tarjeta para empezar.
+        </p>
+      </section>
+
+      <section className="px-6 pb-16 lg:px-12">
+        <div className="mx-auto max-w-5xl">
+          <SectionBadge label="Planes · IV" />
+          <h2 className="text-4xl font-normal sm:text-5xl">
+            Elige <span className="italic text-accent">tu camino</span>.
+          </h2>
+          <p className="mt-4 max-w-lg text-navy/70">
+            Somos una fundación sin fines de lucro. Cada plan que eliges permite que
+            otra persona reciba apoyo sin costo.
+          </p>
+
+          <div className="mt-12 grid overflow-hidden rounded-card-lg border border-navy/10 sm:grid-cols-3">
+            {plans.map((plan) => (
+              <PlanCard key={plan.id} plan={plan} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-6 pb-24 lg:px-12">
+        <div className="mx-auto max-w-4xl">
+          <h2 className="text-center text-3xl font-semibold">
+            Tabla <span className="italic text-accent">comparativa</span>
+          </h2>
+
+          <div className="mt-10 overflow-hidden rounded-card-lg border border-navy/10 bg-white">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr className="border-b border-navy/10">
+                  <th className="p-4 font-semibold">Característica</th>
+                  <th className="p-4 text-center font-semibold">Gratuito</th>
+                  <th className="p-4 text-center font-semibold text-accent">
+                    Plan 3 Meses
+                  </th>
+                  <th className="p-4 text-center font-semibold">Mensual</th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonTable.map((row) => (
+                  <tr key={row.feature} className="border-b border-navy/5">
+                    <td className="p-4">{row.feature}</td>
+                    <td className="p-4 text-center">
+                      <Cell value={row.gratuito} />
+                    </td>
+                    <td className="p-4 text-center">
+                      <Cell value={row.trimestral} />
+                    </td>
+                    <td className="p-4 text-center">
+                      <Cell value={row.mensual} />
+                    </td>
+                  </tr>
+                ))}
+                <tr className="border-b border-navy/5 font-semibold">
+                  <td className="p-4">Precio</td>
+                  <td className="p-4 text-center">Gratis · 3 días</td>
+                  <td className="p-4 text-center">$92.000 CLP</td>
+                  <td className="p-4 text-center">$35.990 CLP / mes</td>
+                </tr>
+                <tr>
+                  <td className="p-4">Costo por día</td>
+                  <td className="p-4 text-center text-navy/40">—</td>
+                  <td className="p-4 text-center">$1.022</td>
+                  <td className="p-4 text-center">$1.199</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p className="mt-6 text-center text-sm text-navy/60">
+            Todos los pagos se procesan de forma segura con Mercado Pago. Puedes
+            cancelar en cualquier momento. Garantía: si no es lo que esperabas dentro
+            de los primeros 14 días, te devolvemos tu dinero.
+          </p>
+        </div>
+      </section>
+
+      <Faq />
+    </>
+  );
+}

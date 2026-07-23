@@ -1,0 +1,40 @@
+import Link from "next/link";
+import Button from "@/components/ui/Button";
+
+const NAV_LINKS = [
+  { href: "/#inicio", label: "Inicio" },
+  { href: "/#como-funciona", label: "Cómo funciona" },
+  { href: "/pricing", label: "Precios" },
+  { href: "/#preguntas", label: "Preguntas" },
+  { href: "/#testimonios", label: "Testimonios" },
+];
+
+export default function Header() {
+  return (
+    <header className="sticky top-0 z-50 border-b border-navy/5 bg-cream/85 backdrop-blur">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
+        <Link href="/" className="flex items-center gap-2 text-lg">
+          <span
+            aria-hidden
+            className="h-7 w-7 rounded-full bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]"
+          />
+          <span className="font-semibold text-navy">
+            Pelo a <span className="italic text-accent">Pelo</span>
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-8 text-sm text-navy/70 md:flex">
+          {NAV_LINKS.map((link) => (
+            <Link key={link.href} href={link.href} className="hover:text-navy">
+              {link.label}
+            </Link>
+          ))}
+        </nav>
+
+        <Button href="/auth" variant="solid">
+          Comienza gratis
+        </Button>
+      </div>
+    </header>
+  );
+}
