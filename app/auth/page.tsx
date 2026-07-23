@@ -65,9 +65,9 @@ export default function AuthPage() {
           <Image
             src="/images/logo.png"
             alt="Pelo a Pelo"
-            width={48}
-            height={48}
-            className="mx-auto mb-4 h-12 w-12"
+            width={72}
+            height={72}
+            className="mx-auto mb-4 h-[72px] w-[72px]"
           />
 
           <h1 className="text-2xl font-semibold">

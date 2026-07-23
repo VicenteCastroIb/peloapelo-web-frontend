@@ -15,7 +15,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 border-b border-navy/5 bg-cream/85 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
         <Link href="/" className="flex items-center gap-2 text-lg">
-          <Image src="/images/logo.png" alt="" aria-hidden width={28} height={28} className="h-7 w-7" />
+          <Image src="/images/logo.png" alt="" aria-hidden width={44} height={44} className="h-11 w-11" />
           <span className="font-semibold text-navy">
             Pelo a <span className="italic text-accent">Pelo</span>
           </span>

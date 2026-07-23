@@ -22,7 +22,7 @@ export default function DashboardSidebar() {
     <aside className="flex h-full w-56 shrink-0 flex-col justify-between border-r border-navy/10 bg-white px-4 py-6">
       <div>
         <Link href="/" className="mb-8 flex items-center gap-2 px-2">
-          <Image src="/images/logo.png" alt="Pelo a Pelo" width={28} height={28} className="h-7 w-7" />
+          <Image src="/images/logo.png" alt="Pelo a Pelo" width={40} height={40} className="h-10 w-10" />
         </Link>
 
         <nav className="space-y-1">

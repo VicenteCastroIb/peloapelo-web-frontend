@@ -26,7 +26,7 @@ export default function Footer() {
 
         <div className="grid gap-10 border-t border-cream/10 pt-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Image src="/images/logo.png" alt="Pelo a Pelo" width={32} height={32} className="h-8 w-8" />
+            <Image src="/images/logo.png" alt="Pelo a Pelo" width={48} height={48} className="h-12 w-12" />
             <p className="mt-3 text-lg">
               Pelo a <span className="italic text-[var(--color-gradient-to)]">Pelo</span>
             </p>
