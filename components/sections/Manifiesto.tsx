@@ -49,20 +49,20 @@ export default function Manifiesto() {
           <span className="absolute left-[12%] top-[46%] -translate-y-1/2 text-h3-sm text-navy sm:text-h3-md sm:font-bold">
             AYER
           </span>
-          <span className="absolute left-[12%] top-[60%] -translate-y-1/2 text-p-caption italic text-navy/50 sm:text-p-small">
+          <span className="absolute left-[12%] top-[60%] -translate-y-1/2 text-p-small italic text-navy/50 sm:text-h3-sm">
             Programa automático
           </span>
-          <span className="absolute left-[12%] top-[72%] -translate-y-1/2 text-p-small italic text-navy/50 sm:text-h3-sm">
+          <span className="absolute left-[12%] top-[72%] -translate-y-1/2 text-h3-sm italic text-navy/50 sm:text-h3-md">
             Pasado
           </span>
 
           <span className="absolute right-[10%] top-[46%] -translate-y-1/2 text-h3-sm text-navy sm:text-h3-md sm:font-bold">
             MAÑANA
           </span>
-          <span className="absolute right-[8%] top-[60%] -translate-y-1/2 text-p-caption italic text-navy/50 sm:text-p-small">
+          <span className="absolute right-[8%] top-[60%] -translate-y-1/2 text-p-small italic text-navy/50 sm:text-h3-sm">
             Programa automático
           </span>
-          <span className="absolute right-[10%] top-[72%] -translate-y-1/2 text-p-small italic text-navy/50 sm:text-h3-sm">
+          <span className="absolute right-[10%] top-[72%] -translate-y-1/2 text-h3-sm italic text-navy/50 sm:text-h3-md">
             Futuro
           </span>
         </div>
