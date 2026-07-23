@@ -1,8 +1,36 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { Check } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { Plan } from "@/lib/data/plans";
+import { useAuth, ApiError } from "@/lib/auth/AuthContext";
+import { subscribeToPlan } from "@/lib/api/subscriptions";
 
 export default function PlanCard({ plan }: { plan: Plan }) {
+  const router = useRouter();
+  const { status, token } = useAuth();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleClick() {
+    if (status !== "authenticated" || !token) {
+      router.push("/auth");
+      return;
+    }
+
+    setError(null);
+    setLoading(true);
+    try {
+      await subscribeToPlan(token, plan.id);
+      router.push("/subscription");
+    } catch (err) {
+      setError(err instanceof ApiError ? err.message : "No pudimos conectar con el servidor.");
+      setLoading(false);
+    }
+  }
+
   return (
     <div
       className={`flex flex-col p-8 ${
@@ -14,7 +42,7 @@ export default function PlanCard({ plan }: { plan: Plan }) {
           plan.highlighted ? "text-[var(--color-gradient-to)]" : "text-accent"
         }`}
       >
-        {plan.highlighted ? "★ Más popular" : " "}
+        {plan.highlighted ? "★ Más popular" : " "}
       </p>
       <h3 className="mt-2 text-xl font-semibold">{plan.name}</h3>
       <p className={`mt-1 text-sm ${plan.highlighted ? "text-cream/70" : "text-navy/60"}`}>
@@ -43,12 +71,15 @@ export default function PlanCard({ plan }: { plan: Plan }) {
         ))}
       </ul>
 
+      {error && <p className="mt-3 text-xs text-coral">{error}</p>}
+
       <Button
-        href="/auth"
+        onClick={handleClick}
+        disabled={loading}
         variant={plan.highlighted ? "gradient" : "outline"}
         className={`mt-8 w-full ${plan.highlighted ? "" : "border-navy/20"}`}
       >
-        {plan.cta}
+        {loading ? "Un momento…" : plan.cta}
       </Button>
     </div>
   );

@@ -8,9 +8,10 @@ export interface DashboardCard {
   href: string | null;
 }
 
-// Copiado 1:1 del dashboard real (ver docs/scan-22-07-2026/02-dashboard-interno.md).
-// "Programa de 3 Meses" y "Mi Suscripción" son decorativas (href: null) porque
-// tampoco navegan a nada en el sitio real todavia.
+// Basado en el dashboard real (ver docs/scan-22-07-2026/02-dashboard-interno.md).
+// "Programa de 3 Meses" queda decorativa (href: null) porque tampoco navega a
+// nada en el sitio real todavia. "Mi Suscripción" SI esta conectada aca -
+// mejora sobre el sitio real, que la tiene marcada "Proximamente".
 export const dashboardCards: DashboardCard[] = [
   {
     icon: Camera,
@@ -49,9 +50,9 @@ export const dashboardCards: DashboardCard[] = [
   },
   {
     icon: CreditCard,
-    badge: "Próximamente",
+    badge: "Disponible",
     title: "Mi Suscripción",
     description: "Gestiona tu plan y pagos",
-    href: null,
+    href: "/subscription",
   },
 ];
