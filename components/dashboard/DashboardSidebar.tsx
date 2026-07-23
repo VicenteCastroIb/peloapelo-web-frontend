@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Camera, BookOpen, User, LogOut } from "lucide-react";
+import { Home, Camera, BookOpen, CreditCard, User, LogOut } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 
 const NAV_ITEMS = [
   { href: "/dashboard", label: "Inicio", icon: Home },
   { href: "/progress", label: "Progreso", icon: Camera },
   { href: "/courses", label: "Aprender", icon: BookOpen },
+  { href: "/subscription", label: "Suscripción", icon: CreditCard },
   { href: "/profile", label: "Perfil", icon: User },
 ];
 
