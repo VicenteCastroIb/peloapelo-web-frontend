@@ -39,30 +39,30 @@ export default function Manifiesto() {
             className="object-contain"
           />
 
-          <div className="absolute right-[6%] top-[3%] flex flex-col items-center gap-1">
-            <span className="whitespace-nowrap text-p-caption text-coral sm:text-p-small">
+          <div className="absolute right-[6%] top-[16%] flex flex-col items-center gap-1.5">
+            <span className="whitespace-nowrap text-p-small text-coral sm:text-h3-sm">
               Evento desconocido
             </span>
-            <ArrowDown size={14} className="text-coral" />
+            <ArrowDown size={20} className="text-coral sm:size-6" />
           </div>
 
-          <span className="absolute left-[12%] top-[46%] -translate-y-1/2 text-h4-label text-navy sm:text-h3-sm sm:font-bold">
+          <span className="absolute left-[12%] top-[46%] -translate-y-1/2 text-h3-sm text-navy sm:text-h3-md sm:font-bold">
             AYER
           </span>
-          <span className="absolute left-[12%] top-[58%] -translate-y-1/2 text-[9px] italic text-navy/50 sm:text-p-caption">
+          <span className="absolute left-[12%] top-[60%] -translate-y-1/2 text-p-caption italic text-navy/50 sm:text-p-small">
             Programa automático
           </span>
-          <span className="absolute bottom-[6%] left-[3%] text-[9px] italic text-navy/50 sm:text-p-caption">
+          <span className="absolute bottom-[4%] left-[3%] text-p-caption italic text-navy/50 sm:text-p-small">
             Pasado
           </span>
 
-          <span className="absolute right-[10%] top-[46%] -translate-y-1/2 text-h4-label text-navy sm:text-h3-sm sm:font-bold">
+          <span className="absolute right-[10%] top-[46%] -translate-y-1/2 text-h3-sm text-navy sm:text-h3-md sm:font-bold">
             MAÑANA
           </span>
-          <span className="absolute right-[8%] top-[58%] -translate-y-1/2 text-[9px] italic text-navy/50 sm:text-p-caption">
+          <span className="absolute right-[8%] top-[60%] -translate-y-1/2 text-p-caption italic text-navy/50 sm:text-p-small">
             Programa automático
           </span>
-          <span className="absolute bottom-[6%] right-[2%] text-[9px] italic text-navy/50 sm:text-p-caption">
+          <span className="absolute bottom-[4%] right-[2%] text-p-caption italic text-navy/50 sm:text-p-small">
             Futuro
           </span>
         </div>
