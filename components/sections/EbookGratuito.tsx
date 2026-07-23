@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Button from "@/components/ui/Button";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 
@@ -6,12 +7,14 @@ export default function EbookGratuito() {
     <section id="ebook" className="px-6 py-16 lg:px-12">
       <FadeInOnScroll className="mx-auto max-w-4xl rounded-card-lg bg-white p-8 sm:p-12">
         <div className="grid gap-8 sm:grid-cols-[200px_1fr] sm:items-center">
-          {/* TODO: reemplazar por /assets/ebook-cover-Dc2fGQdw.jpg (docs/scan-22-07-2026) */}
-          <div className="aspect-square w-full rounded-card-md bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] p-4 text-center text-white">
-            <div className="flex h-full flex-col items-center justify-center">
-              <p className="font-semibold">Pelo a Pelo</p>
-              <p className="mt-1 text-xs italic">¿Qué dice tu pelo sobre ti?</p>
-            </div>
+          <div className="relative aspect-[700/906] w-full overflow-hidden rounded-card-md shadow-sm">
+            <Image
+              src="/images/ebook-cover.jpg"
+              alt="Portada del ebook Pelo a Pelo: ¿Qué dice tu pelo sobre ti?"
+              fill
+              sizes="200px"
+              className="object-cover"
+            />
           </div>
 
           <div>
@@ -23,7 +26,12 @@ export default function EbookGratuito() {
               El nuevo ebook de Jessica Lagno: 10 capítulos para entender la alopecia
               desde el cuerpo, la emoción y la comunidad.
             </p>
-            <Button href="/auth" variant="gradient" className="mt-6">
+            <Button
+              href="/downloads/pelo-a-pelo-ebook.pdf"
+              download="Pelo-a-Pelo-Que-dice-tu-pelo-sobre-ti.pdf"
+              variant="gradient"
+              className="mt-6"
+            >
               Descargar gratis →
             </Button>
           </div>

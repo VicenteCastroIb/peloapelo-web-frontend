@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Lato } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { AuthProvider } from "@/lib/auth/AuthContext";
 import "./globals.css";
 
 const lato = Lato({
@@ -24,9 +25,11 @@ export default function RootLayout({
   return (
     <html lang="es" className={`${lato.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-cream text-navy font-sans">
-        <Header />
-        <main className="flex-1">{children}</main>
-        <Footer />
+        <AuthProvider>
+          <Header />
+          <main className="flex-1">{children}</main>
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

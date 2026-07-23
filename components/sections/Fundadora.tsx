@@ -1,3 +1,4 @@
+import Image from "next/image";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 
@@ -12,8 +13,16 @@ export default function Fundadora() {
 
         <div className="mt-12 grid gap-10 sm:grid-cols-2 sm:items-start">
           <figure>
-            {/* TODO: reemplazar por /assets/founder-jessica-C3ra7rIf.jpg (docs/scan-22-07-2026) */}
-            <div className="aspect-[3/4] w-full rounded-card-lg bg-navy/10" />
+            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-card-lg bg-navy/10">
+              <Image
+                src="/images/jessica-lagno.png"
+                alt="Jessica Lagno, fundadora de Pelo a Pelo"
+                fill
+                sizes="(min-width: 640px) 40vw, 90vw"
+                className="object-cover"
+                priority
+              />
+            </div>
             <figcaption className="mt-3 flex justify-between text-xs uppercase tracking-wide text-navy/50">
               <span>Jessica · 11 años</span>
               <span className="italic normal-case">Alopecia areata universal</span>

@@ -1,14 +1,48 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { ArrowLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { useAuth, ApiError } from "@/lib/auth/AuthContext";
 
 export default function AuthPage() {
+  const router = useRouter();
+  const { login, register } = useAuth();
+
   const [mode, setMode] = useState<"login" | "register">("login");
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+
   const isLogin = mode === "login";
+
+  async function handleSubmit(event: React.FormEvent) {
+    event.preventDefault();
+    setError(null);
+    setSubmitting(true);
+
+    try {
+      if (isLogin) {
+        await login(email, password);
+      } else {
+        await register(email, password, fullName);
+      }
+      router.push("/");
+    } catch (err) {
+      if (err instanceof ApiError) {
+        setError(err.message);
+      } else {
+        setError("No pudimos conectar con el servidor. Intenta de nuevo.");
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  }
 
   return (
     <section className="relative flex min-h-[calc(100vh-72px)] items-center justify-center overflow-hidden px-6 py-16">
@@ -41,10 +75,26 @@ export default function AuthPage() {
               : "Comienza tu camino con nosotros"}
           </p>
 
-          <form
-            className="mt-8 space-y-4 text-left"
-            onSubmit={(event) => event.preventDefault()}
-          >
+          <form className="mt-8 space-y-4 text-left" onSubmit={handleSubmit}>
+            {!isLogin && (
+              <div>
+                <label className="mb-1.5 block text-sm font-medium text-navy/70">
+                  Nombre completo
+                </label>
+                <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3">
+                  <User size={16} className="text-navy/40" />
+                  <input
+                    type="text"
+                    required
+                    value={fullName}
+                    onChange={(e) => setFullName(e.target.value)}
+                    placeholder="Tu nombre"
+                    className="w-full bg-transparent text-sm outline-none"
+                  />
+                </div>
+              </div>
+            )}
+
             <div>
               <label className="mb-1.5 block text-sm font-medium text-navy/70">
                 Correo electrónico
@@ -54,6 +104,8 @@ export default function AuthPage() {
                 <input
                   type="email"
                   required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="tu@email.com"
                   className="w-full bg-transparent text-sm outline-none"
                 />
@@ -70,6 +122,8 @@ export default function AuthPage() {
                   type={showPassword ? "text" : "password"}
                   required
                   minLength={8}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full bg-transparent text-sm outline-none"
                 />
@@ -90,8 +144,14 @@ export default function AuthPage() {
               </Link>
             )}
 
-            <Button type="submit" variant="gradient" className="w-full">
-              {isLogin ? "Iniciar sesión" : "Crear cuenta"}
+            {error && (
+              <p className="rounded-pill bg-coral-soft px-4 py-2 text-sm text-coral" role="alert">
+                {error}
+              </p>
+            )}
+
+            <Button type="submit" variant="gradient" className="w-full" disabled={submitting}>
+              {submitting ? "Un momento…" : isLogin ? "Iniciar sesión" : "Crear cuenta"}
             </Button>
           </form>
 
@@ -99,7 +159,10 @@ export default function AuthPage() {
             {isLogin ? "¿No tienes cuenta? " : "¿Ya tienes cuenta? "}
             <button
               type="button"
-              onClick={() => setMode(isLogin ? "register" : "login")}
+              onClick={() => {
+                setMode(isLogin ? "register" : "login");
+                setError(null);
+              }}
               className="font-semibold text-accent"
             >
               {isLogin ? "Regístrate" : "Inicia sesión"}

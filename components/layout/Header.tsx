@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Button from "@/components/ui/Button";
+import HeaderAuthCta from "@/components/layout/HeaderAuthCta";
 
 const NAV_LINKS = [
   { href: "/#inicio", label: "Inicio" },
@@ -31,9 +31,7 @@ export default function Header() {
           ))}
         </nav>
 
-        <Button href="/auth" variant="solid">
-          Comienza gratis
-        </Button>
+        <HeaderAuthCta />
       </div>
     </header>
   );
