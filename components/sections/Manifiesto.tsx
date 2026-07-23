@@ -65,6 +65,10 @@ export default function Manifiesto() {
           <span className="absolute right-[10%] top-[72%] -translate-y-1/2 text-h3-sm italic text-navy/50 sm:text-h3-md">
             Futuro
           </span>
+
+          <span className="absolute left-1/2 top-[82%] -translate-x-1/2 -translate-y-1/2 whitespace-nowrap text-p-small italic text-navy sm:text-h3-sm">
+            Momento presente
+          </span>
         </div>
 
         <p className="mx-auto mt-6 max-w-3xl text-p-body italic text-navy/50">
