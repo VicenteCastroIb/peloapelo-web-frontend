@@ -6,7 +6,7 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 export default function Manifiesto() {
   return (
     <section className="px-6 py-24 lg:px-12 lg:py-36">
-      <FadeInOnScroll className="mx-auto max-w-3xl text-center">
+      <FadeInOnScroll className="mx-auto max-w-5xl text-center">
         <SectionBadge label="Manifiesto · I" />
 
         <h2 className="mx-auto text-h2-lg text-navy">
@@ -26,16 +26,16 @@ export default function Manifiesto() {
           </p>
         </div>
 
-        <p className="mx-auto mt-12 max-w-2xl text-p-lead italic text-navy">
+        <p className="mx-auto mt-12 max-w-3xl text-p-lead italic text-navy">
           Línea predecible de tu realidad conocida
         </p>
 
-        <div className="relative mx-auto mt-6 aspect-[1344/768] w-full max-w-2xl">
+        <div className="relative mx-auto mt-6 aspect-[1344/768] w-full max-w-4xl">
           <Image
             src="/images/manifiesto-diagrama.jpg"
             alt="Diagrama: entre el pasado (programa automático) y el futuro (programa automático) está el momento presente, donde puede ocurrir un evento desconocido que te cambia."
             fill
-            sizes="(min-width: 640px) 640px, 90vw"
+            sizes="(min-width: 1024px) 896px, 90vw"
             className="object-contain"
           />
 
@@ -67,7 +67,7 @@ export default function Manifiesto() {
           </span>
         </div>
 
-        <p className="mx-auto mt-6 max-w-2xl text-p-body italic text-navy/50">
+        <p className="mx-auto mt-6 max-w-3xl text-p-body italic text-navy/50">
           El verdadero cambio ocurre en el <span className="text-navy">momento presente</span>.
         </p>
       </FadeInOnScroll>
