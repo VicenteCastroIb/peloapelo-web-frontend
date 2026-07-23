@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
@@ -61,9 +62,12 @@ export default function AuthPage() {
         </Link>
 
         <div className="rounded-card-lg bg-white p-8 text-center shadow-sm sm:p-10">
-          <span
-            aria-hidden
-            className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]"
+          <Image
+            src="/images/logo.png"
+            alt="Pelo a Pelo"
+            width={48}
+            height={48}
+            className="mx-auto mb-4 h-12 w-12"
           />
 
           <h1 className="text-2xl font-semibold">

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function Footer() {
@@ -25,7 +26,8 @@ export default function Footer() {
 
         <div className="grid gap-10 border-t border-cream/10 pt-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <p className="text-lg">
+            <Image src="/images/logo.png" alt="Pelo a Pelo" width={32} height={32} className="h-8 w-8" />
+            <p className="mt-3 text-lg">
               Pelo a <span className="italic text-[var(--color-gradient-to)]">Pelo</span>
             </p>
             <p className="mt-2 text-sm text-cream/60">

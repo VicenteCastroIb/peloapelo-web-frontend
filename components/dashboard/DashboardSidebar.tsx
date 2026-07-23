@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Camera, BookOpen, CreditCard, User, LogOut } from "lucide-react";
@@ -21,10 +22,7 @@ export default function DashboardSidebar() {
     <aside className="flex h-full w-56 shrink-0 flex-col justify-between border-r border-navy/10 bg-white px-4 py-6">
       <div>
         <Link href="/" className="mb-8 flex items-center gap-2 px-2">
-          <span
-            aria-hidden
-            className="h-7 w-7 rounded-full bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]"
-          />
+          <Image src="/images/logo.png" alt="Pelo a Pelo" width={28} height={28} className="h-7 w-7" />
         </Link>
 
         <nav className="space-y-1">
