@@ -12,7 +12,7 @@ const NAV_LINKS = [
 
 export default function Header() {
   return (
-    <header className="sticky top-0 z-50 border-b border-navy/5 bg-cream/85 backdrop-blur">
+    <header className="fixed inset-x-0 top-0 z-50 bg-transparent">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4 lg:px-12">
         <Link href="/" className="flex items-center gap-2 text-lg">
           <Image src="/images/logo.png" alt="" aria-hidden width={70} height={70} className="h-[70px] w-[70px]" />

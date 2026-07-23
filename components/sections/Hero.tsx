@@ -3,7 +3,7 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 
 export default function Hero() {
   return (
-    <section id="inicio" className="relative isolate overflow-hidden">
+    <section id="inicio" className="relative isolate -mt-[104px] overflow-hidden pt-[104px]">
       <video
         className="absolute inset-0 -z-20 h-full w-full object-cover"
         autoPlay

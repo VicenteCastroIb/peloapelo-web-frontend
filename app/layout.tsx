@@ -27,7 +27,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-cream text-navy font-sans">
         <AuthProvider>
           <Header />
-          <main className="flex-1">{children}</main>
+          <main className="flex-1 pt-[104px]">{children}</main>
           <Footer />
         </AuthProvider>
       </body>

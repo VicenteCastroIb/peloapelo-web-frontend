@@ -46,7 +46,7 @@ export default function AuthPage() {
   }
 
   return (
-    <section className="relative flex min-h-[calc(100vh-72px)] items-center justify-center overflow-hidden px-6 py-16">
+    <section className="relative flex min-h-[calc(100vh-104px)] items-center justify-center overflow-hidden px-6 py-16">
       <div
         aria-hidden
         className="pointer-events-none absolute -left-32 bottom-0 h-96 w-96 rounded-full bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] opacity-10 blur-3xl"
