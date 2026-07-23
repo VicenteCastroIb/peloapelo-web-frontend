@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ArrowDown } from "lucide-react";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 
@@ -25,47 +26,50 @@ export default function Manifiesto() {
           </p>
         </div>
 
-        <div className="mx-auto mt-12 max-w-2xl rounded-card-lg bg-white p-6 sm:p-10">
-          <p className="mb-6 text-p-lead italic">Línea predecible de tu realidad conocida</p>
+        <p className="mx-auto mt-12 max-w-2xl text-p-lead italic text-navy">
+          Línea predecible de tu realidad conocida
+        </p>
 
-          <div className="relative mx-auto aspect-[1344/768] w-full">
-            <Image
-              src="/images/manifiesto-diagrama.jpg"
-              alt="Diagrama: entre el pasado (programa automático) y el futuro (programa automático) está el momento presente, donde puede ocurrir un evento desconocido que te cambia."
-              fill
-              sizes="(min-width: 640px) 640px, 90vw"
-              className="rounded-card-md object-contain"
-            />
+        <div className="relative mx-auto mt-6 aspect-[1344/768] w-full max-w-2xl">
+          <Image
+            src="/images/manifiesto-diagrama.jpg"
+            alt="Diagrama: entre el pasado (programa automático) y el futuro (programa automático) está el momento presente, donde puede ocurrir un evento desconocido que te cambia."
+            fill
+            sizes="(min-width: 640px) 640px, 90vw"
+            className="object-contain"
+          />
 
-            <span className="absolute left-[12%] top-[16%] text-p-caption text-coral sm:text-p-small">
+          <div className="absolute right-[6%] top-[3%] flex flex-col items-center gap-1">
+            <span className="whitespace-nowrap text-p-caption text-coral sm:text-p-small">
               Evento desconocido
             </span>
-
-            <span className="absolute left-[12%] top-[46%] -translate-y-1/2 text-h4-label text-navy sm:text-h3-sm sm:font-bold">
-              AYER
-            </span>
-            <span className="absolute left-[12%] top-[58%] -translate-y-1/2 text-[9px] italic text-navy/50 sm:text-p-caption">
-              Programa automático
-            </span>
-            <span className="absolute bottom-[6%] left-[3%] text-[9px] italic text-navy/50 sm:text-p-caption">
-              Pasado
-            </span>
-
-            <span className="absolute right-[10%] top-[46%] -translate-y-1/2 text-h4-label text-navy sm:text-h3-sm sm:font-bold">
-              MAÑANA
-            </span>
-            <span className="absolute right-[8%] top-[58%] -translate-y-1/2 text-[9px] italic text-navy/50 sm:text-p-caption">
-              Programa automático
-            </span>
-            <span className="absolute bottom-[6%] right-[2%] text-[9px] italic text-navy/50 sm:text-p-caption">
-              Futuro
-            </span>
+            <ArrowDown size={14} className="text-coral" />
           </div>
 
-          <p className="mt-6 text-p-body italic text-navy/50">
-            El verdadero cambio ocurre en el <span className="text-navy">momento presente</span>.
-          </p>
+          <span className="absolute left-[12%] top-[46%] -translate-y-1/2 text-h4-label text-navy sm:text-h3-sm sm:font-bold">
+            AYER
+          </span>
+          <span className="absolute left-[12%] top-[58%] -translate-y-1/2 text-[9px] italic text-navy/50 sm:text-p-caption">
+            Programa automático
+          </span>
+          <span className="absolute bottom-[6%] left-[3%] text-[9px] italic text-navy/50 sm:text-p-caption">
+            Pasado
+          </span>
+
+          <span className="absolute right-[10%] top-[46%] -translate-y-1/2 text-h4-label text-navy sm:text-h3-sm sm:font-bold">
+            MAÑANA
+          </span>
+          <span className="absolute right-[8%] top-[58%] -translate-y-1/2 text-[9px] italic text-navy/50 sm:text-p-caption">
+            Programa automático
+          </span>
+          <span className="absolute bottom-[6%] right-[2%] text-[9px] italic text-navy/50 sm:text-p-caption">
+            Futuro
+          </span>
         </div>
+
+        <p className="mx-auto mt-6 max-w-2xl text-p-body italic text-navy/50">
+          El verdadero cambio ocurre en el <span className="text-navy">momento presente</span>.
+        </p>
       </FadeInOnScroll>
     </section>
   );
