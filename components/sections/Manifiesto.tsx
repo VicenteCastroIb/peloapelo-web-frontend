@@ -71,7 +71,7 @@ export default function Manifiesto() {
           </span>
         </div>
 
-        <p className="mx-auto mt-6 max-w-3xl text-p-body italic text-navy/50">
+        <p className="mx-auto mt-6 max-w-3xl text-h3-md italic text-navy/50">
           El verdadero cambio ocurre en el <span className="text-navy">momento presente</span>.
         </p>
       </FadeInOnScroll>
