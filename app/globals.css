@@ -119,6 +119,27 @@ body {
   font-weight: 400;
 }
 
+/* Cifras de datos (tarjetas de estadisticas): peso black real (900, ver
+   layout.tsx) en vez de aproximar un bold desde 700, tabular-nums para que
+   los digitos no salten de ancho mientras el AnimatedCounter cuenta, y
+   tracking mas cerrado — tratamiento tipico de "numero grande" editorial en
+   vez de reusar una escala de titulo generica. */
+.text-data-lg {
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.text-data-md {
+  font-size: 26px;
+  line-height: 1;
+  font-weight: 900;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
 @media (max-width: 640px) {
   .text-h1 {
     font-size: 56px;

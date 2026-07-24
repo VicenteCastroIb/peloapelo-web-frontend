@@ -51,7 +51,7 @@ export default function QueEsPeloAPelo() {
           hace falta transicion visible: el fondo de la pagina (--color-cream
           en globals.css) ya continua sin corte por si solo. */}
 
-      <FadeInOnScroll className="mx-auto max-w-5xl">
+      <FadeInOnScroll className="mx-auto max-w-6xl">
         <SectionBadge label="Qué es Pelo a Pelo" />
 
         <div className="grid gap-10 sm:grid-cols-2 sm:items-center">
@@ -139,17 +139,17 @@ export default function QueEsPeloAPelo() {
                 return (
                   <div
                     key={stat.label}
-                    className={`flex flex-col gap-1.5 rounded-card-md p-3 ${STAT_BACKGROUNDS[index % STAT_BACKGROUNDS.length]} ${
+                    className={`flex flex-col gap-2 rounded-card-md p-4 ${STAT_BACKGROUNDS[index % STAT_BACKGROUNDS.length]} ${
                       isLast && stats.length % 2 === 1 ? "col-span-2" : ""
                     }`}
                   >
-                    <div className="flex items-center gap-2">
-                      <Icon size={16} className="shrink-0 text-navy/70" />
-                      <p className="text-h3-sm text-navy">
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-data-md text-navy">
                         <AnimatedCounter value={stat.value} suffix={stat.suffix} />
                       </p>
+                      <Icon size={18} className="shrink-0 text-navy/40" />
                     </div>
-                    <p className="text-p-caption text-navy/70">{stat.label}</p>
+                    <p className="text-p-caption leading-snug text-navy/70">{stat.label}</p>
                     <a
                       href={stat.sourceUrl}
                       target="_blank"

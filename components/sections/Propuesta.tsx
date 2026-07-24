@@ -5,7 +5,7 @@ import { propuestaItems } from "@/lib/data/propuesta";
 export default function Propuesta() {
   return (
     <section id="propuesta" className="px-6 py-24 lg:px-12 lg:py-36">
-      <FadeInOnScroll className="mx-auto max-w-5xl">
+      <FadeInOnScroll className="mx-auto max-w-6xl">
         <SectionBadge label="La propuesta · IV" />
         <h2 className="max-w-xl text-h2-lg text-navy">
           Así te <span className="italic text-accent">acompañamos</span>.

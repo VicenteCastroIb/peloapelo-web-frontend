@@ -5,7 +5,7 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 export default function Fundadora() {
   return (
     <section className="px-6 py-24 lg:px-12 lg:py-28">
-      <FadeInOnScroll className="mx-auto max-w-5xl">
+      <FadeInOnScroll className="mx-auto max-w-6xl">
         <SectionBadge label="Quien está detrás · II" />
         <h2 className="text-h2-lg text-navy">
           Conoce a <span className="italic text-accent">Jessica Lagno</span>.

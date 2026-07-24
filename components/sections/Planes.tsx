@@ -6,7 +6,7 @@ import { plans } from "@/lib/data/plans";
 export default function Planes() {
   return (
     <section className="px-6 py-24 lg:px-12 lg:py-28">
-      <FadeInOnScroll className="mx-auto max-w-5xl">
+      <FadeInOnScroll className="mx-auto max-w-6xl">
         <SectionBadge label="Planes · V" />
         <h2 className="text-h2-lg text-navy">
           Elige <span className="italic text-accent">tu camino</span>.

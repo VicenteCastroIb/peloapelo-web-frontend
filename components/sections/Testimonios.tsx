@@ -6,7 +6,7 @@ import { testimonials } from "@/lib/data/testimonials";
 export default function Testimonios() {
   return (
     <section id="testimonios" className="px-6 py-24 lg:px-12 lg:py-28">
-      <FadeInOnScroll className="mx-auto max-w-4xl">
+      <FadeInOnScroll className="mx-auto max-w-5xl">
         <SectionBadge label="Voces · VI" />
         <h2 className="text-h2-lg text-navy">
           Historias que <span className="italic text-accent">inspiran</span>.

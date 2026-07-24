@@ -5,7 +5,7 @@ import { painPoints } from "@/lib/data/painPoints";
 export default function PainPoints() {
   return (
     <section className="px-6 py-24 text-center lg:px-12 lg:py-28">
-      <FadeInOnScroll className="mx-auto max-w-4xl">
+      <FadeInOnScroll className="mx-auto max-w-5xl">
         <h2 className="text-h2-md text-navy">
           ¿Quieres decir <span className="italic text-accent">ADIÓS</span> a…?
         </h2>

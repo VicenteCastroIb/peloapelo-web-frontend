@@ -11,7 +11,7 @@ export default function Faq() {
 
   return (
     <section id="preguntas" className="px-6 py-24 lg:px-12 lg:py-28">
-      <FadeInOnScroll className="mx-auto max-w-3xl">
+      <FadeInOnScroll className="mx-auto max-w-4xl">
         <SectionBadge label="Preguntas · VII" />
         <h2 className="text-h2-lg text-navy">
           Lo que <span className="italic text-accent">te preguntas</span>.

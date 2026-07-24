@@ -8,47 +8,49 @@ export interface Stat {
 }
 
 // Cifras actualizadas e investigadas (jul-2026), cada una respaldada por un
-// paper real e indexado. Reemplazan los valores de marketing del sitio
-// original (docs/scan-22-07-2026), que no tenian fuente verificable.
+// paper real e indexado. Enfocadas en mujeres (publico principal de la
+// fundacion): prevalencia, riesgo de por vida, autoestima, evitacion social
+// y riesgo de trastorno de adaptacion. Reemplazan los valores de marketing
+// del sitio original (docs/scan-22-07-2026), que no tenian fuente
+// verificable.
 export const stats: Stat[] = [
   {
-    value: 58,
+    value: 25,
     suffix: "%",
-    label: "de los hombres de 30 a 50 años tiene algún grado de alopecia androgenética",
+    label: "de las mujeres presenta algún grado de alopecia androgenética a los 50 años",
     icon: "chart",
-    source: "Int. J. Trichology, 2009",
-    sourceUrl: "https://pmc.ncbi.nlm.nih.gov/articles/PMC2938575/",
+    source: "Int. J. Women's Dermatol., 2018",
+    sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/30627618/",
   },
   {
-    value: 47,
+    value: 32,
     suffix: "%",
-    label: "de quienes viven pérdida de cabello cumple criterios de un trastorno de ansiedad",
-    icon: "brain",
-    source: "Medicine (Baltimore), 2025",
-    sourceUrl:
-      "https://journals.lww.com/md-journal/fulltext/2025/02070/the_impact,_prevalence,_and_association_of.63.aspx",
+    label: "de las mujeres desarrollará alopecia areata en algún momento de su vida, casi el doble que los hombres",
+    icon: "world",
+    source: "Biology of Sex Differences, 2025",
+    sourceUrl: "https://link.springer.com/article/10.1186/s13293-025-00749-w",
+  },
+  {
+    value: 75,
+    suffix: "%",
+    label: "de las mujeres con alopecia androgenética ve afectada negativamente su autoestima",
+    icon: "heart",
+    source: "Soc. Sci. Med., 1994",
+    sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/8146707/",
   },
   {
     value: 65,
     suffix: "%",
-    label: "evita situaciones sociales a causa de su alopecia",
+    label: "de las mujeres con alopecia areata evita situaciones sociales a causa de su condición",
     icon: "chat",
     source: "JMIR Dermatology, 2022",
     sourceUrl: "https://derma.jmir.org/2022/4/e39167",
   },
   {
-    value: 170,
-    suffix: "M+",
-    label: "personas viven con alopecia areata en el mundo",
-    icon: "world",
-    source: "J. Invest. Dermatol., 2014",
-    sourceUrl: "https://pubmed.ncbi.nlm.nih.gov/24202232/",
-  },
-  {
     value: 62,
     suffix: "%",
-    label: "está en alto riesgo de un trastorno de adaptación tras el diagnóstico",
-    icon: "heart",
+    label: "de las mujeres con alopecia areata está en alto riesgo de un trastorno de adaptación",
+    icon: "brain",
     source: "JMIR Dermatology, 2022",
     sourceUrl: "https://derma.jmir.org/2022/4/e39167",
   },

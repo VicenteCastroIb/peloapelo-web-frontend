@@ -51,7 +51,7 @@ export default function Hero() {
         className="pointer-events-none absolute -left-24 top-1/2 -z-10 h-[520px] w-[520px] -translate-y-1/2 rounded-full bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] opacity-[0.12] blur-3xl"
       />
 
-      <div className="relative mx-auto flex min-h-[560px] max-w-7xl flex-col justify-start px-6 pb-16 pt-6 sm:min-h-[640px] sm:items-start sm:justify-start sm:pb-24 sm:pt-8 lg:px-12 lg:pt-10">
+      <div className="relative mx-auto flex min-h-[560px] max-w-[88rem] flex-col justify-start px-6 pb-16 pt-6 sm:min-h-[640px] sm:items-start sm:justify-start sm:pb-24 sm:pt-8 lg:px-12 lg:pt-10">
         <FadeInOnScroll className="w-full sm:max-w-lg lg:max-w-xl">
           <div className="mb-6 flex items-center gap-3 text-h4-label text-navy/50">
             <span className="h-px w-8 bg-navy/20" />
@@ -103,7 +103,7 @@ export default function Hero() {
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-navy/20 text-navy/70">
             <Globe2 size={16} />
           </span>
-          <p className="text-h3-sm text-navy">
+          <p className="text-data-md text-navy">
             <AnimatedCounter value={worldStat.value} suffix={worldStat.suffix} />
           </p>
         </div>

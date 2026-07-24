@@ -39,7 +39,7 @@ export default function PricingPage() {
       </section>
 
       <section className="px-6 pb-16 lg:px-12">
-        <div className="mx-auto max-w-5xl">
+        <div className="mx-auto max-w-6xl">
           <SectionBadge label="Planes · IV" />
           <h2 className="text-h2-lg text-navy">
             Elige <span className="italic text-accent">tu camino</span>.
@@ -58,7 +58,7 @@ export default function PricingPage() {
       </section>
 
       <section className="px-6 pb-24 lg:px-12">
-        <div className="mx-auto max-w-4xl">
+        <div className="mx-auto max-w-5xl">
           <h2 className="text-center text-h2-md text-navy">
             Tabla <span className="italic text-accent">comparativa</span>
           </h2>

@@ -5,7 +5,7 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 export default function EbookGratuito() {
   return (
     <section id="ebook" className="px-6 py-16 lg:px-12">
-      <FadeInOnScroll className="mx-auto max-w-4xl rounded-card-lg bg-white p-8 sm:p-12">
+      <FadeInOnScroll className="mx-auto max-w-5xl rounded-card-lg bg-white p-8 sm:p-12">
         <div className="grid gap-8 sm:grid-cols-[200px_1fr] sm:items-center">
           <div className="relative aspect-[700/906] w-full overflow-hidden rounded-card-md shadow-sm">
             <Image
