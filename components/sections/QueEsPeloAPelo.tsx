@@ -106,10 +106,11 @@ export default function QueEsPeloAPelo() {
           <div className="relative">
             <p className="text-h4-label text-navy/50">Por qué existimos</p>
             <p className="mt-4 text-p-lead text-navy/80">
-              Frente a un síntoma tan difícil, buscamos afuera lo que solo se
-              sana mirando hacia adentro.{" "}
-              <strong className="text-navy">El cambio ocurre en el presente</strong>,
-              a tu ritmo.
+              Ante un síntoma tan difícil, las alarmas se encienden y buscamos
+              soluciones desesperadas, sin estrategia. Entre los{" "}
+              <strong className="text-navy">fantasmas del pasado</strong> y las
+              fantasías del futuro, te invitamos a construir juntos un espacio
+              seguro: pasos concretos, a tu ritmo.
             </p>
           </div>
         </div>
