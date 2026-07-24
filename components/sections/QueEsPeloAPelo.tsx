@@ -1,21 +1,20 @@
 import Image from "next/image";
-import { Heart, ShieldCheck, Sparkles } from "lucide-react";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 
 const PILARES = [
   {
-    icon: Heart,
+    image: "/images/pilar-emocional.jpg",
     title: "Emocional",
     description: "Acompañamiento empático para procesar tus emociones.",
   },
   {
-    icon: ShieldCheck,
+    image: "/images/pilar-fisico.jpg",
     title: "Físico",
     description: "Guía basada en evidencia sobre tratamientos y cuidado.",
   },
   {
-    icon: Sparkles,
+    image: "/images/pilar-mental.jpg",
     title: "Mental",
     description: "Herramientas para fortalecer tu bienestar psicológico.",
   },
@@ -72,11 +71,17 @@ export default function QueEsPeloAPelo() {
         </div>
 
         <div className="mt-16 grid gap-10 text-center sm:grid-cols-3">
-          {PILARES.map(({ icon: Icon, title, description }) => (
+          {PILARES.map(({ image, title, description }) => (
             <div key={title}>
-              <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-icon bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] text-white">
-                <Icon size={22} />
-              </span>
+              <div className="relative mx-auto mb-4 h-28 w-28 overflow-hidden rounded-full bg-cream">
+                <Image
+                  src={image}
+                  alt={`Ilustración en acuarela que representa el acompañamiento ${title.toLowerCase()}`}
+                  fill
+                  sizes="112px"
+                  className="object-cover"
+                />
+              </div>
               <h3 className="text-h3-md text-navy">{title}</h3>
               <p className="mt-1 text-p-small text-navy/70">{description}</p>
             </div>
