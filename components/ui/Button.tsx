@@ -10,7 +10,7 @@ const variants: Record<Variant, string> = {
   solid: "bg-navy text-cream",
   gradient:
     "text-white bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]",
-  outline: "border border-navy/20 text-navy bg-transparent",
+  outline: "border-2 border-navy/20 text-navy bg-transparent",
   ghost: "text-navy",
 };
 
