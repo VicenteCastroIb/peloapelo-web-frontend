@@ -5,25 +5,25 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 export default function Hero() {
   return (
     <section id="inicio" className="relative isolate -mt-[104px] overflow-hidden pt-[104px]">
-      {/* La foto ocupa solo el ~80% derecho de la sección; el resto queda en
-          crema puro, dando espacio garantizado para el texto sin depender
-          solo del degradado. */}
-      <div className="absolute inset-y-0 left-[18%] right-0 -z-20 overflow-hidden sm:left-[22%]">
+      {/* La foto cubre toda la sección, pero se desvanece hacia crema en su
+          borde izquierdo (mask-image, sin corte recto) dejando espacio para
+          el texto. En mobile se desvanece hacia abajo en vez de a un lado. */}
+      <div className="absolute inset-0 -z-20 overflow-hidden [mask-image:linear-gradient(to_top,transparent,black_45%)] sm:[mask-image:linear-gradient(to_right,transparent,black_45%)]">
         <Image
           src="/images/hero-photo.jpg"
           alt="Una terapeuta apoya con calidez a una mujer con pañuelo en la cabeza por pérdida de pelo."
           fill
           priority
-          sizes="80vw"
+          sizes="100vw"
           className="object-cover"
         />
       </div>
 
-      {/* Scrim: suaviza el borde entre la foto y el crema, y refuerza la
-          legibilidad del texto (abajo en mobile, a la izquierda en desktop). */}
+      {/* Scrim adicional: refuerza el crema alrededor del texto por si el
+          fondo de la foto queda claro en algún punto. */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-t from-cream via-cream/75 to-cream/10 sm:bg-gradient-to-r sm:from-cream sm:via-cream/40 sm:to-transparent"
+        className="absolute inset-0 -z-10 bg-gradient-to-t from-cream via-cream/40 to-transparent sm:bg-gradient-to-r sm:from-cream sm:via-cream/25 sm:to-transparent"
       />
 
       <div className="relative mx-auto flex min-h-[560px] max-w-7xl flex-col justify-end px-6 py-16 sm:min-h-[640px] sm:items-start sm:justify-center sm:py-24 lg:px-12 lg:py-32">
