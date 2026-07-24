@@ -1,6 +1,25 @@
 import Image from "next/image";
+import { Heart, ShieldCheck, Sparkles } from "lucide-react";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
+
+const PILARES = [
+  {
+    icon: Heart,
+    title: "Emocional",
+    description: "Acompañamiento empático para procesar tus emociones.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Físico",
+    description: "Guía basada en evidencia sobre tratamientos y cuidado.",
+  },
+  {
+    icon: Sparkles,
+    title: "Mental",
+    description: "Herramientas para fortalecer tu bienestar psicológico.",
+  },
+];
 
 export default function QueEsPeloAPelo() {
   return (
@@ -50,6 +69,18 @@ export default function QueEsPeloAPelo() {
               </p>
             </div>
           </div>
+        </div>
+
+        <div className="mt-16 grid gap-10 text-center sm:grid-cols-3">
+          {PILARES.map(({ icon: Icon, title, description }) => (
+            <div key={title}>
+              <span className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-icon bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] text-white">
+                <Icon size={22} />
+              </span>
+              <h3 className="text-h3-md text-navy">{title}</h3>
+              <p className="mt-1 text-p-small text-navy/70">{description}</p>
+            </div>
+          ))}
         </div>
       </FadeInOnScroll>
     </section>

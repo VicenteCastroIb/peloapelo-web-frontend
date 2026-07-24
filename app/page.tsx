@@ -3,7 +3,6 @@ import QueEsPeloAPelo from "@/components/sections/QueEsPeloAPelo";
 import Manifiesto from "@/components/sections/Manifiesto";
 import ComoFunciona from "@/components/sections/ComoFunciona";
 import Estadisticas from "@/components/sections/Estadisticas";
-import QuePelo from "@/components/sections/QuePelo";
 import Fundadora from "@/components/sections/Fundadora";
 import EbookGratuito from "@/components/sections/EbookGratuito";
 import PainPoints from "@/components/sections/PainPoints";
@@ -17,6 +16,9 @@ import Faq from "@/components/sections/Faq";
 // mas "Que es Pelo a Pelo" agregada despues del Hero por pedido explicito
 // (no forma parte del scan original). La frase de QuoteDestacada se movio
 // dentro de "Que es Pelo a Pelo" (vineta bajo el texto) para no repetirla.
+// QuePelo se elimino: duplicaba casi 1:1 el contenido de QueEsPeloAPelo
+// (mismo titulo y texto); su grid de 3 pilares (Emocional/Fisico/Mental)
+// se fusiono dentro de QueEsPeloAPelo.
 // El "Cierre CTA" vive dentro de Footer.tsx porque en el diseño real es un
 // bloque visualmente continuo con el footer (mismo fondo oscuro, sin corte).
 // No reordenar sin aprobación — ver docs/scan-22-07-2026.
@@ -28,7 +30,6 @@ export default function Home() {
       <Manifiesto />
       <ComoFunciona />
       <Estadisticas />
-      <QuePelo />
       <Fundadora />
       <EbookGratuito />
       <PainPoints />
