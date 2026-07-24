@@ -18,9 +18,11 @@ const worldStat = stats.find((stat) => stat.icon === "world")!;
 export default function Hero() {
   return (
     <section id="inicio" className="relative isolate -mt-[104px] overflow-hidden pt-[104px]">
-      {/* La foto ya trae de fabrica el difuminado inferior hacia el cream
-          y el espacio con plantas decorativas del lado izquierdo para el
-          texto, asi que no se aplica ninguna mascara/gradiente por CSS. */}
+      {/* La foto trae de fabrica el difuminado inferior hacia el cream, pero
+          en pantallas anchas y bajas el object-cover recorta esa franja
+          antes de que llegue a verse. Se agrega un fundido explicito por
+          CSS al fondo de la foto (crece en pantallas grandes) para
+          garantizar la transicion sin depender del recorte. */}
       <div className="absolute inset-0 -z-20 overflow-hidden">
         <Image
           src="/images/hero-photo.jpg"
@@ -30,6 +32,10 @@ export default function Hero() {
           quality={90}
           sizes="100vw"
           className="object-cover object-[center_30%]"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-gradient-to-b from-transparent to-cream sm:h-56 lg:h-72"
         />
       </div>
 
@@ -41,7 +47,7 @@ export default function Hero() {
         className="pointer-events-none absolute -left-24 top-1/2 -z-10 h-[520px] w-[520px] -translate-y-1/2 rounded-full bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] opacity-[0.12] blur-3xl"
       />
 
-      <div className="relative mx-auto flex min-h-[560px] max-w-7xl flex-col justify-start px-6 pb-16 pt-28 sm:min-h-[640px] sm:items-start sm:justify-start sm:pb-24 sm:pt-32 lg:px-12 lg:pt-36">
+      <div className="relative mx-auto flex min-h-[560px] max-w-7xl flex-col justify-start px-6 pb-16 pt-16 sm:min-h-[640px] sm:items-start sm:justify-start sm:pb-24 sm:pt-20 lg:px-12 lg:pt-24">
         <FadeInOnScroll className="w-full sm:max-w-lg lg:max-w-xl">
           <div className="mb-6 flex items-center gap-3 text-h4-label text-navy/50">
             <span className="h-px w-8 bg-navy/20" />
