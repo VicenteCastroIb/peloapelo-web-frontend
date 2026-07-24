@@ -5,8 +5,9 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 export default function Hero() {
   return (
     <section id="inicio" className="relative isolate -mt-[104px] overflow-hidden pt-[104px]">
-      {/* Foto sin difuminado ni mascara: la composicion ya trae el espacio
-          y las plantas decorativas del lado izquierdo para el texto. */}
+      {/* La foto ya trae de fabrica el difuminado inferior hacia el cream
+          y el espacio con plantas decorativas del lado izquierdo para el
+          texto, asi que no se aplica ninguna mascara/gradiente por CSS. */}
       <div className="absolute inset-0 -z-20 overflow-hidden">
         <Image
           src="/images/hero-photo.jpg"
