@@ -110,7 +110,7 @@ export default function QueEsPeloAPelo() {
               soluciones desesperadas, sin estrategia. Entre los{" "}
               <strong className="text-navy">fantasmas del pasado</strong> y las
               fantasías del futuro, te invitamos a construir juntos un espacio
-              seguro: pasos concretos, a tu ritmo.
+              seguro.
             </p>
           </div>
         </div>
