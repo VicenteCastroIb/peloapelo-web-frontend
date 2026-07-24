@@ -148,6 +148,21 @@ body {
   animation: fade-in-blur 0.7s ease-out both;
 }
 
+/* Efecto "Ken Burns": zoom lento y continuo para darle vida a una foto
+   estatica del Hero sin depender de video generado por IA. */
+@keyframes ken-burns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.08);
+  }
+}
+
+.animate-ken-burns {
+  animation: ken-burns 24s ease-in-out infinite alternate;
+}
+
 /* Evita el fondo azul/amarillo que Chrome impone al autorellenar inputs.
    El truco del box-shadow inset + transition delay es la única forma
    confiable de sobreescribir ese estilo forzado por el navegador. */

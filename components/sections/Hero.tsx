@@ -1,19 +1,20 @@
+import Image from "next/image";
 import Button from "@/components/ui/Button";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 
 export default function Hero() {
   return (
     <section id="inicio" className="relative isolate -mt-[104px] overflow-hidden pt-[104px]">
-      <video
-        className="absolute inset-0 -z-20 h-full w-full object-cover"
-        autoPlay
-        muted
-        loop
-        playsInline
-        poster="/images/hero-poster.jpg"
-      >
-        <source src="/videos/hero-animado.mp4" type="video/mp4" />
-      </video>
+      <div className="absolute inset-0 -z-20 overflow-hidden">
+        <Image
+          src="/images/hero-photo.jpg"
+          alt="Una terapeuta apoya con calidez a una mujer con pañuelo en la cabeza por pérdida de pelo."
+          fill
+          priority
+          sizes="100vw"
+          className="animate-ken-burns object-cover"
+        />
+      </div>
 
       {/* Scrim: transparente sobre las personas, se funde a crema donde va el texto
           (abajo en mobile, a la izquierda en desktop) para que siempre sea legible. */}
