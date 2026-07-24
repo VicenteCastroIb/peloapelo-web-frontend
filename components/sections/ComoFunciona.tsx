@@ -6,7 +6,7 @@ export default function ComoFunciona() {
   return (
     <section id="como-funciona" className="bg-white/40 px-6 py-24 lg:px-12 lg:py-36">
       <FadeInOnScroll className="mx-auto max-w-5xl">
-        <SectionBadge label="Cómo funciona · II" />
+        <SectionBadge label="Cómo funciona · III" />
 
         <h2 className="max-w-xl text-h2-lg text-navy">
           Cuatro pasos, <span className="italic text-accent">a tu ritmo</span>.
