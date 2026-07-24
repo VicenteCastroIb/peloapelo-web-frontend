@@ -41,6 +41,14 @@ export default function QueEsPeloAPelo() {
               física y emocional — proponiendo una guía clara, respetuosa y
               adaptable a tu ritmo.
             </p>
+
+            <div className="mt-8 rounded-card-md bg-[linear-gradient(135deg,rgba(143,124,182,0.12),rgba(137,207,235,0.12))] p-6">
+              <p className="text-p-lead text-navy/80">
+                <span className="italic text-accent">&quot;El cambio más profundo</span>{" "}
+                empieza cuando dejas de buscar afuera lo que solo puedes sanar{" "}
+                <span className="italic text-accent">por dentro.&quot;</span>
+              </p>
+            </div>
           </div>
         </div>
       </FadeInOnScroll>

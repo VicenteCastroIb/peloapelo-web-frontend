@@ -1,6 +1,5 @@
 import Hero from "@/components/sections/Hero";
 import QueEsPeloAPelo from "@/components/sections/QueEsPeloAPelo";
-import QuoteDestacada from "@/components/sections/QuoteDestacada";
 import Manifiesto from "@/components/sections/Manifiesto";
 import ComoFunciona from "@/components/sections/ComoFunciona";
 import Estadisticas from "@/components/sections/Estadisticas";
@@ -16,7 +15,8 @@ import Faq from "@/components/sections/Faq";
 
 // Orden 1:1 con el sitio original (17 secciones incluyendo Header/Footer),
 // mas "Que es Pelo a Pelo" agregada despues del Hero por pedido explicito
-// (no forma parte del scan original).
+// (no forma parte del scan original). La frase de QuoteDestacada se movio
+// dentro de "Que es Pelo a Pelo" (vineta bajo el texto) para no repetirla.
 // El "Cierre CTA" vive dentro de Footer.tsx porque en el diseño real es un
 // bloque visualmente continuo con el footer (mismo fondo oscuro, sin corte).
 // No reordenar sin aprobación — ver docs/scan-22-07-2026.
@@ -25,7 +25,6 @@ export default function Home() {
     <>
       <Hero />
       <QueEsPeloAPelo />
-      <QuoteDestacada />
       <Manifiesto />
       <ComoFunciona />
       <Estadisticas />
