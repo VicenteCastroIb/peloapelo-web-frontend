@@ -40,7 +40,7 @@ export default function Hero() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Button href="/auth" variant="solid">
+            <Button href="/auth" variant="glass">
               Comienza gratis →
             </Button>
             <Button href="/pricing" variant="ghost">

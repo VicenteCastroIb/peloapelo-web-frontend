@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 
-type Variant = "solid" | "gradient" | "outline" | "ghost";
+type Variant = "solid" | "gradient" | "outline" | "ghost" | "glass";
 
 const base =
   "inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-90";
@@ -12,6 +12,7 @@ const variants: Record<Variant, string> = {
     "text-white bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]",
   outline: "border border-navy/20 text-navy bg-transparent",
   ghost: "text-navy",
+  glass: "border border-navy/15 bg-navy/60 text-cream backdrop-blur-md",
 };
 
 export default function Button({
