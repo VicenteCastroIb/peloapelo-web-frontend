@@ -1,6 +1,5 @@
 import Hero from "@/components/sections/Hero";
 import QueEsPeloAPelo from "@/components/sections/QueEsPeloAPelo";
-import Estadisticas from "@/components/sections/Estadisticas";
 import Manifiesto from "@/components/sections/Manifiesto";
 import Fundadora from "@/components/sections/Fundadora";
 import ComoFunciona from "@/components/sections/ComoFunciona";
@@ -15,8 +14,8 @@ import Faq from "@/components/sections/Faq";
 // Orden agrupado segun la guia de la fundadora (docs/Pelo a pelo.docx):
 // no es 1:1 con el scan original — se reestructuro a pedido explicito.
 //
-//   Quienes somos:     Hero, QueEsPeloAPelo (incluye "Por que existimos"),
-//                       Estadisticas, Manifiesto, Fundadora
+//   Quienes somos:     Hero, QueEsPeloAPelo (incluye "Por que existimos"
+//                       y las estadisticas), Manifiesto, Fundadora
 //   Como funciona:     ComoFunciona, PainPoints, Beneficios,
 //                       Propuesta, Planes (gratis primero, tto despues)
 //   Articulos/Informate: EbookGratuito
@@ -28,8 +27,9 @@ import Faq from "@/components/sections/Faq";
 // "Que es Pelo a Pelo" (vineta bajo el texto) para no repetirla. QuePelo se
 // elimino: duplicaba casi 1:1 su contenido; su grid de 3 pilares
 // (Emocional/Fisico/Mental) se fusiono dentro de QueEsPeloAPelo.
-// Estadisticas se movio justo despues de QueEsPeloAPelo (bloque "Por que
-// existimos") a pedido explicito, en vez de ir junto a Como Funciona.
+// La antigua seccion Estadisticas (independiente) se elimino: sus 5 cifras
+// ahora viven como tarjetas compactas dentro del bloque "Por que existimos"
+// de QueEsPeloAPelo, rellenando el espacio libre bajo el texto.
 //
 // El "Cierre CTA" vive dentro de Footer.tsx porque en el diseño real es un
 // bloque visualmente continuo con el footer (mismo fondo oscuro, sin corte).
@@ -39,7 +39,6 @@ export default function Home() {
     <>
       <Hero />
       <QueEsPeloAPelo />
-      <Estadisticas />
       <Manifiesto />
       <Fundadora />
       <ComoFunciona />

@@ -11,8 +11,9 @@ const CONFIANZA = [
   { icon: Feather, label: "A tu ritmo" },
 ];
 
-// Dato real ya investigado y citado en Estadisticas.tsx — se reutiliza
-// aca en vez de inventar una cifra o rating falso para la tarjeta flotante.
+// Dato real ya investigado y citado en las tarjetas de estadisticas de
+// QueEsPeloAPelo.tsx — se reutiliza aca en vez de inventar una cifra o
+// rating falso para la tarjeta flotante.
 const worldStat = stats.find((stat) => stat.icon === "world")!;
 
 export default function Hero() {
@@ -94,8 +95,9 @@ export default function Hero() {
         </FadeInOnScroll>
       </div>
 
-      {/* Tarjeta flotante con un dato real (ya citado en Estadisticas), no
-          una resenia o rating inventado como en el ejemplo de referencia. */}
+      {/* Tarjeta flotante con un dato real (ya citado en las tarjetas de
+          estadisticas de QueEsPeloAPelo), no una resenia o rating inventado
+          como en el ejemplo de referencia. */}
       <div className="pointer-events-auto absolute bottom-8 right-6 hidden max-w-[230px] rounded-card-md bg-cream p-4 shadow-lg sm:block lg:right-12">
         <div className="flex items-center gap-3">
           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-navy/20 text-navy/70">

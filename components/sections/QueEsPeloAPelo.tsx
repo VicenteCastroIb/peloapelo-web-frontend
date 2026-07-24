@@ -1,6 +1,28 @@
 import Image from "next/image";
+import { BarChart3, Brain, MessageCircle, Globe2, Heart } from "lucide-react";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
+import AnimatedCounter from "@/components/shared/AnimatedCounter";
+import { stats } from "@/lib/data/stats";
+
+const STAT_ICONS = {
+  chart: BarChart3,
+  brain: Brain,
+  chat: MessageCircle,
+  world: Globe2,
+  heart: Heart,
+};
+
+// Fondos de las tarjetas de datos: ciclan por la paleta de marca (ver
+// globals.css) en su version suave, para diferenciarlas entre si sin
+// salirse de los colores propios del sitio.
+const STAT_BACKGROUNDS = [
+  "bg-accent/10",
+  "bg-coral-soft",
+  "bg-[rgba(137,207,235,0.16)]",
+  "bg-navy/8",
+  "bg-[linear-gradient(135deg,rgba(143,124,182,0.14),rgba(137,207,235,0.14))]",
+];
 
 const PILARES = [
   {
@@ -88,9 +110,12 @@ export default function QueEsPeloAPelo() {
 
         {/* "Por que existimos": mismo patron que el bloque de arriba
             (foto + texto a dos columnas), pero espejado: texto a la
-            izquierda, foto a la derecha. Los datos/estadisticas van
-            aparte, en una caja propia (seccion Estadisticas). */}
-        <div className="mt-16 grid gap-10 sm:grid-cols-2 sm:items-center">
+            izquierda, foto a la derecha. items-start (en vez de
+            items-center) para que el texto arranque a la misma altura que
+            la foto; el espacio libre que deja el texto, mas corto que la
+            foto, se rellena con las estadisticas (antes una seccion aparte
+            mas abajo, ver page.tsx). */}
+        <div className="mt-16 grid gap-10 sm:grid-cols-2 sm:items-start">
           <div>
             <h3 className="text-h2-md text-navy">
               Por qué <span className="italic text-accent">existimos</span>
@@ -106,6 +131,37 @@ export default function QueEsPeloAPelo() {
               invitamos a construir juntos un espacio seguro de exploración y
               foco, con pasos concretos, a tu ritmo.
             </p>
+
+            <div className="mt-8 grid grid-cols-2 gap-3">
+              {stats.map((stat, index) => {
+                const Icon = STAT_ICONS[stat.icon];
+                const isLast = index === stats.length - 1;
+                return (
+                  <div
+                    key={stat.label}
+                    className={`flex flex-col gap-1.5 rounded-card-md p-3 ${STAT_BACKGROUNDS[index % STAT_BACKGROUNDS.length]} ${
+                      isLast && stats.length % 2 === 1 ? "col-span-2" : ""
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <Icon size={16} className="shrink-0 text-navy/70" />
+                      <p className="text-h3-sm text-navy">
+                        <AnimatedCounter value={stat.value} suffix={stat.suffix} />
+                      </p>
+                    </div>
+                    <p className="text-p-caption text-navy/70">{stat.label}</p>
+                    <a
+                      href={stat.sourceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-p-caption text-accent hover:underline"
+                    >
+                      Fuente: {stat.source} →
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
           </div>
 
           <figure>
