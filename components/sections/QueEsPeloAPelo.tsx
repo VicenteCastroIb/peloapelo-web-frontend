@@ -88,31 +88,33 @@ export default function QueEsPeloAPelo() {
           ))}
         </div>
 
-        {/* Caja "por qué existimos": version resumida del texto largo que la
-            fundadora pidio como recuadro chico (ver docs/Pelo a pelo.docx).
-            Manchas acuareladas con los colores reales de la pagina + una
-            interaccion sutil al pasar el mouse (se eleva y las manchas
-            se intensifican), en vez de un simple bloque de texto estatico. */}
-        <div className="group relative mx-auto mt-16 max-w-3xl overflow-hidden rounded-card-lg bg-white p-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-12">
-          <span
-            aria-hidden
-            className="pointer-events-none absolute -left-12 -top-16 h-48 w-48 rounded-full bg-accent/15 blur-3xl transition-all duration-500 group-hover:scale-110 group-hover:bg-accent/25"
-          />
-          <span
-            aria-hidden
-            className="pointer-events-none absolute -bottom-16 -right-10 h-56 w-56 rounded-full bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] opacity-20 blur-3xl transition-all duration-500 group-hover:scale-110 group-hover:opacity-35"
-          />
+        {/* "Por que existimos": mismo patron que el bloque de arriba
+            (foto + texto a dos columnas), pero espejado: texto a la
+            izquierda, foto a la derecha. Los datos/estadisticas van
+            aparte, en una caja propia (seccion Estadisticas). */}
+        <div className="mt-16 grid gap-10 sm:grid-cols-2 sm:items-center">
+          <div>
+            <h3 className="text-h2-md text-navy">
+              Por qué <span className="italic text-accent">existimos</span>
+            </h3>
 
-          <div className="relative">
-            <p className="text-h4-label text-navy/50">Por qué existimos</p>
-            <p className="mt-4 text-p-lead text-navy/80">
+            <p className="mt-6 text-p-body text-navy/80">
               Ante un síntoma tan difícil, las alarmas se encienden y buscamos
-              soluciones desesperadas, sin estrategia. Entre los{" "}
-              <strong className="text-navy">fantasmas del pasado</strong> y las
-              fantasías del futuro, te invitamos a construir juntos un espacio
-              seguro.
+              soluciones desesperadas, sin estrategia ni estructura.
+            </p>
+            <p className="mt-4 text-p-body text-navy/80">
+              Entre los <strong className="text-navy">fantasmas del pasado</strong>{" "}
+              y las fantasías del futuro, es casi imposible avanzar. Por eso te
+              invitamos a construir juntos un espacio seguro de exploración y
+              foco, con pasos concretos, a tu ritmo.
             </p>
           </div>
+
+          <figure>
+            {/* TODO: reemplazar por <Image src="/images/pq-existimos.jpg" ... />
+                cuando se suba la foto (prompt watercolor ya entregado). */}
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card-lg bg-navy/10" />
+          </figure>
         </div>
       </FadeInOnScroll>
     </section>
