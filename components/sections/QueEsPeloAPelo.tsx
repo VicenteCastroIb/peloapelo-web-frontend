@@ -30,8 +30,8 @@ export default function QueEsPeloAPelo() {
           </figure>
 
           <div>
-            <h2 className="text-h2-md text-navy">
-              Una fundación <span className="italic text-accent">sin fines de lucro</span>.
+            <h2 className="text-h2-lg text-navy">
+              ¿Qué es <span className="italic text-accent">Pelo a Pelo</span>?
             </h2>
 
             <p className="mt-6 text-p-body text-navy/80">
