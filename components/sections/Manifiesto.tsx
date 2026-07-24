@@ -13,24 +13,7 @@ export default function Manifiesto() {
           Nada te hará cambiar más que <span className="italic text-accent">tú mism@</span>.
         </h2>
 
-        <div className="mx-auto mt-8 max-w-xl space-y-4 text-p-body text-navy/70">
-          <p>
-            Cuando enfrentamos un síntoma tan difícil como la pérdida de pelo,
-            buscamos soluciones desesperadas, sin estrategia ni estructura.
-          </p>
-          <p>
-            Desde el miedo y la soledad es casi imposible avanzar — nos persiguen
-            los fantasmas del pasado y las fantasías del futuro.{" "}
-            <strong className="text-navy">El cambio ocurre en el presente</strong>,
-            hacia adentro, con atención profunda.
-          </p>
-          <p>
-            Te invitamos a construir juntos un espacio seguro para tu sanación:
-            pasos concretos, <strong className="text-navy">a tu ritmo</strong>.
-          </p>
-        </div>
-
-        <p className="mx-auto mt-12 max-w-3xl text-p-lead italic text-navy">
+        <p className="mx-auto mt-8 max-w-3xl text-p-lead italic text-navy">
           Línea predecible de tu realidad conocida
         </p>
 

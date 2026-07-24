@@ -87,6 +87,32 @@ export default function QueEsPeloAPelo() {
             </div>
           ))}
         </div>
+
+        {/* Caja "por qué existimos": version resumida del texto largo que la
+            fundadora pidio como recuadro chico (ver docs/Pelo a pelo.docx).
+            Manchas acuareladas con los colores reales de la pagina + una
+            interaccion sutil al pasar el mouse (se eleva y las manchas
+            se intensifican), en vez de un simple bloque de texto estatico. */}
+        <div className="group relative mx-auto mt-16 max-w-3xl overflow-hidden rounded-card-lg bg-white p-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-lg sm:p-12">
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -left-12 -top-16 h-48 w-48 rounded-full bg-accent/15 blur-3xl transition-all duration-500 group-hover:scale-110 group-hover:bg-accent/25"
+          />
+          <span
+            aria-hidden
+            className="pointer-events-none absolute -bottom-16 -right-10 h-56 w-56 rounded-full bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] opacity-20 blur-3xl transition-all duration-500 group-hover:scale-110 group-hover:opacity-35"
+          />
+
+          <div className="relative">
+            <p className="text-h4-label text-navy/50">Por qué existimos</p>
+            <p className="mt-4 text-p-lead text-navy/80">
+              Frente a un síntoma tan difícil, buscamos afuera lo que solo se
+              sana mirando hacia adentro.{" "}
+              <strong className="text-navy">El cambio ocurre en el presente</strong>,
+              a tu ritmo.
+            </p>
+          </div>
+        </div>
       </FadeInOnScroll>
     </section>
   );
