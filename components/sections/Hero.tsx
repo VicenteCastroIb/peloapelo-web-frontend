@@ -41,7 +41,7 @@ export default function Hero() {
         className="pointer-events-none absolute -left-24 top-1/2 -z-10 h-[520px] w-[520px] -translate-y-1/2 rounded-full bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] opacity-[0.12] blur-3xl"
       />
 
-      <div className="relative mx-auto flex min-h-[560px] max-w-7xl flex-col justify-end px-6 py-16 sm:min-h-[640px] sm:items-start sm:justify-center sm:py-24 lg:px-12 lg:py-32">
+      <div className="relative mx-auto flex min-h-[560px] max-w-7xl flex-col justify-start px-6 pb-16 pt-28 sm:min-h-[640px] sm:items-start sm:justify-start sm:pb-24 sm:pt-32 lg:px-12 lg:pt-36">
         <FadeInOnScroll className="w-full sm:max-w-lg lg:max-w-xl">
           <div className="mb-6 flex items-center gap-3 text-h4-label text-navy/50">
             <span className="h-px w-8 bg-navy/20" />
@@ -87,9 +87,9 @@ export default function Hero() {
 
       {/* Tarjeta flotante con un dato real (ya citado en Estadisticas), no
           una resenia o rating inventado como en el ejemplo de referencia. */}
-      <div className="pointer-events-auto absolute bottom-8 right-6 hidden max-w-[230px] rounded-card-md bg-white p-4 shadow-lg sm:block lg:right-12">
+      <div className="pointer-events-auto absolute bottom-8 right-6 hidden max-w-[230px] rounded-card-md bg-cream p-4 shadow-lg sm:block lg:right-12">
         <div className="flex items-center gap-3">
-          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-icon bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] text-white">
+          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-navy/20 text-navy/70">
             <Globe2 size={16} />
           </span>
           <p className="text-h3-sm text-navy">
