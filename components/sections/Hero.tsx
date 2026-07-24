@@ -24,13 +24,14 @@ export default function Hero() {
         <FadeInOnScroll className="w-full sm:max-w-lg lg:max-w-xl">
           <div className="mb-6 flex items-center gap-3 text-h4-label text-navy/50">
             <span className="h-px w-8 bg-navy/20" />
-            Fundación Pelo a Pelo · Chile
+            Fundación Pelo a Pelo Chile
           </div>
 
           <h1 className="text-5xl font-normal leading-tight text-navy sm:text-6xl lg:text-7xl">
-            Te guiamos en la pérdida de pelo,{" "}
-            <span className="italic text-accent">sin prisa</span>,{" "}
-            <span className="italic text-accent">sin juicios</span>.
+            Te acompañamos en la pérdida de pelo desde la{" "}
+            <span className="italic text-accent">empatía</span>, la{" "}
+            <span className="italic text-accent">experiencia personal</span> y la{" "}
+            <span className="italic text-accent">evidencia</span>.
           </h1>
 
           <p className="mt-6 text-h3-sm font-normal text-navy/70">
