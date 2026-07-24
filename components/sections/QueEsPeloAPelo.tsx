@@ -44,12 +44,23 @@ const PILARES = [
 
 export default function QueEsPeloAPelo() {
   return (
-    <section className="relative px-6 pb-24 pt-16 lg:px-12 lg:pb-28 lg:pt-20">
+    <section className="relative overflow-hidden px-6 pb-24 pt-16 lg:px-12 lg:pb-28 lg:pt-20">
       {/* Fundido superior que retoma el mismo cream con el que ahora termina
           el degrade del Hero (ver Hero.tsx), para que el corte entre
           secciones sea fluido. Al ser el mismo color en ambos extremos no
           hace falta transicion visible: el fondo de la pagina (--color-cream
           en globals.css) ya continua sin corte por si solo. */}
+
+      {/* Adorno acuarela (rama), puramente decorativo — detras del
+          contenido, sin interceptar clics. */}
+      <Image
+        aria-hidden
+        src="/images/adornos/adorno-rama.png"
+        alt=""
+        width={769}
+        height={896}
+        className="pointer-events-none absolute -right-16 -top-10 -z-10 hidden w-[280px] rotate-[8deg] opacity-70 md:block lg:w-[340px]"
+      />
 
       <FadeInOnScroll className="mx-auto max-w-6xl">
         <SectionBadge label="Qué es Pelo a Pelo" />

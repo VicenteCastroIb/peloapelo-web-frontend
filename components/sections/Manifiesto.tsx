@@ -5,7 +5,18 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 
 export default function Manifiesto() {
   return (
-    <section className="px-6 py-24 lg:px-12 lg:py-36">
+    <section className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-36">
+      {/* Adorno acuarela (mancha), como fondo suave detras del titulo —
+          puramente decorativo, sin interceptar clics. */}
+      <Image
+        aria-hidden
+        src="/images/adornos/adorno-mancha.png"
+        alt=""
+        width={738}
+        height={750}
+        className="pointer-events-none absolute left-1/2 top-0 -z-10 hidden w-[520px] -translate-x-1/2 -translate-y-1/4 opacity-60 md:block lg:w-[620px]"
+      />
+
       <FadeInOnScroll className="mx-auto max-w-7xl text-center">
         <SectionBadge label="Manifiesto · I" />
 

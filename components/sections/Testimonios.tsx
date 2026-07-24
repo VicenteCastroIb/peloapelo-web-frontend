@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Quote } from "lucide-react";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
@@ -5,7 +6,18 @@ import { testimonials } from "@/lib/data/testimonials";
 
 export default function Testimonios() {
   return (
-    <section id="testimonios" className="px-6 py-24 lg:px-12 lg:py-28">
+    <section id="testimonios" className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
+      {/* Adorno acuarela (cinta), como flourish detras del titulo —
+          puramente decorativo, sin interceptar clics. */}
+      <Image
+        aria-hidden
+        src="/images/adornos/adorno-cinta.png"
+        alt=""
+        width={1024}
+        height={375}
+        className="pointer-events-none absolute -top-6 left-1/2 -z-10 hidden w-[640px] -translate-x-1/2 opacity-60 md:block lg:w-[760px]"
+      />
+
       <FadeInOnScroll className="mx-auto max-w-5xl">
         <SectionBadge label="Voces · VI" />
         <h2 className="text-h2-lg text-navy">

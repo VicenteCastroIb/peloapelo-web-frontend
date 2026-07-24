@@ -4,7 +4,18 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 
 export default function Fundadora() {
   return (
-    <section className="px-6 py-24 lg:px-12 lg:py-28">
+    <section className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
+      {/* Adorno acuarela (flores), acento junto al retrato de la fundadora —
+          puramente decorativo, sin interceptar clics. */}
+      <Image
+        aria-hidden
+        src="/images/adornos/adorno-flores.png"
+        alt=""
+        width={380}
+        height={782}
+        className="pointer-events-none absolute -bottom-8 -left-10 -z-10 hidden w-[150px] -rotate-[6deg] opacity-70 md:block lg:w-[180px]"
+      />
+
       <FadeInOnScroll className="mx-auto max-w-6xl">
         <SectionBadge label="Quien está detrás · II" />
         <h2 className="text-h2-lg text-navy">
