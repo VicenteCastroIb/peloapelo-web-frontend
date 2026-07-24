@@ -111,9 +111,15 @@ export default function QueEsPeloAPelo() {
           </div>
 
           <figure>
-            {/* TODO: reemplazar por <Image src="/images/pq-existimos.jpg" ... />
-                cuando se suba la foto (prompt watercolor ya entregado). */}
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card-lg bg-navy/10" />
+            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card-lg bg-navy/10">
+              <Image
+                src="/images/pq-existimos.jpg"
+                alt="Una persona escribe con calma en un cuaderno, junto a una taza de té, en un momento de estructura y pausa."
+                fill
+                sizes="(min-width: 640px) 40vw, 90vw"
+                className="object-cover"
+              />
+            </div>
           </figure>
         </div>
       </FadeInOnScroll>
