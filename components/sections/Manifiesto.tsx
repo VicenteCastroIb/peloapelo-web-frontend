@@ -14,15 +14,19 @@ export default function Manifiesto() {
         </h2>
 
         <div className="mx-auto mt-8 max-w-xl space-y-4 text-p-body text-navy/70">
-          <p>No pongas afuera lo que debes trabajar por dentro.</p>
           <p>
-            La invitación es darte <strong className="text-navy">foco y estructura</strong> a
-            tu sanación. Cuando estás pasando por un síntoma, normalmente el foco se
-            pierde y comenzamos a buscar soluciones sin una estrategia detrás.
+            Cuando enfrentamos un síntoma tan difícil como la pérdida de pelo,
+            buscamos soluciones desesperadas, sin estrategia ni estructura.
           </p>
           <p>
-            Navegamos en el <strong className="text-navy">miedo</strong>, y desde ahí es
-            difícil llegar a una solución.
+            Desde el miedo y la soledad es casi imposible avanzar — nos persiguen
+            los fantasmas del pasado y las fantasías del futuro.{" "}
+            <strong className="text-navy">El cambio ocurre en el presente</strong>,
+            hacia adentro, con atención profunda.
+          </p>
+          <p>
+            Te invitamos a construir juntos un espacio seguro para tu sanación:
+            pasos concretos, <strong className="text-navy">a tu ritmo</strong>.
           </p>
         </div>
 
