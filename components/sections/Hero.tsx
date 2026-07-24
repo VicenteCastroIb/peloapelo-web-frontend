@@ -27,7 +27,7 @@ export default function Hero() {
             Fundación Pelo a Pelo Chile
           </div>
 
-          <h1 className="text-5xl font-normal leading-tight text-navy sm:text-6xl lg:text-7xl">
+          <h1 className="text-3xl font-normal leading-tight text-navy sm:text-4xl lg:text-5xl">
             Te acompañamos en la pérdida de pelo desde la{" "}
             <span className="italic text-accent">empatía</span>, la{" "}
             <span className="italic text-accent">experiencia personal</span> y la{" "}
