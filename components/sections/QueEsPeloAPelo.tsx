@@ -23,13 +23,11 @@ const PILARES = [
 export default function QueEsPeloAPelo() {
   return (
     <section className="relative px-6 pb-24 pt-16 lg:px-12 lg:pb-28 lg:pt-20">
-      {/* Fundido superior que retoma el tono con el que termina la foto del
-          Hero (#fcf8ec, muestreado directo del archivo), para que el corte
-          entre secciones pase desapercibido. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-40 bg-gradient-to-b from-[#fcf8ec] to-cream"
-      />
+      {/* Fundido superior que retoma el mismo cream con el que ahora termina
+          el degrade del Hero (ver Hero.tsx), para que el corte entre
+          secciones sea fluido. Al ser el mismo color en ambos extremos no
+          hace falta transicion visible: el fondo de la pagina (--color-cream
+          en globals.css) ya continua sin corte por si solo. */}
 
       <FadeInOnScroll className="mx-auto max-w-5xl">
         <SectionBadge label="Qué es Pelo a Pelo" />
