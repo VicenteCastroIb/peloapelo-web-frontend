@@ -16,13 +16,13 @@ export default function Hero() {
       </video>
 
       {/* Scrim: transparente sobre las personas, se funde a crema donde va el texto
-          (abajo en mobile, a la derecha en desktop) para que siempre sea legible. */}
+          (abajo en mobile, a la izquierda en desktop) para que siempre sea legible. */}
       <div
         aria-hidden
-        className="absolute inset-0 -z-10 bg-gradient-to-t from-cream via-cream/75 to-cream/10 sm:bg-gradient-to-r sm:from-cream/10 sm:via-cream/55 sm:to-cream"
+        className="absolute inset-0 -z-10 bg-gradient-to-t from-cream via-cream/75 to-cream/10 sm:bg-gradient-to-l sm:from-cream/10 sm:via-cream/55 sm:to-cream"
       />
 
-      <div className="relative mx-auto flex min-h-[560px] max-w-7xl flex-col justify-end px-6 py-16 sm:min-h-[640px] sm:items-end sm:justify-center sm:py-24 lg:px-12 lg:py-32">
+      <div className="relative mx-auto flex min-h-[560px] max-w-7xl flex-col justify-end px-6 py-16 sm:min-h-[640px] sm:items-start sm:justify-center sm:py-24 lg:px-12 lg:py-32">
         <FadeInOnScroll className="w-full sm:max-w-md lg:max-w-lg">
           <div className="mb-6 flex items-center gap-3 text-h4-label text-navy/50">
             <span className="h-px w-8 bg-navy/20" />
