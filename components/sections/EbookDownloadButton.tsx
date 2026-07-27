@@ -95,7 +95,7 @@ export default function EbookDownloadButton({ className = "" }: { className?: st
               Descarga tu ebook
             </h3>
             <p className="mt-1 text-p-small text-navy/60">
-              Déjanos tu nombre y correo y te lo enviamos al toque, sin costo.
+              Déjanos tu nombre y correo y te lo enviamos de inmediato, sin costo.
             </p>
 
             <form className="mt-6 space-y-4 text-left" onSubmit={handleSubmit}>
