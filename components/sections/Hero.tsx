@@ -21,7 +21,9 @@ export default function Hero() {
           las colinas (que es el lado izquierdo del archivo, antes de
           espejarlo), para no perderlo en pantallas angostas/altas. El
           fondo de la ilustracion ya es cream, asi que funde naturalmente
-          con el resto de la pagina sin necesitar un degrade adicional. */}
+          con el resto de la pagina sin necesitar un degrade adicional.
+          saturate-[.7] baja un poco la intensidad de color (los morados/
+          azules venian muy saturados) sin perder el trazo ni el contraste. */}
       <div className="absolute inset-0 -z-20 overflow-hidden">
         <Image
           src="/images/hero/hero-ilustrado.jpg"
@@ -30,7 +32,7 @@ export default function Hero() {
           priority
           quality={90}
           sizes="100vw"
-          className="object-cover object-[left_bottom] -scale-x-100"
+          className="object-cover object-[left_bottom] -scale-x-100 saturate-[.7]"
         />
       </div>
 
