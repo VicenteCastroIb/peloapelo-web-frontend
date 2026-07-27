@@ -52,5 +52,11 @@ export async function apiFetch<T>(
     return undefined as T;
   }
 
-  return (await response.json()) as T;
+  // Algunos endpoints devuelven 201 sin body (ej. POST /api/leads). response.json()
+  // lanza una excepcion con un body vacio, y eso se terminaba reportando en el
+  // frontend como "no pudimos conectar con el servidor" -- un error de UX enganoso
+  // para un caso que en realidad fue exitoso. Leemos como texto primero y solo
+  // parseamos si hay contenido.
+  const text = await response.text();
+  return (text ? JSON.parse(text) : undefined) as T;
 }
