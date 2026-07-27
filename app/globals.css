@@ -19,7 +19,7 @@
   --color-gradient-to: var(--color-gradient-to);
   --color-coral: var(--color-coral);
   --color-coral-soft: var(--color-coral-soft);
-  --font-sans: var(--font-lato);
+  --font-sans: var(--font-primary);
   --radius-pill: 9999px;
   --radius-card-lg: 24px;
   --radius-card-md: 20px;
@@ -32,24 +32,27 @@ body {
 }
 
 /* Escala tipográfica real de peloapelo.cl (ver docs/scan-22-07-2026).
-   Una sola familia (Lato, heredada de --font-sans) en todo el sitio; la
-   jerarquía se construye variando tamaño (10px-112px) y peso (300-900).
-   Clases utilitarias reusables para no repetir tamaños "a ojo" por componente. */
+   Una sola familia (Plus Jakarta Sans, heredada de --font-sans, ver
+   layout.tsx) en todo el sitio; la jerarquía se construye variando tamaño
+   (12px-112px) y peso (300-800, el maximo real que carga esta fuente).
+   Line-height ligeramente mas suelto que el original (pensado para Lato)
+   para que los acentos (á é í ó ú ñ, tan presentes en el copy en español)
+   no se recorten en los titulos grandes. */
 .text-h1 {
   font-size: 112px;
-  line-height: 0.98;
+  line-height: 1.02;
   font-weight: 400;
 }
 
 .text-h2-xl {
   font-size: 72px;
-  line-height: 1.05;
+  line-height: 1.08;
   font-weight: 400;
 }
 
 .text-h2-lg {
   font-size: 60px;
-  line-height: 1.05;
+  line-height: 1.08;
   font-weight: 700;
 }
 
@@ -78,17 +81,24 @@ body {
 }
 
 .text-h4-label {
-  font-size: 10px;
+  /* Subido de 10px -> 12px (26 jul 2026): a ese tamaño el eyebrow de cada
+     seccion (SectionBadge) y el label "Fundacion Pelo a Pelo Chile" del
+     Hero, que comparten esta clase, se leian demasiado chicos. */
+  font-size: 12px;
   line-height: 1.4;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
 }
 
 .text-p-lead {
+  /* Peso subido de 300 -> 400 (26 jul 2026): a 300 se leia demasiado
+     liviano/poco profesional en parrafos largos (Propuesta, Fundadora,
+     QuienesSomos). 400 es el peso "regular" real de la fuente, no una
+     aproximacion. */
   font-size: 20px;
   line-height: 1.5;
-  font-weight: 300;
+  font-weight: 400;
 }
 
 .text-p-body {
@@ -119,15 +129,16 @@ body {
   font-weight: 400;
 }
 
-/* Cifras de datos (tarjetas de estadisticas): peso black real (900, ver
-   layout.tsx) en vez de aproximar un bold desde 700, tabular-nums para que
-   los digitos no salten de ancho mientras el AnimatedCounter cuenta, y
-   tracking mas cerrado — tratamiento tipico de "numero grande" editorial en
-   vez de reusar una escala de titulo generica. */
+/* Cifras de datos (tarjetas de estadisticas): peso extra-bold real (800,
+   el maximo que carga Plus Jakarta Sans -- 900 no existe como archivo
+   cargado y el navegador lo compensaria con negrita sintetica, mas tosca),
+   tabular-nums para que los digitos no salten de ancho mientras el
+   AnimatedCounter cuenta, y tracking mas cerrado — tratamiento tipico de
+   "numero grande" editorial en vez de reusar una escala de titulo generica. */
 .text-data-lg {
   font-size: 34px;
   line-height: 1;
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -135,7 +146,7 @@ body {
 .text-data-md {
   font-size: 26px;
   line-height: 1;
-  font-weight: 900;
+  font-weight: 800;
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }

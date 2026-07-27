@@ -30,7 +30,7 @@ export default function Manifiesto() {
 
         <div className="relative mx-auto mt-6 aspect-[1344/768] w-full max-w-7xl">
           <Image
-            src="/images/manifiesto-diagrama.png"
+            src="/images/manifiesto/manifiesto-diagrama.png"
             alt="Diagrama: entre el pasado (programa automático) y el futuro (programa automático) está el momento presente, donde puede ocurrir un evento desconocido que te cambia."
             fill
             sizes="(min-width: 1280px) 1280px, 95vw"

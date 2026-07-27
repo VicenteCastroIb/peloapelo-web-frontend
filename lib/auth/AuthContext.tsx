@@ -13,8 +13,6 @@ import { ApiError } from "@/lib/api/client";
 import * as authApi from "@/lib/api/auth";
 import type { AuthUser } from "@/lib/api/auth";
 
-const TOKEN_STORAGE_KEY = "peloapelo_token";
-
 type Status = "loading" | "authenticated" | "unauthenticated";
 
 interface AuthContextValue {
@@ -28,38 +26,32 @@ interface AuthContextValue {
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-// Nota de seguridad: el token se guarda en localStorage por simplicidad (MVP).
-// Es vulnerable a robo via XSS. El endurecimiento recomendado antes de manejar
-// datos sensibles reales es mover el JWT a una cookie httpOnly + Secure seteada
-// por el backend, lo que exige coordinar CORS con credenciales entre el
-// dominio del frontend y el del backend.
+// Seguridad: el token JWT ya NO se persiste en localStorage (era legible por
+// cualquier script de la pagina, incluida una dependencia comprometida --
+// vulnerable a robo via XSS). El mecanismo real ahora es una cookie httpOnly
+// que setea el backend (ver JwtCookieService), inaccesible desde JS. `token`
+// se mantiene aca solo en memoria durante la sesion (se pierde al recargar,
+// a proposito) como respaldo para mandar el header Authorization; la fuente
+// de verdad de "estoy autenticado" es siempre fetchMe(), que depende de la
+// cookie, no de este estado.
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>("loading");
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(TOKEN_STORAGE_KEY);
-    if (!stored) {
-      setStatus("unauthenticated");
-      return;
-    }
-
     authApi
-      .fetchMe(stored)
+      .fetchMe()
       .then((me) => {
-        setToken(stored);
         setUser(me);
         setStatus("authenticated");
       })
       .catch(() => {
-        window.localStorage.removeItem(TOKEN_STORAGE_KEY);
         setStatus("unauthenticated");
       });
   }, []);
 
   const applyAuthResponse = useCallback((res: authApi.AuthResponse) => {
-    window.localStorage.setItem(TOKEN_STORAGE_KEY, res.token);
     setToken(res.token);
     setUser(res.user);
     setStatus("authenticated");
@@ -82,7 +74,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   );
 
   const logout = useCallback(() => {
-    window.localStorage.removeItem(TOKEN_STORAGE_KEY);
+    // Limpia la cookie del lado del servidor -- el cliente no puede tocarla
+    // directamente. Se limpia el estado local igual aunque la request falle
+    // (ej. sin red), para no dejar al usuario "atascado" como autenticado.
+    authApi.logout().catch(() => {});
     setToken(null);
     setUser(null);
     setStatus("unauthenticated");

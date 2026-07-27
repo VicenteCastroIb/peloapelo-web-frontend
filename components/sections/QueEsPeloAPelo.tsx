@@ -1,42 +1,20 @@
 import Image from "next/image";
-import { BarChart3, Brain, MessageCircle, Globe2, Heart } from "lucide-react";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
-import AnimatedCounter from "@/components/shared/AnimatedCounter";
-import { stats } from "@/lib/data/stats";
-
-const STAT_ICONS = {
-  chart: BarChart3,
-  brain: Brain,
-  chat: MessageCircle,
-  world: Globe2,
-  heart: Heart,
-};
-
-// Fondos de las tarjetas de datos: ciclan por la paleta de marca (ver
-// globals.css) en su version suave, para diferenciarlas entre si sin
-// salirse de los colores propios del sitio.
-const STAT_BACKGROUNDS = [
-  "bg-accent/10",
-  "bg-coral-soft",
-  "bg-[rgba(137,207,235,0.16)]",
-  "bg-navy/8",
-  "bg-[linear-gradient(135deg,rgba(143,124,182,0.14),rgba(137,207,235,0.14))]",
-];
 
 const PILARES = [
   {
-    image: "/images/pilar-emocional.jpg",
+    image: "/images/pillars/pilar-emocional.jpg",
     title: "Emocional",
     description: "Acompañamiento empático para procesar tus emociones.",
   },
   {
-    image: "/images/pilar-fisico.jpg",
+    image: "/images/pillars/pilar-fisico.jpg",
     title: "Físico",
     description: "Guía basada en evidencia sobre tratamientos y cuidado.",
   },
   {
-    image: "/images/pilar-mental.jpg",
+    image: "/images/pillars/pilar-mental.jpg",
     title: "Mental",
     description: "Herramientas para fortalecer tu bienestar psicológico.",
   },
@@ -69,7 +47,7 @@ export default function QueEsPeloAPelo() {
           <figure>
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card-lg bg-navy/10">
               <Image
-                src="/images/manos-comunidad.jpg"
+                src="/images/community/manos-comunidad.jpg"
                 alt="Manos de distintas personas de la comunidad Pelo a Pelo unidas en un gesto de apoyo."
                 fill
                 sizes="(min-width: 640px) 40vw, 90vw"
@@ -121,12 +99,12 @@ export default function QueEsPeloAPelo() {
 
         {/* "Por que existimos": mismo patron que el bloque de arriba
             (foto + texto a dos columnas), pero espejado: texto a la
-            izquierda, foto a la derecha. items-start (en vez de
-            items-center) para que el texto arranque a la misma altura que
-            la foto; el espacio libre que deja el texto, mas corto que la
-            foto, se rellena con las estadisticas (antes una seccion aparte
-            mas abajo, ver page.tsx). */}
-        <div className="mt-16 grid gap-10 sm:grid-cols-2 sm:items-start">
+            izquierda, foto a la derecha. Las 5 estadisticas que antes
+            rellenaban el espacio libre bajo este texto ahora viven en su
+            propia seccion independiente, ver components/sections/
+            Estadisticas.tsx — se separaron a pedido del rediseno para que
+            las cifras tengan foco propio en vez de competir con este texto. */}
+        <div className="mt-16 grid gap-10 sm:grid-cols-2 sm:items-center">
           <div>
             <h3 className="text-h2-md text-navy">
               Por qué <span className="italic text-accent">existimos</span>
@@ -142,43 +120,12 @@ export default function QueEsPeloAPelo() {
               invitamos a construir juntos un espacio seguro de exploración y
               foco, con pasos concretos, a tu ritmo.
             </p>
-
-            <div className="mt-8 grid grid-cols-2 gap-3">
-              {stats.map((stat, index) => {
-                const Icon = STAT_ICONS[stat.icon];
-                const isLast = index === stats.length - 1;
-                return (
-                  <div
-                    key={stat.label}
-                    className={`flex flex-col gap-2 rounded-card-md p-4 ${STAT_BACKGROUNDS[index % STAT_BACKGROUNDS.length]} ${
-                      isLast && stats.length % 2 === 1 ? "col-span-2" : ""
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-2">
-                      <p className="text-data-md text-navy">
-                        <AnimatedCounter value={stat.value} suffix={stat.suffix} />
-                      </p>
-                      <Icon size={18} className="shrink-0 text-navy/40" />
-                    </div>
-                    <p className="text-p-caption leading-snug text-navy/70">{stat.label}</p>
-                    <a
-                      href={stat.sourceUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-p-caption text-accent hover:underline"
-                    >
-                      Fuente: {stat.source} →
-                    </a>
-                  </div>
-                );
-              })}
-            </div>
           </div>
 
           <figure>
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card-lg bg-navy/10">
               <Image
-                src="/images/pq-existimos.jpg"
+                src="/images/community/pq-existimos.jpg"
                 alt="Una persona escribe con calma en un cuaderno, junto a una taza de té, en un momento de estructura y pausa."
                 fill
                 sizes="(min-width: 640px) 40vw, 90vw"

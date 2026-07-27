@@ -27,7 +27,7 @@ export default function HeaderAuthCta() {
 
   return (
     <Button href="/auth" variant="solid">
-      Comienza gratis
+      Iniciar sesión
     </Button>
   );
 }

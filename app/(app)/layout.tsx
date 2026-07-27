@@ -17,14 +17,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   if (status !== "authenticated") {
     return (
-      <div className="flex min-h-[calc(100vh-104px)] items-center justify-center">
+      <div className="flex min-h-[calc(100vh-72px)] items-center justify-center">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-accent border-t-transparent" />
       </div>
     );
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-104px)]">
+    <div className="flex min-h-[calc(100vh-72px)]">
       <DashboardSidebar />
       <div className="flex-1 overflow-y-auto px-8 py-10 lg:px-12">{children}</div>
     </div>

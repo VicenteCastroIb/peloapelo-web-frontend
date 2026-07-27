@@ -1,53 +1,50 @@
 import Hero from "@/components/sections/Hero";
-import QueEsPeloAPelo from "@/components/sections/QueEsPeloAPelo";
-import Manifiesto from "@/components/sections/Manifiesto";
-import Fundadora from "@/components/sections/Fundadora";
-import ComoFunciona from "@/components/sections/ComoFunciona";
-import PainPoints from "@/components/sections/PainPoints";
-import Beneficios from "@/components/sections/Beneficios";
+import QuienesSomos from "@/components/sections/QuienesSomos";
+import ComoTeSostenemos from "@/components/sections/ComoTeSostenemos";
+import Estadisticas from "@/components/sections/Estadisticas";
 import Propuesta from "@/components/sections/Propuesta";
+import ComoFunciona from "@/components/sections/ComoFunciona";
 import Planes from "@/components/sections/Planes";
+import Fundadora from "@/components/sections/Fundadora";
 import EbookGratuito from "@/components/sections/EbookGratuito";
-import Testimonios from "@/components/sections/Testimonios";
 import Faq from "@/components/sections/Faq";
 
-// Orden agrupado segun la guia de la fundadora (docs/Pelo a pelo.docx):
-// no es 1:1 con el scan original — se reestructuro a pedido explicito.
+// Implementacion 1:1 del mockup "Pelo a Pelo - Landing Rediseñada" (Claude
+// Design, ver docs de handoff). A pedido explicito (26 jul 2026): el home
+// ya NO mezcla el mockup con el sitio anterior -- solo se renderizan las
+// secciones que el mockup define, en el mismo orden.
 //
-//   Quienes somos:     Hero, QueEsPeloAPelo (incluye "Por que existimos"
-//                       y las estadisticas), Manifiesto, Fundadora
-//   Como funciona:     ComoFunciona, PainPoints, Beneficios,
-//                       Propuesta, Planes (gratis primero, tto despues)
-//   Articulos/Informate: EbookGratuito
-//   Testimonios:       Testimonios
-//   Preguntas frecuentes: Faq
+// Las secciones del sitio anterior que el mockup no incluye (Manifiesto,
+// PainPoints, Beneficios, Testimonios, QueEsPeloAPelo) se sacaron de este
+// archivo pero sus componentes NO se borraron (siguen en
+// components/sections/, ver ese folder) por si se decide reincorporarlas
+// mas adelante.
 //
-// QueEsPeloAPelo agregada despues del Hero por pedido explicito (no forma
-// parte del scan original). La frase de QuoteDestacada se movio dentro de
-// "Que es Pelo a Pelo" (vineta bajo el texto) para no repetirla. QuePelo se
-// elimino: duplicaba casi 1:1 su contenido; su grid de 3 pilares
-// (Emocional/Fisico/Mental) se fusiono dentro de QueEsPeloAPelo.
-// La antigua seccion Estadisticas (independiente) se elimino: sus 5 cifras
-// ahora viven como tarjetas compactas dentro del bloque "Por que existimos"
-// de QueEsPeloAPelo, rellenando el espacio libre bajo el texto.
+//   Hero
+//   QuienesSomos       -> bloque solo-texto
+//   ComoTeSostenemos   -> Calma / Compañia / Consistencia
+//   Estadisticas       -> "La realidad que nadie cuenta"
+//   Propuesta          -> "Como te acompañamos" (prosa, ver Propuesta.tsx)
+//   ComoFunciona       -> 4 pasos con icono + link de accion
+//   Planes
+//   Fundadora
+//   EbookGratuito
+//   Faq                -> incluye el bloque "comunidad" al final
 //
-// El "Cierre CTA" vive dentro de Footer.tsx porque en el diseño real es un
-// bloque visualmente continuo con el footer (mismo fondo oscuro, sin corte).
-// No reordenar sin aprobación.
+// El "Cierre CTA" vive dentro de Footer.tsx (bloque visualmente continuo
+// con el footer). No reordenar sin aprobacion.
 export default function Home() {
   return (
     <>
       <Hero />
-      <QueEsPeloAPelo />
-      <Manifiesto />
-      <Fundadora />
-      <ComoFunciona />
-      <PainPoints />
-      <Beneficios />
+      <QuienesSomos />
+      <ComoTeSostenemos />
+      <Estadisticas />
       <Propuesta />
+      <ComoFunciona />
       <Planes />
+      <Fundadora />
       <EbookGratuito />
-      <Testimonios />
       <Faq />
     </>
   );

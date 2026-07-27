@@ -1,3 +1,6 @@
+import { formatClp } from "@/lib/format";
+import type { BackendPlan } from "@/lib/api/plans";
+
 export interface Plan {
   id: "gratuito" | "trimestral" | "mensual";
   name: string;
@@ -20,10 +23,8 @@ export const plans: Plan[] = [
     price: "Gratis",
     period: "por 3 días",
     features: [
-      "Acceso por 3 días",
       "Quiz inicial personalizado",
       "Seguimiento de progreso",
-      "Ebook gratuito",
       "Sin tarjeta de crédito",
     ],
     cta: "Comienza gratis",
@@ -37,12 +38,10 @@ export const plans: Plan[] = [
     period: "por 3 meses",
     costPerDay: "$1.022/día",
     features: [
-      "Todo del plan mensual",
       "Programa estructurado de 3 meses",
-      "Contenido progresivo semanal",
       "Cursos especializados en ansiedad",
-      "Agenda con terapeuta profesional",
-      "Garantía 14 días",
+      "Sesión con terapeuta profesional",
+      "Garantía de 14 días",
     ],
     cta: "Elegir Bienestar",
     highlighted: true,
@@ -58,13 +57,35 @@ export const plans: Plan[] = [
     features: [
       "1 sesión con terapeuta al mes",
       "Acceso a todo el contenido",
-      "Contenido nuevo cada semana",
-      "Seguimiento de progreso",
       "Comunidad de apoyo",
     ],
     cta: "Elegir Mensual",
   },
 ];
+
+/**
+ * Sobreescribe nombre/precio de `plans` (el copy de marketing: features,
+ * descripcion, cta, se queda tal cual) con los valores reales que vienen
+ * de la tabla `plans` del backend -- la fundacion puede editar precio ahi
+ * sin tocar codigo (ver Plan.java) y esto hace que la landing lo refleje.
+ * Si el backend no trae un plan esperado (o no respondio), se conserva el
+ * valor estatico para ese plan puntual en vez de ocultarlo: la landing
+ * nunca debe romperse porque el backend este caido.
+ */
+export function withLivePricing(backendPlans: BackendPlan[]): Plan[] {
+  const byCode = new Map(backendPlans.map((p) => [p.code, p]));
+
+  return plans.map((plan) => {
+    const live = byCode.get(plan.id);
+    if (!live) return plan;
+
+    return {
+      ...plan,
+      name: live.name,
+      price: formatClp(live.priceClp),
+    };
+  });
+}
 
 export interface ComparisonRow {
   feature: string;

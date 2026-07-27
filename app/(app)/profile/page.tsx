@@ -15,15 +15,18 @@ const STATUS_LABEL: Record<Subscription["status"], string> = {
 };
 
 export default function ProfilePage() {
-  const { user, token } = useAuth();
+  // status (no token, que tras recargar queda null en memoria) es la fuente
+  // de verdad de autenticacion -- la cookie httpOnly hace el resto. Ver
+  // AuthContext.tsx.
+  const { user, token, status } = useAuth();
   const [subscriptions, setSubscriptions] = useState<Subscription[] | null>(null);
 
   useEffect(() => {
-    if (!token) return;
+    if (status !== "authenticated") return;
     listMySubscriptions(token)
       .then(setSubscriptions)
       .catch(() => setSubscriptions([]));
-  }, [token]);
+  }, [status, token]);
 
   const current = subscriptions?.[0] ?? null;
 

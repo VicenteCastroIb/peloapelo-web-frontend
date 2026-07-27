@@ -4,17 +4,35 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
+import Image from "next/image";
 import { faqItems } from "@/lib/data/faq";
+
+const REDES = [
+  { label: "Instagram", href: "#" },
+  { label: "TikTok", href: "#" },
+];
 
 export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="preguntas" className="px-6 py-24 lg:px-12 lg:py-28">
+    <section id="preguntas" className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
+      <div className="absolute inset-0 -z-10">
+        <Image
+          src="/images/backgrounds/fondo-preguntas.jpg"
+          alt=""
+          aria-hidden
+          fill
+          sizes="100vw"
+          className="object-cover object-top"
+        />
+        <div aria-hidden className="absolute inset-0 bg-cream/32" />
+      </div>
+
       <FadeInOnScroll className="mx-auto max-w-4xl">
-        <SectionBadge label="Preguntas · VII" />
+        <SectionBadge label="Preguntas frecuentes" />
         <h2 className="text-h2-lg text-navy">
-          Lo que <span className="italic text-accent">te preguntas</span>.
+          Dudas que <span className="italic text-accent">entendemos</span>.
         </h2>
 
         <div className="mt-10 border-t border-navy/10">
@@ -40,6 +58,29 @@ export default function Faq() {
               </div>
             );
           })}
+        </div>
+
+        {/* Bloque "comunidad" agregado por el rediseno (ver docs de
+            handoff): los mismos links de redes ya viven en el Footer, se
+            repiten aca a proposito como refuerzo al cierre de las
+            preguntas frecuentes, no como reemplazo del footer. */}
+        <div id="comunidad" className="mt-16 text-center">
+          <p className="text-h3-md text-navy sm:text-2xl">
+            Una comunidad te espera, para apoyarte, sin juicios.
+          </p>
+          <div className="mt-6 flex flex-wrap justify-center gap-8 text-base font-bold uppercase tracking-[0.08em] text-accent">
+            {REDES.map((red) => (
+              <a
+                key={red.label}
+                href={red.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:underline"
+              >
+                {red.label}
+              </a>
+            ))}
+          </div>
         </div>
       </FadeInOnScroll>
     </section>

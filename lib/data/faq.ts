@@ -3,6 +3,11 @@ export interface FaqItem {
   answer: string;
 }
 
+// Tal cual el mockup "Landing Rediseñada" (26 jul 2026): solo 5 preguntas,
+// wording exacto. Las 2 que tenia esta pagina antes (movil, cancelacion) se
+// guardan en faqItemsArchived mas abajo -- no se borraron, solo no se
+// renderizan (a pedido explicito, mismo criterio que las secciones que el
+// mockup no incluye).
 export const faqItems: FaqItem[] = [
   {
     question: "¿Es privada mi información?",
@@ -12,26 +17,31 @@ export const faqItems: FaqItem[] = [
   {
     question: "¿Cuánto cuesta? ¿Hay prueba gratis?",
     answer:
-      "Plan 3 Meses: $92.000 CLP (recomendado). Plan Mensual: $35.990 CLP (flexible). Tienes 3 días de prueba gratis sin tarjeta de crédito.",
+      "Plan 3 Meses: $92.000 CLP. Plan Mensual: $35.990 CLP. Tienes 3 días de prueba gratis, sin tarjeta de crédito.",
   },
   {
     question: "¿Qué tipos de alopecia cubre?",
     answer:
-      "Alopecia Areata, Androgenética, Efluvio Telógeno, Tricotilomanía, Alopecia por estrés y otras formas de caída capilar.",
+      "Alopecia areata, androgenética, efluvio telógeno, tricotilomanía, alopecia por estrés y otras formas de caída capilar.",
   },
   {
-    question: "¿Hay profesionales médicos disponibles?",
+    question: "¿Hay profesionales disponibles?",
     answer:
-      "El contenido está respaldado por psicólogos, neurociencia y bibliografía médica. Puedes agendar sesión con terapeuta. No reemplaza una consulta médica, pero te prepara para ella.",
-  },
-  {
-    question: "¿Funciona en el móvil?",
-    answer: "Sí, la plataforma está 100% optimizada para iOS y Android. Accede desde cualquier lugar.",
+      "El contenido está respaldado por psicólogos y bibliografía médica. Puedes agendar sesión con terapeuta. No reemplaza una consulta médica, pero te prepara para ella.",
   },
   {
     question: "¿Cuándo veo resultados?",
     answer:
-      "Educación: inmediata. Apoyo emocional: 1-2 semanas. Cambios visibles en la caída capilar: 2-3 meses dependiendo del tipo. Por eso el Plan 3 Meses es el ideal.",
+      "La educación y la contención emocional se sienten desde las primeras semanas. Los cambios en la caída capilar toman más tiempo — por eso el Plan 3 Meses es el más recomendado.",
+  },
+];
+
+// No renderizadas actualmente (ver arriba). Conservadas por si se decide
+// reincorporarlas.
+export const faqItemsArchived: FaqItem[] = [
+  {
+    question: "¿Funciona en el móvil?",
+    answer: "Sí, la plataforma está 100% optimizada para iOS y Android. Accede desde cualquier lugar.",
   },
   {
     question: "¿Puedo cancelar cuando quiera?",

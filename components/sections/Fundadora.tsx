@@ -1,42 +1,64 @@
 import Image from "next/image";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
+import Button from "@/components/ui/Button";
 
 export default function Fundadora() {
   return (
-    <section className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
-      {/* Adorno acuarela (flores), acento junto al retrato de la fundadora —
-          puramente decorativo, sin interceptar clics. */}
-      <Image
-        aria-hidden
-        src="/images/adornos/adorno-flores.png"
-        alt=""
-        width={380}
-        height={782}
-        className="pointer-events-none absolute -bottom-8 -left-10 -z-10 hidden w-[150px] -rotate-[6deg] opacity-70 md:block lg:w-[180px]"
-      />
-
+    <section id="fundadora" className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
       <FadeInOnScroll className="mx-auto max-w-6xl">
-        <SectionBadge label="Quien está detrás · II" />
+        <SectionBadge label="Quién está detrás" />
         <h2 className="text-h2-lg text-navy">
           Conoce a <span className="italic text-accent">Jessica Lagno</span>.
         </h2>
 
         <div className="mt-12 grid gap-10 sm:grid-cols-2 sm:items-start">
-          <figure>
-            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-card-lg bg-navy/10">
+          <figure className="relative">
+            {/* Halo decorativo agregado por el rediseno (ver docs de
+                handoff): reemplaza el adorno-flores.png anterior, que
+                quedaba compitiendo visualmente con este halo pensado
+                especificamente para enmarcar este retrato. Un poco mas
+                grande que la foto y centrado detras de ella (z-index
+                menor), con un overlay cream translucido para que no le
+                quite protagonismo al retrato real. */}
+            <div
+              aria-hidden
+              className="absolute left-1/2 top-1/2 -z-10 h-[108%] w-[112%] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-card-lg"
+            >
               <Image
-                src="/images/jessica-lagno.png"
+                src="/images/founder/fondo-creadora.jpg"
+                alt=""
+                fill
+                sizes="(min-width: 640px) 45vw, 100vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-cream/20" />
+            </div>
+
+            {/* Achicada un poco (mx-auto + max-w) para que el halo de fondo
+                respire mas alrededor; mask-image degrada los bordes de la
+                foto misma a transparente (no solo el marco) para que ese
+                halo se note tambien a traves del borde, no solo afuera. */}
+            <div
+              className="relative mx-auto aspect-[3/4] w-[88%] overflow-hidden rounded-card-lg bg-navy/10"
+              style={{
+                maskImage: "radial-gradient(ellipse at center, black 72%, transparent 100%)",
+                WebkitMaskImage:
+                  "radial-gradient(ellipse at center, black 72%, transparent 100%)",
+              }}
+            >
+              <Image
+                src="/images/founder/jessica-lagno.png"
                 alt="Jessica Lagno, fundadora de Pelo a Pelo"
                 fill
-                sizes="(min-width: 640px) 40vw, 90vw"
+                sizes="(min-width: 640px) 35vw, 80vw"
                 className="object-cover"
                 priority
               />
             </div>
-            <figcaption className="mt-3 flex justify-between text-p-caption uppercase tracking-wide text-navy/50">
+            <figcaption className="mt-4 flex justify-between text-p-small font-semibold uppercase tracking-wide text-navy/80">
               <span>Jessica · 11 años</span>
-              <span className="italic normal-case">Alopecia areata universal</span>
+              <span className="italic normal-case text-accent">Alopecia areata universal</span>
             </figcaption>
           </figure>
 
@@ -45,7 +67,7 @@ export default function Fundadora() {
               Psicóloga · Coach ontológica · Fundadora
             </p>
 
-            <p className="mt-6 text-p-body text-navy/80">
+            <p className="mt-6 text-p-lead text-navy/80 sm:text-xl">
               <span className="float-left mr-2 text-h2-md font-semibold leading-none text-accent">
                 H
               </span>
@@ -54,22 +76,24 @@ export default function Fundadora() {
               cuerpo. Luego volvió en mis 30.
             </p>
 
-            <p className="mt-4 text-p-body text-navy/80">
-              Sé lo que es mirarte al espejo y no reconocerte. Sé lo que es sentir
-              vergüenza, esconder tu cabeza, no querer que nadie te pregunte. Y también
-              sé que se puede salir adelante — no porque el pelo vuelva, sino porque{" "}
+            <p className="mt-4 text-p-lead text-navy/80 sm:text-xl">
+              Sé lo que es mirarte al espejo y no reconocerte. Y también sé que se
+              puede salir adelante — no porque el pelo vuelva, sino porque{" "}
               <strong className="text-navy">tú vuelves a ti</strong>.
             </p>
 
-            <p className="mt-4 text-p-body text-navy/80">
+            <p className="mt-4 text-p-lead text-navy/80 sm:text-xl">
               Creé Pelo a Pelo trayendo lo que más sé: mi vida personal y mi formación
-              profesional. Esta fundación nace de la convicción de que nadie debería
-              atravesar la pérdida de pelo en silencio ni sin herramientas.
+              profesional. Nadie debería atravesar esto sin herramientas.
             </p>
 
-            <p className="mt-6 border-t border-navy/10 pt-6 text-p-body italic text-accent">
-              ✨ Todo lo que enseño, lo he vivido primero.
+            <p className="mt-6 border-t border-navy/10 pt-6 text-p-lead italic text-accent sm:text-xl">
+              Todo lo que enseño, lo he vivido primero.
             </p>
+
+            <Button href="/therapist" variant="gradient" className="mt-6">
+              Agenda una conversación conmigo →
+            </Button>
           </div>
         </div>
       </FadeInOnScroll>

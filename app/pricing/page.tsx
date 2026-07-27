@@ -3,7 +3,8 @@ import { Check, X } from "lucide-react";
 import SectionBadge from "@/components/shared/SectionBadge";
 import PlanCard from "@/components/sections/PlanCard";
 import Faq from "@/components/sections/Faq";
-import { plans, comparisonTable } from "@/lib/data/plans";
+import { plans as staticPlans, withLivePricing, comparisonTable } from "@/lib/data/plans";
+import { fetchBackendPlans } from "@/lib/api/plans";
 
 export const metadata: Metadata = {
   title: "Planes y precios · Pelo a Pelo",
@@ -22,7 +23,15 @@ function Cell({ value }: { value: string | boolean }) {
   return <span className="text-p-small">{value}</span>;
 }
 
-export default function PricingPage() {
+export default async function PricingPage() {
+  // Ver Planes.tsx: mismo patron de fallback seguro si el backend no responde.
+  let plans = staticPlans;
+  try {
+    plans = withLivePricing(await fetchBackendPlans());
+  } catch {
+    // usa staticPlans tal cual, ya asignado arriba
+  }
+
   return (
     <>
       <section className="px-6 py-20 text-center lg:px-12">
@@ -49,7 +58,12 @@ export default function PricingPage() {
             otra persona reciba apoyo sin costo.
           </p>
 
-          <div className="mt-12 grid overflow-hidden rounded-card-lg border border-navy/10 sm:grid-cols-3">
+          {/* Grid con gap (no un panel compartido con border): PlanCard ya
+              trae su propio borde/radio/degrade (ver PlanCard.tsx tras el
+              rediseno), y la tarjeta destacada necesita espacio para su
+              badge flotante "Mas popular", que un contenedor con
+              overflow-hidden recortaria. */}
+          <div className="mt-12 grid items-stretch gap-7 sm:grid-cols-3">
             {plans.map((plan) => (
               <PlanCard key={plan.id} plan={plan} />
             ))}

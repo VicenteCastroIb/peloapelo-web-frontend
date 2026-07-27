@@ -44,7 +44,10 @@ const PAYMENT_STATUS_STYLE: Record<Payment["status"], string> = {
 };
 
 export default function SubscriptionPage() {
-  const { token } = useAuth();
+  // La cookie httpOnly autentica las requests; `status` (no `token`, que
+  // tras recargar la pagina queda null en memoria, ver AuthContext.tsx) es
+  // lo que indica si ya se puede pedir datos del usuario.
+  const { token, status } = useAuth();
   const [subscriptions, setSubscriptions] = useState<Subscription[] | null>(null);
   const [payments, setPayments] = useState<Payment[] | null>(null);
   const [canceling, setCanceling] = useState(false);
@@ -52,21 +55,21 @@ export default function SubscriptionPage() {
   const current = subscriptions?.[0] ?? null;
 
   useEffect(() => {
-    if (!token) return;
+    if (status !== "authenticated") return;
     listMySubscriptions(token)
       .then(setSubscriptions)
       .catch(() => setSubscriptions([]));
-  }, [token]);
+  }, [status, token]);
 
   useEffect(() => {
-    if (!token || !current) return;
+    if (status !== "authenticated" || !current) return;
     listPayments(token, current.id)
       .then(setPayments)
       .catch(() => setPayments([]));
-  }, [token, current]);
+  }, [status, token, current]);
 
   async function handleCancel() {
-    if (!token || !current) return;
+    if (status !== "authenticated" || !current) return;
     setCanceling(true);
     try {
       const updated = await cancelSubscription(token, current.id);
@@ -177,10 +180,19 @@ export default function SubscriptionPage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-3 text-p-caption text-amber-700/80">
-                La confirmación automática de pago con Mercado Pago todavía no está
-                conectada — este cobro quedará pendiente hasta que se active.
-              </p>
+              {current.checkoutUrl ? (
+                <a
+                  href={current.checkoutUrl}
+                  className="mt-3 inline-block rounded-pill bg-amber-600 px-4 py-2 text-a-inline font-semibold text-white hover:opacity-90"
+                >
+                  Completar pago →
+                </a>
+              ) : (
+                <p className="mt-3 text-p-caption text-amber-700/80">
+                  Todavía no se generó un link de pago para este cobro. Intenta de
+                  nuevo más tarde o contáctanos.
+                </p>
+              )}
             </div>
           )}
 

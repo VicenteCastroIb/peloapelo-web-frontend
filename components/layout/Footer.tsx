@@ -18,7 +18,7 @@ export default function Footer() {
             <a href="mailto:jessica.lagno@peloapelo.cl" className="hover:text-cream">
               jessica.lagno@peloapelo.cl
             </a>
-            <Link href="/#agendar" className="hover:text-cream">
+            <Link href="/therapist" className="hover:text-cream">
               Agendar una sesión →
             </Link>
           </div>
@@ -26,7 +26,7 @@ export default function Footer() {
 
         <div className="grid gap-10 border-t border-cream/10 pt-10 sm:grid-cols-2 lg:grid-cols-4">
           <div>
-            <Image src="/images/logo.png" alt="Pelo a Pelo" width={48} height={48} className="h-12 w-12" />
+            <Image src="/images/brand/logo.png" alt="Pelo a Pelo" width={48} height={48} className="h-12 w-12" />
             <p className="mt-3 text-h3-sm">
               Pelo a <span className="italic text-[var(--color-gradient-to)]">Pelo</span>
             </p>
@@ -39,7 +39,7 @@ export default function Footer() {
           <div>
             <p className="text-h4-label text-cream/50">Plataforma</p>
             <ul className="mt-3 space-y-2 text-a-inline">
-              <li><Link href="/#propuesta" className="hover:text-cream/80">Funcionalidades</Link></li>
+              <li><Link href="/#como-funciona" className="hover:text-cream/80">Cómo funciona</Link></li>
               <li><Link href="/pricing" className="hover:text-cream/80">Precios</Link></li>
               <li><Link href="/#ebook" className="hover:text-cream/80">Ebook gratuito</Link></li>
             </ul>
@@ -48,7 +48,7 @@ export default function Footer() {
           <div>
             <p className="text-h4-label text-cream/50">Fundación</p>
             <ul className="mt-3 space-y-2 text-a-inline">
-              <li><Link href="/#testimonios" className="hover:text-cream/80">Testimonios</Link></li>
+              <li><Link href="/#fundadora" className="hover:text-cream/80">Nuestra historia</Link></li>
               <li><a href="mailto:jessica.lagno@peloapelo.cl" className="hover:text-cream/80">Contacto</a></li>
             </ul>
           </div>
@@ -58,7 +58,6 @@ export default function Footer() {
             <ul className="mt-3 space-y-2 text-a-inline">
               <li><a href="#" className="hover:text-cream/80">Instagram</a></li>
               <li><a href="#" className="hover:text-cream/80">TikTok</a></li>
-              <li><a href="#" className="hover:text-cream/80">YouTube</a></li>
             </ul>
           </div>
         </div>

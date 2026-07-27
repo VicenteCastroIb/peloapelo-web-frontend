@@ -10,9 +10,14 @@ export class ApiError extends Error {
 }
 
 /**
- * Wrapper minimo sobre fetch para hablar con el backend. No usa cookies
- * (el backend responde el JWT en el body, ver lib/api/auth.ts); el token
- * se adjunta manualmente via el header Authorization cuando corresponde.
+ * Wrapper minimo sobre fetch para hablar con el backend.
+ *
+ * credentials: "include" siempre -- el backend setea el JWT como cookie
+ * httpOnly (ver AuthContext.tsx: ya no se persiste el token en
+ * localStorage, que era legible por cualquier script y por eso vulnerable
+ * a robo via XSS). El header Authorization se sigue mandando tambien
+ * cuando hay un token en memoria, como respaldo (ver JwtAuthenticationFilter
+ * en el backend, que acepta cualquiera de los dos).
  */
 export async function apiFetch<T>(
   path: string,
@@ -28,6 +33,7 @@ export async function apiFetch<T>(
   const response = await fetch(`${API_URL}${path}`, {
     method,
     headers,
+    credentials: "include",
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 
