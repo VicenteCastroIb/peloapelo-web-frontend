@@ -8,11 +8,11 @@ export default function Fundadora() {
     <section id="fundadora" className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
       <FadeInOnScroll className="mx-auto max-w-6xl">
         <SectionBadge label="Quién está detrás" />
-        <h2 className="text-h2-lg text-navy">
+        <h2 className="text-3xl font-bold leading-[1.08] text-navy sm:text-5xl">
           Conoce a <span className="italic text-accent">Jessica Lagno</span>.
         </h2>
 
-        <div className="mt-12 grid gap-10 sm:grid-cols-2 sm:items-start">
+        <div className="mt-12 grid gap-10 sm:grid-cols-2 sm:items-start sm:gap-20 lg:gap-24">
           <figure className="relative">
             {/* Halo decorativo agregado por el rediseno (ver docs de
                 handoff): reemplaza el adorno-flores.png anterior, que
@@ -38,9 +38,12 @@ export default function Fundadora() {
             {/* Achicada un poco (mx-auto + max-w) para que el halo de fondo
                 respire mas alrededor; mask-image degrada los bordes de la
                 foto misma a transparente (no solo el marco) para que ese
-                halo se note tambien a traves del borde, no solo afuera. */}
+                halo se note tambien a traves del borde, no solo afuera.
+                aspect-[5/6] (antes 3/4): achica la foto y su halo de fondo
+                verticalmente -- el halo esta dimensionado en % relativo a
+                este bloque, asi que baja de tamano en conjunto con la foto. */}
             <div
-              className="relative mx-auto aspect-[3/4] w-[88%] overflow-hidden rounded-card-lg bg-navy/10"
+              className="relative mx-auto aspect-[5/6] w-[88%] overflow-hidden rounded-card-lg bg-navy/10"
               style={{
                 maskImage: "radial-gradient(ellipse at center, black 72%, transparent 100%)",
                 WebkitMaskImage:

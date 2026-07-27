@@ -22,9 +22,9 @@ export default function QuienesSomos() {
 
         <p className="mx-auto mt-6 max-w-2xl text-p-lead text-navy/80">
           Pelo a Pelo es una fundación chilena sin fines de lucro. Existe para que
-          nadie atraviese la pérdida de cabello en silencio: acompañamos desde lo
-          emocional, lo físico y lo mental, con una mirada honesta y sostenida en el
-          tiempo, nunca en soluciones rápidas.
+          nadie atraviese la pérdida de cabello en silencio. Acompañamos desde lo
+          emocional, lo físico y mental, con una mirada honesta y sostenida en el
+          tiempo.
         </p>
         <p className="mx-auto mt-4 max-w-2xl text-p-lead text-navy/80">
           Nace de Jessica Lagno, psicóloga que vive con alopecia areata universal

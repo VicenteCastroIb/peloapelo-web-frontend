@@ -22,7 +22,7 @@ const AFIRMACIONES = [
   {
     image: "/images/icons/afirmacion-consistencia-icono.jpg",
     title: "Consistencia",
-    description: "Pequeños pasos sostenidos en el tiempo, no un cambio de un día para otro.",
+    description: "Pequeños pasos sostenidos en el tiempo, ayudamos a generar un cambio real.",
     size: 136,
   },
 ];

@@ -26,7 +26,6 @@ export default function Faq() {
           sizes="100vw"
           className="object-cover object-top"
         />
-        <div aria-hidden className="absolute inset-0 bg-cream/32" />
       </div>
 
       <FadeInOnScroll className="mx-auto max-w-4xl">

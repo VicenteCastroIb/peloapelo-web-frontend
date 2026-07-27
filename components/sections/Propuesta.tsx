@@ -28,23 +28,21 @@ export default function Propuesta() {
           Cómo te acompañamos
         </div>
         <h2 className="max-w-lg text-h2-lg text-navy">
-          Así te <span className="italic text-accent">acompañamos</span>, sin fórmulas
-          mágicas.
+          Así te <span className="italic text-accent">acompañamos</span>.
         </h2>
         <p className="mt-6 text-p-lead text-navy/80">
           Detrás de la plataforma hay <strong className="text-navy">personas reales
-          acompañándote</strong>, no un algoritmo frío. Un{" "}
+            acompañándote</strong>, en todo momento. Un{" "}
           <strong className="text-navy">seguimiento de tu progreso</strong> que respeta
           tu ritmo, <strong className="text-navy">cursos especializados</strong> hechos
-          con psicólogos y dermatólogos, y una{" "}
+          con psicólogos expertos, y una{" "}
           <strong className="text-navy">guía clara de tratamientos</strong> para que
-          entiendas tus opciones sin perderte en internet.
+          entiendas tus opciones.
         </p>
         <p className="mt-4 text-p-lead text-navy/80">
-          Con el tiempo, la plataforma aprende de ti: te llegan{" "}
-          <span className="italic text-accent">recomendaciones pensadas para tu caso</span>{" "}
-          y <span className="italic text-accent">recordatorios amables</span> — nunca
-          notificaciones que presionan, solo un empujón cuando lo necesitas.
+          Con el tiempo, la plataforma aprende de ti, te llegan{" "}
+          <span className="italic text-accent">recomendaciones y recordatorios pensados para tu caso</span>{" "},
+          estamos para acompañarte en cada paso.
         </p>
       </FadeInOnScroll>
     </section>

@@ -21,9 +21,9 @@ export default function Hero() {
           las colinas (que es el lado izquierdo del archivo, antes de
           espejarlo), para no perderlo en pantallas angostas/altas. El
           fondo de la ilustracion ya es cream, asi que funde naturalmente
-          con el resto de la pagina sin necesitar un degrade adicional.
-          saturate-[.7] baja un poco la intensidad de color (los morados/
-          azules venian muy saturados) sin perder el trazo ni el contraste. */}
+          con el resto de la pagina sin necesitar un degrade adicional. Sin
+          filtro de color encima: la imagen se deja tal cual viene, a
+          pedido explicito (se probo bajar la saturacion y se revirtio). */}
       <div className="absolute inset-0 -z-20 overflow-hidden">
         <Image
           src="/images/hero/hero-ilustrado.jpg"
@@ -32,7 +32,7 @@ export default function Hero() {
           priority
           quality={90}
           sizes="100vw"
-          className="object-cover object-[left_bottom] -scale-x-100 saturate-[.7]"
+          className="object-cover object-[left_bottom] -scale-x-100"
         />
       </div>
 
@@ -65,12 +65,12 @@ export default function Hero() {
               con una utilidad normal, la clase custom ganaria el cascade. */}
           <p className="mt-6 text-p-lead !font-medium text-navy/75 sm:text-xl">
             Acompañamiento integral creado por quien ha vivido la alopecia toda su
-            vida. Cuerpo, emoción y hábitos — a tu ritmo, sin promesas vacías.
+            vida. Cuerpo, emoción y hábitos a tu ritmo.
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Button href="/auth" variant="gradient" className="px-7 py-3.5 text-base">
-              Haz el quiz gratuito →
+              Haz el quiz gratuito
             </Button>
             <Button href="/therapist" variant="outline" className="px-7 py-3.5 text-base">
               Agendar una hora
