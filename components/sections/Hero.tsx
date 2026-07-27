@@ -12,29 +12,25 @@ export default function Hero() {
       id="inicio"
       className="relative isolate -mt-[72px] flex min-h-screen flex-col overflow-hidden pt-[72px]"
     >
-      {/* La foto trae de fabrica el difuminado inferior hacia el cream, pero
-          en pantallas anchas y bajas el object-cover recorta esa franja
-          antes de que llegue a verse. Se agrega un fundido explicito por
-          CSS al fondo de la foto para garantizar la transicion sin depender
-          del recorte. La banda es deliberadamente chica (solo el borde
-          inferior) y un degrade lineal simple (sin via intermedio), para
-          que la foto se vea completa y solo el ultimo tramo se funda hacia
-          la siguiente seccion. */}
+      {/* Fondo ilustrado (acuarela) en vez de foto: el arbol queda dibujado
+          del lado izquierdo del archivo original, pero el texto del Hero
+          tambien vive a la izquierda, asi que se aplica en modo espejo
+          (-scale-x-100) para que el arbol quede del lado derecho y el
+          fondo detras del texto quede despejado. object-[left_bottom] fija
+          el recorte de object-cover sobre la zona donde esta el arbol y
+          las colinas (que es el lado izquierdo del archivo, antes de
+          espejarlo), para no perderlo en pantallas angostas/altas. El
+          fondo de la ilustracion ya es cream, asi que funde naturalmente
+          con el resto de la pagina sin necesitar un degrade adicional. */}
       <div className="absolute inset-0 -z-20 overflow-hidden">
         <Image
-          src="/images/hero/hero-nuevo.jpg"
-          alt="Una terapeuta apoya con calidez a una mujer con pañuelo en la cabeza por pérdida de pelo."
+          src="/images/hero/hero-ilustrado.jpg"
+          alt=""
           fill
           priority
           quality={90}
           sizes="100vw"
-          className="object-cover object-[center_10%]"
-        />
-        {/* Antes era una banda de degrade bastante alta (h-12/16/20); a
-            pedido se deja solo una linea delgada, no un fundido largo. */}
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-0 h-[3px] bg-cream"
+          className="object-cover object-[left_bottom] -scale-x-100"
         />
       </div>
 
