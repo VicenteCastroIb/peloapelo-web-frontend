@@ -29,10 +29,9 @@ const AFIRMACIONES = [
 
 /**
  * "Cómo te sostenemos" — seccion nueva del rediseno, sin equivalente previo
- * en el codebase (ver docs de handoff). Fondo fotografico con un overlay
- * cream muy sutil (bajado de /32 a /12 el 27 jul 2026, a peticion explicita:
- * opacaba demasiado los colores originales del fondo) -- solo lo justo para
- * que el texto siga siendo legible.
+ * en el codebase (ver docs de handoff). Sin overlay sobre el fondo (27 jul
+ * 2026, a peticion explicita): el archivo ya es muy pastel/claro, el texto
+ * navy tiene contraste de sobra encima sin necesitar filtro.
  */
 export default function ComoTeSostenemos() {
   return (
@@ -46,7 +45,6 @@ export default function ComoTeSostenemos() {
           sizes="100vw"
           className="object-cover object-[center_bottom]"
         />
-        <div aria-hidden className="absolute inset-0 bg-cream/12" />
       </div>
 
       <FadeInOnScroll className="mx-auto max-w-5xl">

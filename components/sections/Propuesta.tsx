@@ -10,6 +10,9 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 export default function Propuesta() {
   return (
     <section className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-36">
+      {/* Sin overlay (27 jul 2026, a peticion explicita): el archivo ya es
+          muy pastel/claro, el texto navy tiene contraste de sobra encima
+          sin necesitar ningun filtro que le opaque el color original. */}
       <div className="absolute inset-0 -z-10">
         <Image
           src="/images/backgrounds/estadisticas-fondo-patron.jpg"
@@ -19,9 +22,6 @@ export default function Propuesta() {
           sizes="100vw"
           className="object-cover"
         />
-        {/* Bajado de /32 a /12 (27 jul 2026, a peticion explicita): opacaba
-            demasiado los colores originales del fondo. */}
-        <div aria-hidden className="absolute inset-0 bg-cream/12" />
       </div>
 
       <FadeInOnScroll className="mx-auto max-w-3xl">

@@ -19,8 +19,9 @@ export default function Fundadora() {
                 quedaba compitiendo visualmente con este halo pensado
                 especificamente para enmarcar este retrato. Un poco mas
                 grande que la foto y centrado detras de ella (z-index
-                menor), con un overlay cream translucido para que no le
-                quite protagonismo al retrato real. */}
+                menor). Sin overlay (27 jul 2026, a peticion explicita: deja
+                el color original del halo); el mask-image de la foto de
+                arriba ya se encarga de que no compita con el retrato real. */}
             <div
               aria-hidden
               className="absolute left-1/2 top-1/2 -z-10 h-[108%] w-[112%] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-card-lg"
@@ -32,9 +33,6 @@ export default function Fundadora() {
                 sizes="(min-width: 640px) 45vw, 100vw"
                 className="object-cover"
               />
-              {/* Bajado de /20 a /10 (27 jul 2026, a peticion explicita):
-                  opacaba demasiado los colores originales del fondo. */}
-              <div className="absolute inset-0 bg-cream/10" />
             </div>
 
             {/* Achicada un poco (mx-auto + max-w) para que el halo de fondo
@@ -82,14 +80,13 @@ export default function Fundadora() {
             </p>
 
             <p className="mt-4 text-p-lead text-navy/80 sm:text-xl">
-              Sé lo que es mirarte al espejo y no reconocerte. Y también sé que se
+              Sé lo que es mirarte al espejo y no reconocerte. Sé lo que es sentir vergüenza, esconder tu cabeza, no querer que nadie te pregunte. Y también sé que se
               puede salir adelante — no porque el pelo vuelva, sino porque{" "}
               <strong className="text-navy">tú vuelves a ti</strong>.
             </p>
 
             <p className="mt-4 text-p-lead text-navy/80 sm:text-xl">
-              Creé Pelo a Pelo trayendo lo que más sé: mi vida personal y mi formación
-              profesional. Nadie debería atravesar esto sin herramientas.
+              Creé Pelo a Pelo trayendo lo que más sé: mi vida personal y mi formación profesional. Esta fundación nace de la convicción de que nadie debería atravesar la pérdida de pelo en silencio ni sin herramientas.
             </p>
 
             <p className="mt-6 border-t border-navy/10 pt-6 text-p-lead italic text-accent sm:text-xl">
