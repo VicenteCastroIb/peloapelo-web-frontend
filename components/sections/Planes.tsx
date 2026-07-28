@@ -27,7 +27,9 @@ export default async function Planes() {
           sizes="100vw"
           className="object-cover"
         />
-        <div aria-hidden className="absolute inset-0 bg-cream/32" />
+        {/* Bajado de /32 a /12 (27 jul 2026, a peticion explicita): opacaba
+            demasiado los colores originales del fondo. */}
+        <div aria-hidden className="absolute inset-0 bg-cream/12" />
       </div>
 
       <FadeInOnScroll className="mx-auto max-w-6xl">

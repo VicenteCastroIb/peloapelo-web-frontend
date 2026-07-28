@@ -32,7 +32,9 @@ export default function Fundadora() {
                 sizes="(min-width: 640px) 45vw, 100vw"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-cream/20" />
+              {/* Bajado de /20 a /10 (27 jul 2026, a peticion explicita):
+                  opacaba demasiado los colores originales del fondo. */}
+              <div className="absolute inset-0 bg-cream/10" />
             </div>
 
             {/* Achicada un poco (mx-auto + max-w) para que el halo de fondo

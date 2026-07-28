@@ -25,6 +25,11 @@ export default function Faq() {
           sizes="100vw"
           className="object-cover object-top"
         />
+        {/* El archivo original se ve medio amarillento comparado con el
+            cream del resto del sitio (27 jul 2026, a peticion explicita).
+            Overlay blanco, no cream, para enfriar ese tono -- opacidad baja
+            para no repetir el error anterior de opacar demasiado el fondo. */}
+        <div aria-hidden className="absolute inset-0 bg-white/30" />
       </div>
 
       <FadeInOnScroll className="mx-auto max-w-4xl">

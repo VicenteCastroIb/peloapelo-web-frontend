@@ -29,8 +29,10 @@ const AFIRMACIONES = [
 
 /**
  * "Cómo te sostenemos" — seccion nueva del rediseno, sin equivalente previo
- * en el codebase (ver docs de handoff). Fondo fotografico con overlay cream
- * translucido para mantener legibilidad, igual patron que Hero.tsx.
+ * en el codebase (ver docs de handoff). Fondo fotografico con un overlay
+ * cream muy sutil (bajado de /32 a /12 el 27 jul 2026, a peticion explicita:
+ * opacaba demasiado los colores originales del fondo) -- solo lo justo para
+ * que el texto siga siendo legible.
  */
 export default function ComoTeSostenemos() {
   return (
@@ -44,7 +46,7 @@ export default function ComoTeSostenemos() {
           sizes="100vw"
           className="object-cover object-[center_bottom]"
         />
-        <div aria-hidden className="absolute inset-0 bg-cream/32" />
+        <div aria-hidden className="absolute inset-0 bg-cream/12" />
       </div>
 
       <FadeInOnScroll className="mx-auto max-w-5xl">
