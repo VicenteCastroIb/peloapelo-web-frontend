@@ -68,7 +68,18 @@ export default function Hero() {
         </FadeInOnScroll>
 
         <div className="relative hidden w-full max-w-md shrink-0 lg:block">
-          <div className="relative aspect-[3/4] w-full">
+          {/* mask-image degrada los bordes del archivo a transparente para
+              que el rectangulo de la imagen no se note contra el fondo
+              cream de la seccion -- mismo truco que el retrato de
+              Fundadora.tsx. */}
+          <div
+            className="relative aspect-[3/4] w-full"
+            style={{
+              maskImage: "radial-gradient(ellipse at center, black 62%, transparent 92%)",
+              WebkitMaskImage:
+                "radial-gradient(ellipse at center, black 62%, transparent 92%)",
+            }}
+          >
             <Image
               src="/images/hero/Posible-hero.jpg"
               alt=""
