@@ -1,5 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
+import { gmailComposeUrl } from "@/lib/gmail";
+
+const CONTACTO_EMAIL = "jessica.lagno@peloapelo.cl";
 
 export default function Footer() {
   return (
@@ -15,8 +18,13 @@ export default function Footer() {
             Escríbenos cuando quieras.
           </h2>
           <div className="mt-6 flex flex-wrap gap-6 text-a-inline text-cream/80">
-            <a href="mailto:jessica.lagno@peloapelo.cl" className="hover:text-cream">
-              jessica.lagno@peloapelo.cl
+            <a
+              href={gmailComposeUrl(CONTACTO_EMAIL)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-cream"
+            >
+              {CONTACTO_EMAIL}
             </a>
             <Link href="/therapist" className="hover:text-cream">
               Agendar una sesión →
@@ -49,15 +57,35 @@ export default function Footer() {
             <p className="text-h4-label text-cream/50">Fundación</p>
             <ul className="mt-3 space-y-2 text-a-inline">
               <li><Link href="/#fundadora" className="hover:text-cream/80">Nuestra historia</Link></li>
-              <li><a href="mailto:jessica.lagno@peloapelo.cl" className="hover:text-cream/80">Contacto</a></li>
+              <li>
+                <a
+                  href={gmailComposeUrl(CONTACTO_EMAIL)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-cream/80"
+                >
+                  Contacto
+                </a>
+              </li>
             </ul>
           </div>
 
           <div>
             <p className="text-h4-label text-cream/50">Síguenos</p>
+            {/* Solo Instagram (27 jul 2026, a peticion explicita): la
+                fundacion no tiene TikTok, se saca en vez de dejar un link
+                muerto. Handle real: @guia.peloapelo. */}
             <ul className="mt-3 space-y-2 text-a-inline">
-              <li><a href="#" className="hover:text-cream/80">Instagram</a></li>
-              <li><a href="#" className="hover:text-cream/80">TikTok</a></li>
+              <li>
+                <a
+                  href="https://instagram.com/guia.peloapelo"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-cream/80"
+                >
+                  Instagram
+                </a>
+              </li>
             </ul>
           </div>
         </div>

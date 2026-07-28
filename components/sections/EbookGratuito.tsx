@@ -4,7 +4,7 @@ import EbookDownloadButton from "@/components/sections/EbookDownloadButton";
 
 export default function EbookGratuito() {
   return (
-    <section id="ebook" className="px-6 py-16 lg:px-12">
+    <section id="ebook" className="scroll-mt-24 px-6 py-16 lg:px-12">
       <FadeInOnScroll className="mx-auto max-w-5xl">
         {/* Borde degrade con los 3 colores de marca (violeta -> acento ->
             celeste): un div exterior con el degrade como fondo + padding de

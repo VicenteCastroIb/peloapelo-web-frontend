@@ -31,13 +31,26 @@ body {
   color: var(--color-navy);
 }
 
+/* Scroll animado al pinchar cualquier link de ancla interno (#quienes-somos,
+   #preguntas, etc.) en vez de un salto instantaneo -- respeta
+   prefers-reduced-motion para quienes desactivaron animaciones. El offset
+   real (que la seccion no quede tapada por el header fijo) se resuelve por
+   seccion con scroll-mt-24, ver componentes de section. */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 /* Escala tipográfica real de peloapelo.cl (ver docs/scan-22-07-2026).
-   Una sola familia (Plus Jakarta Sans, heredada de --font-sans, ver
-   layout.tsx) en todo el sitio; la jerarquía se construye variando tamaño
-   (12px-112px) y peso (300-800, el maximo real que carga esta fuente).
-   Line-height ligeramente mas suelto que el original (pensado para Lato)
-   para que los acentos (á é í ó ú ñ, tan presentes en el copy en español)
-   no se recorten en los titulos grandes. */
+   Una sola familia (Lato, heredada de --font-sans, ver layout.tsx) en todo
+   el sitio; la jerarquía se construye variando tamaño (12px-112px) y peso
+   (300-900, el maximo real que carga esta fuente -- ver layout.tsx). Los
+   pesos intermedios que usa esta hoja de estilos (500/600/800) no existen
+   como archivo cargado y el navegador los aproxima al peso real mas cercano.
+   Line-height ligeramente mas suelto que el original para que los acentos
+   (á é í ó ú ñ, tan presentes en el copy en español) no se recorten en los
+   titulos grandes. */
 .text-h1 {
   font-size: 112px;
   line-height: 1.02;
@@ -129,16 +142,15 @@ body {
   font-weight: 400;
 }
 
-/* Cifras de datos (tarjetas de estadisticas): peso extra-bold real (800,
-   el maximo que carga Plus Jakarta Sans -- 900 no existe como archivo
-   cargado y el navegador lo compensaria con negrita sintetica, mas tosca),
-   tabular-nums para que los digitos no salten de ancho mientras el
-   AnimatedCounter cuenta, y tracking mas cerrado — tratamiento tipico de
-   "numero grande" editorial en vez de reusar una escala de titulo generica. */
+/* Cifras de datos (tarjetas de estadisticas): peso black real (900, el
+   maximo que carga Lato -- ver layout.tsx), tabular-nums para que los
+   digitos no salten de ancho mientras el AnimatedCounter cuenta, y tracking
+   mas cerrado — tratamiento tipico de "numero grande" editorial en vez de
+   reusar una escala de titulo generica. */
 .text-data-lg {
   font-size: 34px;
   line-height: 1;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums;
 }
@@ -146,7 +158,7 @@ body {
 .text-data-md {
   font-size: 26px;
   line-height: 1;
-  font-weight: 800;
+  font-weight: 900;
   letter-spacing: -0.01em;
   font-variant-numeric: tabular-nums;
 }

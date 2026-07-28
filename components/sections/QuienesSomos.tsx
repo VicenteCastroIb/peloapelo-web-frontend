@@ -10,7 +10,7 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
  */
 export default function QuienesSomos() {
   return (
-    <section id="quienes-somos" className="px-6 py-16 lg:px-12 lg:py-20">
+    <section id="quienes-somos" className="scroll-mt-24 px-6 py-16 lg:px-12 lg:py-20">
       <FadeInOnScroll className="mx-auto max-w-3xl text-center">
         <div className="flex justify-center">
           <SectionBadge label="Quiénes somos" />

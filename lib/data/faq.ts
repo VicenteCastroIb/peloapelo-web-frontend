@@ -27,22 +27,22 @@ export const faqItems: FaqItem[] = [
   {
     question: "¿Hay profesionales disponibles?",
     answer:
-      "El contenido está respaldado por psicólogos y bibliografía médica. Puedes agendar sesión con terapeuta. No reemplaza una consulta médica, pero te prepara para ella.",
+      "El contenido está respaldado por psicólogos y bibliografía médica. Puedes agendar sesión con la fundadora, Jessica Lagno, desde la página de sesiones.",
   },
   {
     question: "¿Cuándo veo resultados?",
     answer:
       "La educación y la contención emocional se sienten desde las primeras semanas. Los cambios en la caída capilar toman más tiempo — por eso el Plan 3 Meses es el más recomendado.",
   },
+  {
+    question: "¿Funciona en el móvil?",
+    answer: "Sí, la plataforma está 100% optimizada para iOS y Android. Accede desde cualquier lugar.",
+  },
 ];
 
 // No renderizadas actualmente (ver arriba). Conservadas por si se decide
 // reincorporarlas.
 export const faqItemsArchived: FaqItem[] = [
-  {
-    question: "¿Funciona en el móvil?",
-    answer: "Sí, la plataforma está 100% optimizada para iOS y Android. Accede desde cualquier lugar.",
-  },
   {
     question: "¿Puedo cancelar cuando quiera?",
     answer:

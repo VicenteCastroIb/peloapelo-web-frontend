@@ -17,7 +17,7 @@ export default async function Planes() {
   }
 
   return (
-    <section id="planes" className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
+    <section id="planes" className="relative scroll-mt-24 overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
       <div className="absolute inset-0 -z-10">
         <Image
           src="/images/backgrounds/fondo-planes.jpg"
@@ -36,8 +36,7 @@ export default async function Planes() {
           Elige <span className="italic text-accent">tu camino</span>.
         </h2>
         <p className="mt-4 max-w-lg text-p-body text-navy/70">
-          Somos una fundación sin fines de lucro: cada plan pagado que eliges permite
-          que otra persona reciba apoyo sin costo.
+          Somos una fundación sin fines de lucro, y con tu suscripción ayudas a que otra persona pueda recibir apoyo sin costo.
         </p>
 
         {/* Tarjetas separadas con gap (antes: un unico panel dividido por

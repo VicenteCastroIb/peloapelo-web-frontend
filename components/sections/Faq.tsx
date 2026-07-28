@@ -7,16 +7,15 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 import Image from "next/image";
 import { faqItems } from "@/lib/data/faq";
 
-const REDES = [
-  { label: "Instagram", href: "#" },
-  { label: "TikTok", href: "#" },
-];
+// La fundacion no tiene TikTok (27 jul 2026, a peticion explicita): solo
+// Instagram, con el handle real @guia.peloapelo.
+const REDES = [{ label: "Instagram", href: "https://instagram.com/guia.peloapelo" }];
 
 export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section id="preguntas" className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
+    <section id="preguntas" className="relative scroll-mt-24 overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
       <div className="absolute inset-0 -z-10">
         <Image
           src="/images/backgrounds/fondo-preguntas.jpg"
@@ -62,12 +61,14 @@ export default function Faq() {
         {/* Bloque "comunidad" agregado por el rediseno (ver docs de
             handoff): los mismos links de redes ya viven en el Footer, se
             repiten aca a proposito como refuerzo al cierre de las
-            preguntas frecuentes, no como reemplazo del footer. */}
-        <div id="comunidad" className="mt-16 text-center">
-          <p className="text-h3-md text-navy sm:text-2xl">
+            preguntas frecuentes, no como reemplazo del footer. Texto
+            achicado (27 jul 2026, a peticion explicita) -- antes
+            text-h3-md/2xl se sentia demasiado grande para un cierre. */}
+        <div id="comunidad" className="mt-16 scroll-mt-24 text-center">
+          <p className="text-h3-sm text-navy sm:text-xl">
             Una comunidad te espera, para apoyarte, sin juicios.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-8 text-base font-bold uppercase tracking-[0.08em] text-accent">
+          <div className="mt-6 flex flex-wrap justify-center gap-8 text-p-small font-bold uppercase tracking-[0.08em] text-accent">
             {REDES.map((red) => (
               <a
                 key={red.label}

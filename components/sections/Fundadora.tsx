@@ -5,7 +5,7 @@ import Button from "@/components/ui/Button";
 
 export default function Fundadora() {
   return (
-    <section id="fundadora" className="relative overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
+    <section id="fundadora" className="relative scroll-mt-24 overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
       <FadeInOnScroll className="mx-auto max-w-6xl">
         <SectionBadge label="Quién está detrás" />
         <h2 className="text-3xl font-bold leading-[1.08] text-navy sm:text-5xl">

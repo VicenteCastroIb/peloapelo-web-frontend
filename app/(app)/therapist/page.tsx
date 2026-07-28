@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Heart, Calendar as CalendarIcon, Mail } from "lucide-react";
 import Button from "@/components/ui/Button";
+import { gmailComposeUrl } from "@/lib/gmail";
 
 const MORNING_SLOTS = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"];
 const AFTERNOON_SLOTS = ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"];
@@ -102,8 +103,14 @@ export default function TherapistPage() {
           <div className="text-center text-p-small text-navy/60">
             ¿Prefieres agendar directamente?
             <br />
+            {/* Correo corregido (27 jul 2026, auditoria de links): tenia un
+                dominio equivocado (@beehrteam.com, ajeno a la fundacion) en
+                vez del correo real de contacto. Ademas pasa por Gmail en
+                vez de mailto:, a peticion explicita. */}
             <a
-              href="mailto:jessica.lagno@beehrteam.com"
+              href={gmailComposeUrl("jessica.lagno@peloapelo.cl")}
+              target="_blank"
+              rel="noopener noreferrer"
               className="mt-1 inline-flex items-center gap-1.5 text-a-inline font-semibold text-accent"
             >
               <Mail size={14} /> Escribir directo

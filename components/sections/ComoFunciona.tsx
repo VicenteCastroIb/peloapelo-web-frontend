@@ -6,7 +6,7 @@ import { comoFuncionaSteps } from "@/lib/data/comoFunciona";
 
 export default function ComoFunciona() {
   return (
-    <section id="como-funciona" className="bg-white/40 px-6 py-24 lg:px-12 lg:py-36">
+    <section id="como-funciona" className="scroll-mt-24 bg-white/40 px-6 py-24 lg:px-12 lg:py-36">
       <FadeInOnScroll className="mx-auto max-w-6xl">
         <SectionBadge label="Cómo funciona" />
 
