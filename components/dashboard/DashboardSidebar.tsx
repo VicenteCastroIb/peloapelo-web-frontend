@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Camera, BookOpen, CreditCard, User, LogOut } from "lucide-react";
+import { Home, Camera, BookOpen, CreditCard, User, LogOut, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 
 const NAV_ITEMS = [
@@ -14,9 +14,12 @@ const NAV_ITEMS = [
   { href: "/profile", label: "Perfil", icon: User },
 ];
 
+const ADMIN_NAV_ITEM = { href: "/admin/courses", label: "Panel de cursos", icon: ShieldCheck };
+
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const navItems = user?.role === "ADMIN" ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS;
 
   return (
     <aside className="flex h-full w-56 shrink-0 flex-col justify-between border-r border-navy/10 bg-white px-4 py-6">
@@ -26,8 +29,8 @@ export default function DashboardSidebar() {
         </Link>
 
         <nav className="space-y-1">
-          {NAV_ITEMS.map((item) => {
-            const isActive = pathname === item.href;
+          {navItems.map((item) => {
+            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
             const Icon = item.icon;
             return (
               <Link
