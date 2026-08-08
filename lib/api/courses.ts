@@ -14,15 +14,19 @@ export interface CourseSummary {
   durationMinutes: number;
   /** null si no hay sesion activa (endpoint publico, ver CourseController). */
   progressPercent: number | null;
+  /** false si no hay sesion activa. */
+  saved: boolean;
 }
 
 export interface LessonSummary {
   id: string;
   slug: string;
   title: string;
+  summary: string | null;
   durationMinutes: number;
   displayOrder: number;
   completed: boolean;
+  hasVideo: boolean;
 }
 
 export interface CourseModuleSummary {
@@ -38,6 +42,7 @@ export interface CourseDetail {
   slug: string;
   title: string;
   description: string | null;
+  longDescription: string | null;
   level: CourseLevel;
   coverImageUrl: string | null;
   progressPercent: number | null;
@@ -58,6 +63,7 @@ export interface LessonDetail {
   title: string;
   videoUrl: string | null;
   body: string | null;
+  objectives: string[];
   durationMinutes: number;
   completed: boolean;
   resources: LessonResource[];
@@ -90,4 +96,12 @@ export function completeLesson(token: string | null | undefined, lessonId: strin
 
 export function uncompleteLesson(token: string | null | undefined, lessonId: string) {
   return apiFetch<void>(`/api/courses/lessons/${lessonId}/complete`, { method: "DELETE", token });
+}
+
+export function saveCourse(token: string | null | undefined, slug: string) {
+  return apiFetch<void>(`/api/courses/${slug}/save`, { method: "POST", token });
+}
+
+export function unsaveCourse(token: string | null | undefined, slug: string) {
+  return apiFetch<void>(`/api/courses/${slug}/save`, { method: "DELETE", token });
 }

@@ -64,6 +64,8 @@ export default function EditLessonPage() {
             title: lesson.title,
             videoUrl: lesson.videoUrl ?? "",
             body: lesson.body ?? "",
+            objectives: lesson.objectives ?? "",
+            summary: lesson.summary ?? "",
             durationMinutes: lesson.durationMinutes,
             published: lesson.published,
             displayOrder: lesson.displayOrder,

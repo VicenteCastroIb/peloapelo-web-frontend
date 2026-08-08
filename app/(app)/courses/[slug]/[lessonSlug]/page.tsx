@@ -3,7 +3,17 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
-import { ArrowLeft, ArrowRight, CheckCircle2, Circle, FileText, Headphones, Link2, PlayCircle } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  CheckCircle2,
+  Circle,
+  FileText,
+  Headphones,
+  Link2,
+  ListChecks,
+  PlayCircle,
+} from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 import {
   fetchLesson,
@@ -12,6 +22,7 @@ import {
   type LessonDetail,
   type ResourceType,
 } from "@/lib/api/courses";
+import { useLessonPosition, useTotalLessons } from "@/components/course/CourseOutlineContext";
 
 const RESOURCE_ICON: Record<ResourceType, typeof FileText> = {
   PDF: FileText,
@@ -41,6 +52,9 @@ export default function LessonPage() {
   const [lesson, setLesson] = useState<LessonDetail | null | "not-found">(null);
   const [saving, setSaving] = useState(false);
 
+  const position = useLessonPosition(lessonSlug);
+  const totalLessons = useTotalLessons();
+
   useEffect(() => {
     if (status === "loading") return;
     fetchLesson(slug, lessonSlug, token)
@@ -65,7 +79,7 @@ export default function LessonPage() {
 
   if (lesson === "not-found") {
     return (
-      <div className="max-w-3xl">
+      <div className="mx-auto max-w-3xl">
         <p className="text-h3-sm text-navy">No encontramos esta lección</p>
         <Link href={`/courses/${slug}`} className="mt-3 inline-flex items-center gap-1 text-a-inline font-semibold text-accent">
           <ArrowLeft size={14} /> Volver al curso
@@ -75,25 +89,44 @@ export default function LessonPage() {
   }
 
   return (
-    <div className="max-w-3xl">
-      <Link
-        href={`/courses/${slug}`}
-        className="inline-flex items-center gap-1 text-a-inline font-semibold text-navy/60"
-      >
-        <ArrowLeft size={14} /> {lesson ? lesson.courseTitle : "Curso"}
-      </Link>
-
-      {lesson === null && <p className="mt-6 text-p-small text-navy/50">Cargando…</p>}
+    <div className="mx-auto max-w-3xl">
+      {lesson === null && <p className="text-p-small text-navy/50">Cargando…</p>}
 
       {lesson && (
         <>
-          <p className="mt-4 text-h4-label text-navy/50">{lesson.moduleTitle}</p>
-          <h1 className="mt-1 text-h3-lg text-navy">{lesson.title}</h1>
+          {/* Banner de la lección: degradado de marca (ver globals.css),
+              breadcrumb "Lección X de Y" y título -- reemplaza la cabecera
+              plana que tenía antes, siguiendo la referencia de AWS Skill
+              Builder pero con la paleta de Pelo a Pelo. El volver al curso ya
+              vive en LessonImmersiveHeader (ver layout.tsx de esta ruta), no
+              hace falta repetirlo aquí. */}
+          <div className="overflow-hidden rounded-card-lg bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] p-8 text-cream md:p-10">
+            <p className="text-p-caption font-semibold uppercase tracking-[0.1em] text-cream/80">
+              {lesson.moduleTitle}
+              {position && totalLessons > 0 ? ` · Lección ${position.position} de ${totalLessons}` : ""}
+            </p>
+            <h1 className="mt-2 text-h2-md text-cream md:text-h2-lg">{lesson.title}</h1>
+            <div className="mt-4 h-1 w-16 rounded-pill bg-cream/70" />
+          </div>
 
-          {/* Video: si no hay URL cargada todavia, se deja el espacio listo
-              (misma logica que las tarjetas del listado real). */}
+          {lesson.objectives.length > 0 && (
+            <div className="mt-6 rounded-card-lg border border-accent/15 bg-accent/5 p-6">
+              <p className="flex items-center gap-2 text-h3-sm text-accent">
+                <ListChecks size={18} /> En esta lección aprenderás a:
+              </p>
+              <ul className="mt-3 space-y-2">
+                {lesson.objectives.map((objective, i) => (
+                  <li key={i} className="flex items-start gap-2 text-p-body text-navy/80">
+                    <span className="mt-2.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                    {objective}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           {lesson.videoUrl ? (
-            <div className="mt-5 aspect-video overflow-hidden rounded-card-lg bg-navy/5">
+            <div className="mt-6 aspect-video overflow-hidden rounded-card-lg bg-navy/5">
               <iframe
                 src={toEmbedUrl(lesson.videoUrl)}
                 className="h-full w-full"
@@ -102,7 +135,7 @@ export default function LessonPage() {
               />
             </div>
           ) : (
-            <div className="mt-5 flex aspect-video flex-col items-center justify-center gap-2 rounded-card-lg bg-navy/5 text-navy/40">
+            <div className="mt-6 flex aspect-video flex-col items-center justify-center gap-2 rounded-card-lg bg-navy/5 text-navy/40">
               <PlayCircle size={32} />
               <p className="text-p-small">Video próximamente</p>
             </div>

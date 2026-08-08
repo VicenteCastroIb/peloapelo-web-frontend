@@ -23,7 +23,10 @@ function Cell({ value }: { value: string | boolean }) {
   return <span className="text-p-small">{value}</span>;
 }
 
-export default async function PricingPage() {
+// Reubicada desde /pricing a /planes (ver tarea de reestructuracion, ago
+// 2026) -- mismo contenido, sin tocar copy. /pricing queda como redirect
+// permanente (ver next.config.ts) para no romper links existentes.
+export default async function PlanesPage() {
   // Ver Planes.tsx: mismo patron de fallback seguro si el backend no responde.
   let plans = staticPlans;
   try {

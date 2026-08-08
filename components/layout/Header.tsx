@@ -5,14 +5,21 @@ import Link from "next/link";
 import HeaderAuthCta from "@/components/layout/HeaderAuthCta";
 import { useScrolled } from "@/lib/hooks/useScrolled";
 
-// Tal cual el nav del mockup (26 jul 2026): Quiénes somos / Cómo funciona /
-// Planes / Preguntas. "Planes" apunta a /pricing (pagina dedicada, con tabla
-// comparativa) en vez de al ancla #planes del home -- decision funcional,
-// no de copy.
+// Nav actualizado para la arquitectura hibrida Multipage + landing larga
+// (ver tarea de reestructuracion, ago 2026). "Quiénes somos" y "Planes" ya
+// no son anclas del home -- QuienesSomos se movio a /fundacion y Planes
+// siempre fue una pagina dedicada (antes /pricing, ver next.config.ts para
+// el redirect). "Cómo funciona" y "Preguntas" si siguen siendo secciones
+// del home, se mantienen como anclas. "Blog" se agrega como pagina nueva.
+// "Inicio" (ago 2026, a pedido): antes la unica forma de volver al home
+// desde una pagina como /fundacion o /blog era el logo -- se suma un link
+// explicito al principio del nav para que sea obvio.
 const NAV_LINKS = [
-  { href: "/#quienes-somos", label: "Quiénes somos" },
+  { href: "/", label: "Inicio" },
   { href: "/#como-funciona", label: "Cómo funciona" },
-  { href: "/pricing", label: "Planes" },
+  { href: "/fundacion", label: "Quiénes somos" },
+  { href: "/blog", label: "Blog" },
+  { href: "/planes", label: "Planes" },
   { href: "/#preguntas", label: "Preguntas" },
 ];
 

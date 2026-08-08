@@ -92,7 +92,7 @@ export default function SubscriptionPage() {
       {subscriptions?.length === 0 && (
         <div className="mt-6 rounded-card-md bg-white p-8 text-center shadow-sm">
           <p className="text-p-body text-navy/70">Todavía no tienes una suscripción.</p>
-          <Link href="/pricing" className="mt-3 inline-block text-a-inline font-semibold text-accent">
+          <Link href="/planes" className="mt-3 inline-block text-a-inline font-semibold text-accent">
             Ver planes →
           </Link>
         </div>
@@ -144,7 +144,7 @@ export default function SubscriptionPage() {
               </button>
             )}
 
-            <Link href="/pricing" className="mt-5 ml-3 inline-block text-a-inline font-semibold text-accent">
+            <Link href="/planes" className="mt-5 ml-3 inline-block text-a-inline font-semibold text-accent">
               Cambiar de plan
             </Link>
           </div>

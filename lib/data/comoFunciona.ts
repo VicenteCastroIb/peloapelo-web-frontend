@@ -11,14 +11,17 @@ export interface Step {
 // actionHref de los pasos 1 y 2 corregidos (27 jul 2026, auditoria de
 // links): apuntaban a anclas #quiz y #articulos que no existen en ninguna
 // seccion del home. Paso 1 -> /auth (ahi vive el quiz real, mismo destino
-// que el CTA "Haz el quiz gratuito" del Hero). Paso 2 -> #ebook (la seccion
-// de contenido/articulos real del home es el ebook gratuito).
+// que el CTA "Haz el quiz gratuito" del Hero).
+// Paso 2 actualizado de nuevo (ver tarea de reestructuracion, ago 2026):
+// apuntaba a #ebook, seccion que salio del home en el reorden -- el ebook
+// gratuito ahora vive en /blog (ver app/blog/page.tsx), que tambien es el
+// destino natural de "aprende de la ciencia".
 export const comoFuncionaSteps: Step[] = [
   {
     number: "01",
     title: "Entiende tu situación",
     description:
-      "Un quiz breve para reconocer tu tipo de pérdida y lo que más necesitas hoy. Recibes una recomendación al instante.",
+      "Un quiz breve para reconocer tu tipo de pérdida, el impacto emocional y lo que más necesitas. Recibes una recomendación al instante.",
     icon: "/images/icons/como-funciona-paso1-quiz-icono.jpg",
     actionHref: "/auth",
     actionLabel: "Pincha aquí →",
@@ -27,16 +30,19 @@ export const comoFuncionaSteps: Step[] = [
     number: "02",
     title: "Aprende de la ciencia",
     description:
-      "Contenido sobre alopecia, estrés y bienestar psicológico. Creado junto a psicólogos expertos.",
+      "Contenido sobre alopecia, neurociencia del estrés y psicología del bienestar. Sin promesas vacías, con fuentes verificables.",
     icon: "/images/icons/como-funciona-paso2-ciencia-icono.jpg",
-    actionHref: "/#ebook",
+    actionHref: "/blog",
     actionLabel: "Pincha aquí →",
   },
   {
     number: "03",
     title: "Sostén el impacto emocional",
     description:
-      "Herramientas concretas para bajar la ansiedad y reconciliarte con tu cuerpo, paso a paso.",
+      "Herramientas concretas: mindfulness, respiración, autocompasión. Hábitos para bajar cortisol y reconciliarte con tu cuerpo.",
+    // Pendiente de reemplazo (ago 2026, feedback de diseno): el icono actual
+    // se lee como pulmones/anatomia, muy clinico para un sitio de salud.
+    // Prompt de reemplazo sugerido -- ver conversacion de esta tarea.
     icon: "/images/icons/como-funciona-paso3-emocional-icono.jpg",
     actionHref: "/#planes",
     actionLabel: "Pincha aquí →",

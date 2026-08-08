@@ -21,6 +21,8 @@ const EMPTY_LESSON: LessonRequest = {
   title: "",
   videoUrl: "",
   body: "",
+  objectives: "",
+  summary: "",
   durationMinutes: 0,
   published: false,
   displayOrder: 0,

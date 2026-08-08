@@ -82,6 +82,7 @@ export default function EditCoursePage() {
             slug: course.slug,
             title: course.title,
             description: course.description ?? "",
+            longDescription: course.longDescription ?? "",
             level: course.level,
             coverImageUrl: course.coverImageUrl ?? "",
             published: course.published,

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Lato } from "next/font/google";
-import Header from "@/components/layout/Header";
-import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/lib/auth/AuthContext";
+import SiteChrome from "@/components/layout/SiteChrome";
 import "./globals.css";
 
 // Vuelve a Lato (27 jul 2026, a peticion explicita de la duenia de la
@@ -37,9 +36,7 @@ export default function RootLayout({
     <html lang="es" className={`${lato.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col bg-cream text-navy font-sans">
         <AuthProvider>
-          <Header />
-          <main className="flex-1 pt-[72px]">{children}</main>
-          <Footer />
+          <SiteChrome>{children}</SiteChrome>
         </AuthProvider>
       </body>
     </html>

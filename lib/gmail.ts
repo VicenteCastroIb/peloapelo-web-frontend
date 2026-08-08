@@ -6,8 +6,9 @@
  * Gmail siempre, sin importar el default del usuario. Se abre en una
  * pestaña nueva (ver target="_blank" en cada uso).
  */
-export function gmailComposeUrl(to: string, subject?: string): string {
+export function gmailComposeUrl(to: string, subject?: string, body?: string): string {
   const params = new URLSearchParams({ view: "cm", fs: "1", to });
   if (subject) params.set("su", subject);
+  if (body) params.set("body", body);
   return `https://mail.google.com/mail/?${params.toString()}`;
 }

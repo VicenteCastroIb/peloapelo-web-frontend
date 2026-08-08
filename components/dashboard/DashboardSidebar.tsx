@@ -1,9 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Camera, BookOpen, CreditCard, User, LogOut, ShieldCheck } from "lucide-react";
+import { Home, Camera, BookOpen, CreditCard, User, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 
 const NAV_ITEMS = [
@@ -16,51 +15,37 @@ const NAV_ITEMS = [
 
 const ADMIN_NAV_ITEM = { href: "/admin/courses", label: "Panel de cursos", icon: ShieldCheck };
 
+// El logo y la sesión (nombre + "Cerrar sesión") ya viven en el Header
+// global (ver components/layout/Header.tsx + HeaderAuthCta.tsx, visible en
+// todas las rutas incluida esta). Repetirlos aquí abajo era ruido puramente
+// redundante -- este sidebar es solo navegación interna de la app.
 export default function DashboardSidebar() {
   const pathname = usePathname();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const navItems = user?.role === "ADMIN" ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS;
 
   return (
-    <aside className="flex h-full w-56 shrink-0 flex-col justify-between border-r border-navy/10 bg-white px-4 py-6">
-      <div>
-        <Link href="/" className="mb-8 flex items-center gap-2 px-2">
-          <Image src="/images/brand/logo.png" alt="Pelo a Pelo" width={40} height={40} className="h-10 w-10" />
-        </Link>
-
-        <nav className="space-y-1">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`flex items-center gap-3 rounded-pill px-3 py-2.5 text-a-nav transition-colors ${
-                  isActive
-                    ? "bg-accent/10 font-semibold text-accent"
-                    : "text-navy/70 hover:bg-navy/5"
-                }`}
-              >
-                <Icon size={18} />
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
-
-      <div className="border-t border-navy/10 pt-4">
-        <p className="truncate px-2 text-p-caption text-navy/50">{user?.email}</p>
-        <button
-          type="button"
-          onClick={logout}
-          className="mt-3 flex w-full items-center gap-3 rounded-pill px-3 py-2.5 text-a-nav text-navy/70 hover:bg-navy/5"
-        >
-          <LogOut size={18} />
-          Cerrar sesión
-        </button>
-      </div>
+    <aside className="flex h-full w-56 shrink-0 flex-col border-r border-navy/10 bg-white px-4 py-8">
+      <nav className="space-y-1">
+        {navItems.map((item) => {
+          const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const Icon = item.icon;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`flex items-center gap-3 rounded-pill px-3 py-2.5 text-a-nav transition-colors ${
+                isActive
+                  ? "bg-accent/10 font-semibold text-accent"
+                  : "text-navy/70 hover:bg-navy/5"
+              }`}
+            >
+              <Icon size={18} />
+              {item.label}
+            </Link>
+          );
+        })}
+      </nav>
     </aside>
   );
 }

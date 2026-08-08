@@ -19,7 +19,7 @@ export interface BackendPlan {
  * edita desde el panel de Supabase.
  *
  * Timeout corto (3s) a proposito: esto se llama durante el build/SSR de la
- * home y de /pricing (ver Planes.tsx), y ambos ya tienen fallback al valor
+ * home y de /planes (ver Planes.tsx), y ambos ya tienen fallback al valor
  * estatico si esto falla -- sin un timeout explicito, un backend
  * inalcanzable podria colgar cada build en vez de fallar rapido y usar el
  * fallback.

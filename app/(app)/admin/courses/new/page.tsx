@@ -11,6 +11,7 @@ const EMPTY: CourseRequest = {
   slug: "",
   title: "",
   description: "",
+  longDescription: "",
   level: "BASICO",
   coverImageUrl: "",
   published: false,

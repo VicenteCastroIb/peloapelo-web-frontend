@@ -17,6 +17,7 @@ export default function AuthPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
@@ -148,13 +149,41 @@ export default function AuthPage() {
               </Link>
             )}
 
+            {!isLogin && (
+              <label className="flex items-start gap-2.5 text-p-small text-navy/70">
+                <input
+                  type="checkbox"
+                  required
+                  checked={acceptedTerms}
+                  onChange={(e) => setAcceptedTerms(e.target.checked)}
+                  className="mt-0.5 h-4 w-4 shrink-0 accent-accent"
+                />
+                <span>
+                  Acepto los{" "}
+                  <Link href="/terminos" target="_blank" className="font-semibold text-accent underline">
+                    Términos y Condiciones
+                  </Link>{" "}
+                  y la{" "}
+                  <Link href="/privacidad" target="_blank" className="font-semibold text-accent underline">
+                    Política de Privacidad
+                  </Link>
+                  .
+                </span>
+              </label>
+            )}
+
             {error && (
               <p className="rounded-pill bg-coral-soft px-4 py-2 text-p-small text-coral" role="alert">
                 {error}
               </p>
             )}
 
-            <Button type="submit" variant="gradient" className="w-full" disabled={submitting}>
+            <Button
+              type="submit"
+              variant="gradient"
+              className="w-full"
+              disabled={submitting || (!isLogin && !acceptedTerms)}
+            >
               {submitting ? "Un momento…" : isLogin ? "Iniciar sesión" : "Crear cuenta"}
             </Button>
           </form>

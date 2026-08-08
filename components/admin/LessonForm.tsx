@@ -70,6 +70,31 @@ export default function LessonForm({
         </label>
 
         <label className="text-p-small font-semibold text-navy/70 sm:col-span-2">
+          Resumen breve (aparece bajo el título en la lista de lecciones del curso)
+          <input
+            maxLength={300}
+            className={inputClass}
+            placeholder="Una frase corta que resuma la lección"
+            value={values.summary}
+            onChange={(e) => setValues({ ...values, summary: e.target.value })}
+          />
+        </label>
+
+        <label className="text-p-small font-semibold text-navy/70 sm:col-span-2">
+          Objetivos de la lección (opcional)
+          <textarea
+            rows={3}
+            className={inputClass}
+            placeholder={"Escribe un objetivo por línea, por ejemplo:\nIdentificar los tipos de alopecia más comunes\nReconocer cuándo pedir ayuda profesional"}
+            value={values.objectives}
+            onChange={(e) => setValues({ ...values, objectives: e.target.value })}
+          />
+          <span className="mt-1 block text-p-caption font-normal text-navy/50">
+            Cada línea aparece como un punto en el recuadro &quot;En esta lección aprenderás a…&quot;. Déjalo vacío si no aplica.
+          </span>
+        </label>
+
+        <label className="text-p-small font-semibold text-navy/70 sm:col-span-2">
           Contenido de la lección
           <textarea
             rows={8}

@@ -48,25 +48,18 @@ export default function Footer() {
             <p className="text-h4-label text-cream/50">Plataforma</p>
             <ul className="mt-3 space-y-2 text-a-inline">
               <li><Link href="/#como-funciona" className="hover:text-cream/80">Cómo funciona</Link></li>
-              <li><Link href="/pricing" className="hover:text-cream/80">Precios</Link></li>
-              <li><Link href="/#ebook" className="hover:text-cream/80">Ebook gratuito</Link></li>
+              <li><Link href="/planes" className="hover:text-cream/80">Precios</Link></li>
+              <li><Link href="/blog#ebook" className="hover:text-cream/80">Ebook gratuito</Link></li>
+              <li><Link href="/blog" className="hover:text-cream/80">Blog</Link></li>
             </ul>
           </div>
 
           <div>
             <p className="text-h4-label text-cream/50">Fundación</p>
             <ul className="mt-3 space-y-2 text-a-inline">
+              <li><Link href="/fundacion" className="hover:text-cream/80">Quiénes somos</Link></li>
               <li><Link href="/#fundadora" className="hover:text-cream/80">Nuestra historia</Link></li>
-              <li>
-                <a
-                  href={gmailComposeUrl(CONTACTO_EMAIL)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-cream/80"
-                >
-                  Contacto
-                </a>
-              </li>
+              <li><Link href="/contacto" className="hover:text-cream/80">Contacto</Link></li>
             </ul>
           </div>
 
@@ -90,8 +83,12 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-2 border-t border-cream/10 pt-6 text-p-caption text-cream/50 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-3 border-t border-cream/10 pt-6 text-p-caption text-cream/50 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Fundación Pelo a Pelo · Chile</p>
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <Link href="/terminos" className="hover:text-cream/80">Términos y condiciones</Link>
+            <Link href="/privacidad" className="hover:text-cream/80">Privacidad</Link>
+          </div>
           <p className="italic">Hecho con cuidado, a pelo.</p>
         </div>
       </div>

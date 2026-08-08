@@ -10,10 +10,16 @@ export default function AnimatedCounter({
   value,
   suffix = "",
   durationMs = 1200,
+  className = "italic text-accent",
 }: {
   value: number;
   suffix?: string;
   durationMs?: number;
+  // Permite usar un color/estilo distinto por instancia (ej. texto blanco
+  // sobre la tarjeta destacada de Estadisticas.tsx, que va sobre un fondo
+  // con degrade en vez del cream/blanco del resto del sitio). Con el mismo
+  // default de siempre si no se pasa nada, para no romper otros usos.
+  className?: string;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = useState(0);
@@ -43,7 +49,7 @@ export default function AnimatedCounter({
   }, [value, durationMs]);
 
   return (
-    <span ref={ref} className="italic text-accent">
+    <span ref={ref} className={className}>
       {display}
       {suffix}
     </span>

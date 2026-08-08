@@ -14,7 +14,7 @@ export interface Plan {
   highlighted?: boolean;
 }
 
-// Fuente única de verdad para Home y /pricing (ver docs/scan-22-07-2026, seccion 1.2 del plan de trabajo)
+// Fuente única de verdad para Home y /planes (ver docs/scan-22-07-2026, seccion 1.2 del plan de trabajo)
 export const plans: Plan[] = [
   {
     id: "gratuito",
@@ -23,8 +23,10 @@ export const plans: Plan[] = [
     price: "Gratis",
     period: "por 3 días",
     features: [
+      "Acceso por 3 días",
       "Quiz inicial personalizado",
       "Seguimiento de progreso",
+      "Ebook gratuito",
       "Sin tarjeta de crédito",
     ],
     cta: "Comienza gratis",
@@ -38,10 +40,12 @@ export const plans: Plan[] = [
     period: "por 3 meses",
     costPerDay: "$1.022/día",
     features: [
+      "Todo del plan mensual",
       "Programa estructurado de 3 meses",
+      "Contenido progresivo semanal",
       "Cursos especializados en ansiedad",
-      "Sesión con terapeuta profesional",
-      "Garantía de 14 días",
+      "Agenda con terapeuta profesional",
+      "Garantía 14 días",
     ],
     cta: "Elegir Bienestar",
     highlighted: true,
@@ -57,6 +61,8 @@ export const plans: Plan[] = [
     features: [
       "1 sesión con terapeuta al mes",
       "Acceso a todo el contenido",
+      "Contenido nuevo cada semana",
+      "Seguimiento de progreso",
       "Comunidad de apoyo",
     ],
     cta: "Elegir Mensual",

@@ -18,6 +18,16 @@ const PLAN_GRADIENTS: Record<Plan["id"], string> = {
   mensual: "linear-gradient(160deg,#ffffff,rgba(239,67,67,0.08))",
 };
 
+// Sombra tenida en navy en vez del gris por defecto de Tailwind (ago 2026,
+// "las cards deben notarse mas"): shadow-lg/xl planos se perdian contra el
+// fondo pastel de la seccion -- una sombra mas grande, mas oscura y con un
+// tinte de marca en vez de gris puro lee con mas peso y contraste. La
+// destacada suma un halo violeta ademas del negro, para que se note que es
+// "la que flota mas alto" incluso antes de leer el badge.
+const CARD_SHADOW = "0 24px 48px -14px rgba(43,61,79,0.35), 0 6px 16px -6px rgba(43,61,79,0.18)";
+const CARD_SHADOW_HIGHLIGHTED =
+  "0 28px 60px -14px rgba(96,73,141,0.4), 0 8px 20px -6px rgba(43,61,79,0.22)";
+
 export default function PlanCard({ plan }: { plan: Plan }) {
   const router = useRouter();
   const { status, token } = useAuth();
@@ -46,10 +56,19 @@ export default function PlanCard({ plan }: { plan: Plan }) {
 
   return (
     <div
+      // Sombra propia (ago 2026, "que las cards esten por encima del
+      // background", luego "las cards deben notarse mas"): antes la card no
+      // tenia shadow, dependia solo del fondo detras para separarse -- ahora
+      // se despega con una sombra tenida en navy (CARD_SHADOW, ver arriba),
+      // mas fuerte que el shadow-lg/xl generico de Tailwind con el que se
+      // probo primero.
       className={`relative flex flex-col gap-5 rounded-card-lg border p-8 text-navy ${
-        plan.highlighted ? "border-2 border-accent" : "border-navy/12"
+        plan.highlighted ? "border-2 border-accent" : "border-navy/15"
       }`}
-      style={{ background: PLAN_GRADIENTS[plan.id] }}
+      style={{
+        background: PLAN_GRADIENTS[plan.id],
+        boxShadow: plan.highlighted ? CARD_SHADOW_HIGHLIGHTED : CARD_SHADOW,
+      }}
     >
       {plan.highlighted && (
         <span className="absolute -top-3.5 left-7 rounded-pill bg-accent px-3.5 py-1.5 text-p-caption font-bold tracking-wide text-white">

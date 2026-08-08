@@ -11,7 +11,7 @@ export default function DashboardPage() {
 
   return (
     <div className="max-w-4xl">
-      <h1 className="text-h3-lg text-navy">Hola, {firstName} 👋</h1>
+      <h1 className="text-h3-lg text-navy">Hola, {firstName}.</h1>
       <p className="mt-1 text-p-body text-navy/60">Tu espacio seguro para crecer. Cada paso cuenta.</p>
 
       <div className="mt-8 rounded-card-lg bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] p-8 text-white">

@@ -21,6 +21,8 @@ export interface AdminLesson {
   title: string;
   videoUrl: string | null;
   body: string | null;
+  objectives: string | null;
+  summary: string | null;
   durationMinutes: number;
   published: boolean;
   displayOrder: number;
@@ -41,6 +43,7 @@ export interface AdminCourse {
   slug: string;
   title: string;
   description: string | null;
+  longDescription: string | null;
   level: CourseLevel;
   coverImageUrl: string | null;
   published: boolean;
@@ -66,6 +69,7 @@ export interface CourseRequest {
   slug: string;
   title: string;
   description: string;
+  longDescription: string;
   level: CourseLevel;
   coverImageUrl: string;
   published: boolean;
@@ -83,6 +87,8 @@ export interface LessonRequest {
   title: string;
   videoUrl: string;
   body: string;
+  objectives: string;
+  summary: string;
   durationMinutes: number;
   published: boolean;
   displayOrder: number;

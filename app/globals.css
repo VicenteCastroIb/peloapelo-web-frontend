@@ -192,6 +192,30 @@ body {
   animation: fade-in-blur 0.7s ease-out both;
 }
 
+/* Carrusel de testimonios en movimiento continuo (TestimonialsCarousel.tsx,
+   ago 2026): la pista duplica la lista de testimonios y se desliza -50%
+   (el ancho de una sola copia) en loop, dando la ilusion de una cinta
+   infinita. Se pausa al pasar el mouse (ver hover:[animation-play-state]
+   en el componente) para poder leer sin que se mueva. */
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 50s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-marquee {
+    animation: none;
+  }
+}
+
 /* Evita el fondo azul/amarillo que Chrome impone al autorellenar inputs.
    El truco del box-shadow inset + transition delay es la única forma
    confiable de sobreescribir ese estilo forzado por el navegador. */

@@ -18,9 +18,12 @@ export default async function Planes() {
 
   return (
     <section id="planes" className="relative scroll-mt-24 overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
-      {/* Sin overlay (27 jul 2026, a peticion explicita): el archivo ya es
-          muy pastel/claro, el texto navy tiene contraste de sobra encima
-          sin necesitar ningun filtro que le opaque el color original. */}
+      {/* Fondo nitido, sin blur (ago 2026: se probo un blur+velo cream para
+          que las cards resaltaran mas, pero a pedido se revierte -- en vez
+          de degradar el fondo, las cards ahora se despegan solas via mas
+          sombra/elevacion, ver shadow-lg en PlanCard.tsx). Sin overlay: el
+          archivo ya es muy pastel/claro, el texto navy tiene contraste de
+          sobra encima. */}
       <div className="absolute inset-0 -z-10">
         <Image
           src="/images/backgrounds/fondo-planes.jpg"
