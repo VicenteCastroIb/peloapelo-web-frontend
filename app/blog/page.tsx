@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import ArticleCard from "@/components/sections/ArticleCard";
 import EbookGratuito from "@/components/sections/EbookGratuito";
-import { articles } from "@/lib/data/articles";
+import { listArticles } from "@/lib/api/blog";
 
 export const metadata: Metadata = {
   title: "Blog · Pelo a Pelo",
@@ -9,16 +9,17 @@ export const metadata: Metadata = {
     "Recursos y artículos sobre alopecia, bienestar emocional y autocuidado, escritos con evidencia y sin promesas vacías.",
 };
 
-// Pagina nueva "Recursos y Articulos" (ver tarea de reestructuracion, ago
-// 2026). Mismos 3 articulos mock que <RelatedArticles /> en el home (ver
-// lib/data/articles.ts, fuente unica) para no duplicar datos; esta pagina
-// es la version "ver todo" a la que apunta esa seccion.
+// Pagina "Recursos y Articulos". Blog editable (ago 2026): los articulos se
+// piden al backend (GET /api/blog, mismos datos que alimentan
+// <RelatedArticles /> en el home) en vez de un mock estatico -- Jessica los
+// crea/edita desde /admin/blog.
 //
-// <EbookGratuito /> se reubica aca (sin tocar su texto): salio del home en
-// el reorden porque no estaba en la estructura exacta pedida, pero es un
-// recurso real y funcional -- "Recursos y articulos" es su lugar natural,
-// no un anexo descartado. Header/Footer/ComoFunciona apuntan a /blog#ebook.
-export default function BlogPage() {
+// <EbookGratuito /> vive aca (sin tocar su texto): es un recurso real y
+// funcional, "Recursos y articulos" es su lugar natural. Header/Footer/
+// ComoFunciona apuntan a /blog#ebook.
+export default async function BlogPage() {
+  const articles = await listArticles().catch(() => []);
+
   return (
     <section className="px-6 py-20 lg:px-12">
       <div className="mx-auto max-w-6xl">
@@ -31,11 +32,17 @@ export default function BlogPage() {
           evidencia y sin promesas vacías.
         </p>
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {articles.map((article) => (
-            <ArticleCard key={article.slug} article={article} />
-          ))}
-        </div>
+        {articles.length > 0 ? (
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {articles.map((article) => (
+              <ArticleCard key={article.slug} article={article} />
+            ))}
+          </div>
+        ) : (
+          <p className="mt-12 text-p-body text-navy/60">
+            Estamos preparando los primeros artículos. Vuelve pronto.
+          </p>
+        )}
       </div>
 
       <div className="mt-16">

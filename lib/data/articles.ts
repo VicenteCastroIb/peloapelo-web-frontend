@@ -8,9 +8,11 @@ export interface Article {
 }
 
 // Mock data para <RelatedArticles /> (home) y /blog (ver tarea de
-// reestructuracion, ago 2026). No existen paginas de detalle por articulo
-// todavia -- por eso las tarjetas enlazan a /blog en vez de a un slug que
-// devolveria 404.
+// reestructuracion, ago 2026). Las tarjetas enlazan a /blog/[slug] (ver
+// app/blog/[slug]/page.tsx). "manejo-ansiedad-caida" ya tiene cuerpo real
+// investigado (components/articles/ManejoAnsiedadCaida.tsx); los otros 2
+// slugs muestran un estado "en preparacion" hasta que se investiguen con el
+// mismo criterio (fuentes medicas/psicologicas reales, sin datos inventados).
 //
 // Portadas propias (ago 2026): reemplazan las de lib/data/courses.ts
 // (paleta teal/naranja, fuera de la paleta de marca, solo un placeholder
