@@ -21,9 +21,30 @@ export class ApiError extends Error {
  */
 export async function apiFetch<T>(
   path: string,
-  options: { method?: string; body?: unknown; token?: string | null } = {}
+  options: {
+    method?: string;
+    body?: unknown;
+    token?: string | null;
+    cache?: RequestCache;
+    /**
+     * ISR (ago 2026, optimizacion de tiempos de carga): pasa
+     * `next: { revalidate }` al fetch patcheado por Next.js en Server
+     * Components. Antes el blog usaba cache: "no-store" en todas sus
+     * lecturas publicas -- eso bloqueaba el SSR de /blog y /blog/[slug]
+     * esperando una respuesta fresca del backend en CADA visita, sin
+     * ningun cache. Con revalidate, Next sirve la version cacheada
+     * (rapidisima) y solo vuelve a pedirle al backend despues de que pasen
+     * `revalidate` segundos -- el contenido tarda como mucho eso en verse
+     * fresco tras publicar, a cambio de que la enorme mayoria de las
+     * visitas no dependan en absoluto de la latencia de red hacia el
+     * backend/Supabase. No tiene efecto en fetches desde Client Components
+     * (fetch del navegador ignora las extensiones de Next), asi que ahi
+     * seguimos dependiendo de que el backend responda rapido.
+     */
+    revalidate?: number;
+  } = {}
 ): Promise<T> {
-  const { method = "GET", body, token } = options;
+  const { method = "GET", body, token, cache, revalidate } = options;
 
   const headers: Record<string, string> = { "Content-Type": "application/json" };
   if (token) {
@@ -34,6 +55,11 @@ export async function apiFetch<T>(
     method,
     headers,
     credentials: "include",
+    // cache es opcional (ej. "no-store" cuando de verdad hace falta
+    // maxima frescura). Sin cache ni revalidate, fetch usa su
+    // comportamiento default. Los dos son mutuamente excluyentes en la API
+    // de fetch de Next -- cache/revalidate no pueden ir juntos.
+    ...(cache ? { cache } : revalidate !== undefined ? { next: { revalidate } } : {}),
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
 
