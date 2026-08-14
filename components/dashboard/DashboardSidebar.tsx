@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Camera, BookOpen, CreditCard, User, ShieldCheck } from "lucide-react";
+import { Home, Camera, BookOpen, CreditCard, User, ShieldCheck, Newspaper } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 
 const NAV_ITEMS = [
@@ -13,7 +13,10 @@ const NAV_ITEMS = [
   { href: "/profile", label: "Perfil", icon: User },
 ];
 
-const ADMIN_NAV_ITEM = { href: "/admin/courses", label: "Panel de cursos", icon: ShieldCheck };
+const ADMIN_NAV_ITEMS = [
+  { href: "/admin/courses", label: "Panel de cursos", icon: ShieldCheck },
+  { href: "/admin/blog", label: "Panel de blog", icon: Newspaper },
+];
 
 // El logo y la sesión (nombre + "Cerrar sesión") ya viven en el Header
 // global (ver components/layout/Header.tsx + HeaderAuthCta.tsx, visible en
@@ -22,10 +25,14 @@ const ADMIN_NAV_ITEM = { href: "/admin/courses", label: "Panel de cursos", icon:
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const navItems = user?.role === "ADMIN" ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS;
+  const navItems = user?.role === "ADMIN" ? [...NAV_ITEMS, ...ADMIN_NAV_ITEMS] : NAV_ITEMS;
 
   return (
-    <aside className="flex h-full w-56 shrink-0 flex-col border-r border-navy/10 bg-white px-4 py-8">
+    // px-6 (ago 2026, a pedido -- "el header, sidebar... deben combinar a
+    // la perfeccion"): mismo padding horizontal que el Header en el panel
+    // interno (ver Header.tsx), para que el logo de arriba y estos items
+    // de navegacion queden en la misma columna vertical, no desalineados.
+    <aside className="flex h-full w-56 shrink-0 flex-col border-r border-navy/10 bg-white px-6 py-8">
       <nav className="space-y-1">
         {navItems.map((item) => {
           const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);

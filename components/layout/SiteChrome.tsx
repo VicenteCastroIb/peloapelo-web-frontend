@@ -10,7 +10,7 @@
 import { usePathname } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
-import { isImmersiveLessonPath } from "@/lib/routes";
+import { isAppPanelPath, isImmersiveLessonPath } from "@/lib/routes";
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -19,11 +19,22 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
     return <main className="flex-1">{children}</main>;
   }
 
+  // El panel interno (dashboard, cursos, perfil, /admin, etc., ver
+  // lib/routes.ts) no lleva el Footer publico completo -- tiene su propio
+  // CompactFooter, montado adentro de app/(app)/layout.tsx en vez de aca.
+  // La razon de que viva ahi y no aca: ese layout tiene su propia columna
+  // con scroll interno (h-[calc(100vh-72px)] + overflow-y-auto, ver el
+  // comentario en ese archivo) -- si el footer se agregara aca, como
+  // hermano de afuera de esa columna, quedaria fuera del alto exacto del
+  // viewport y solo se veria haciendo scrollear la PAGINA entera, arrastrando
+  // consigo al DashboardSidebar que se supone queda fijo.
+  const appPanel = isAppPanelPath(pathname);
+
   return (
     <>
       <Header />
       <main className="flex-1 pt-[72px]">{children}</main>
-      <Footer />
+      {!appPanel && <Footer />}
     </>
   );
 }

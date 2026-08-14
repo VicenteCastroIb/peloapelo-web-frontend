@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Mail, Calendar } from "lucide-react";
 import { gmailComposeUrl } from "@/lib/gmail";
 
 const CONTACTO_EMAIL = "jessica.lagno@peloapelo.cl";
@@ -17,16 +18,28 @@ export default function Footer() {
             <br />
             Escríbenos cuando quieras.
           </h2>
-          <div className="mt-6 flex flex-wrap gap-6 text-a-inline text-cream/80">
+          {/* Resaltado (ago 2026, a pedido -- "es importante resaltarlo... para
+              insitar a agendar sesiones"): antes eran dos links de texto plano
+              que se perdian dentro del parrafo. Ahora son dos "chips"
+              clickeables bien diferenciados -- el mail con borde sutil, y
+              "Agendar" como boton solido en degrade (el mismo tratamiento que
+              el CTA principal del Header, "Haz el Quiz") para que sea
+              inequivocamente el llamado a la accion mas importante del cierre. */}
+          <div className="mt-6 flex flex-wrap items-center gap-3">
             <a
               href={gmailComposeUrl(CONTACTO_EMAIL)}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-cream"
+              className="inline-flex items-center gap-2 rounded-pill border border-cream/25 bg-cream/5 px-5 py-2.5 text-a-inline text-cream hover:border-cream/40 hover:bg-cream/10"
             >
+              <Mail size={16} className="text-[var(--color-gradient-to)]" />
               {CONTACTO_EMAIL}
             </a>
-            <Link href="/therapist" className="hover:text-cream">
+            <Link
+              href="/therapist"
+              className="inline-flex items-center gap-2 rounded-pill bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] px-5 py-2.5 text-a-inline font-semibold text-white hover:opacity-90"
+            >
+              <Calendar size={16} />
               Agendar una sesión →
             </Link>
           </div>
