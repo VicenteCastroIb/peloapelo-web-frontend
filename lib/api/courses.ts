@@ -2,6 +2,8 @@ import { apiFetch } from "./client";
 
 export type CourseLevel = "BASICO" | "INTERMEDIO" | "AVANZADO";
 export type ResourceType = "PDF" | "AUDIO" | "LINK";
+/** Orientacion del video de una leccion (ver LessonMediaPicker.tsx) -- solo importa cuando hay video cargado. */
+export type VideoOrientation = "HORIZONTAL" | "VERTICAL";
 
 export interface CourseSummary {
   id: string;
@@ -62,6 +64,8 @@ export interface LessonDetail {
   slug: string;
   title: string;
   videoUrl: string | null;
+  videoOrientation: VideoOrientation;
+  imageUrl: string | null;
   body: string | null;
   objectives: string[];
   durationMinutes: number;

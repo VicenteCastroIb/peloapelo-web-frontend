@@ -9,6 +9,7 @@ import {
   type LessonResourceRequest,
 } from "@/lib/api/adminCourses";
 import type { ResourceType } from "@/lib/api/courses";
+import Collapse from "@/components/shared/Collapse";
 
 const RESOURCE_ICON: Record<ResourceType, typeof FileText> = {
   PDF: FileText,
@@ -86,7 +87,7 @@ export default function ResourceList({
         })}
       </div>
 
-      {adding ? (
+      <Collapse open={adding}>
         <form onSubmit={handleAdd} className="mt-4 space-y-3 rounded-card-md bg-cream p-4">
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="text-p-caption font-semibold text-navy/60">
@@ -134,7 +135,8 @@ export default function ResourceList({
             </button>
           </div>
         </form>
-      ) : (
+      </Collapse>
+      {!adding && (
         <button
           type="button"
           onClick={() => setAdding(true)}

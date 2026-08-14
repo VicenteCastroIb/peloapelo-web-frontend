@@ -1,8 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { CourseLevel } from "@/lib/api/courses";
 import type { CourseRequest } from "@/lib/api/adminCourses";
+import { slugify } from "@/lib/slugify";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 const LEVEL_OPTIONS: { value: CourseLevel; label: string }[] = [
   { value: "BASICO", label: "Básico" },
@@ -13,20 +15,36 @@ const LEVEL_OPTIONS: { value: CourseLevel; label: string }[] = [
 const inputClass =
   "mt-1 w-full rounded-card-md border border-navy/15 bg-cream px-4 py-2.5 text-p-body text-navy outline-none focus:border-accent";
 
+// Mismo patron que ArticleForm.tsx (ago 2026): sin input de slug (se deriva
+// siempre del titulo, atomico dentro del mismo onChange -- ver comentario en
+// ArticleForm sobre la condicion de carrera que esto evita) y sin input de
+// "Orden en el listado" (el orden ahora se define con las flechas de
+// /admin/courses, ver reorderCourses en adminCourses.ts). `onChange` es
+// opcional y alimenta la vista previa en vivo (LiveCoursePreview) sin
+// guardar nada -- el guardado real sigue siendo explicito con el boton.
 export default function CourseForm({
   initial,
   submitLabel,
   onSubmit,
   onDelete,
+  onChange,
 }: {
   initial: CourseRequest;
   submitLabel: string;
   onSubmit: (values: CourseRequest) => Promise<void>;
   onDelete?: () => Promise<void>;
+  onChange?: (values: CourseRequest) => void;
 }) {
   const [values, setValues] = useState<CourseRequest>(initial);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+
+  useEffect(() => {
+    onChange?.(values);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [values]);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -41,28 +59,41 @@ export default function CourseForm({
     }
   }
 
+  // Mismo patron que ArticleForm.tsx (ago 2026, a pedido: "mismo diseño que
+  // aparece al eliminar blog"): ConfirmDialog en vez del confirm() nativo
+  // del navegador, controlado aca para que `deleting` solo se active
+  // despues de confirmar.
+  function handleDeleteClick() {
+    if (!onDelete || deleting) return;
+    setConfirmOpen(true);
+  }
+
+  async function confirmDelete() {
+    setConfirmOpen(false);
+    setDeleting(true);
+    setError(null);
+    try {
+      await onDelete!();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo eliminar el curso");
+      setDeleting(false);
+    }
+    // sin `finally`: si onDelete tuvo exito, la pagina que llama navega afuera.
+  }
+
   return (
     <form onSubmit={handleSubmit} className="rounded-card-md bg-white p-6 shadow-sm">
       <div className="grid gap-4 sm:grid-cols-2">
-        <label className="text-p-small font-semibold text-navy/70">
+        <label className="text-p-small font-semibold text-navy/70 sm:col-span-2">
           Título
           <input
             required
             className={inputClass}
             value={values.title}
-            onChange={(e) => setValues({ ...values, title: e.target.value })}
-          />
-        </label>
-
-        <label className="text-p-small font-semibold text-navy/70">
-          Slug (URL)
-          <input
-            required
-            pattern="[a-z0-9]+(-[a-z0-9]+)*"
-            title="Solo minúsculas, números y guiones"
-            className={inputClass}
-            value={values.slug}
-            onChange={(e) => setValues({ ...values, slug: e.target.value })}
+            onChange={(e) => {
+              const title = e.target.value;
+              setValues((v) => ({ ...v, title, slug: slugify(title) }));
+            }}
           />
         </label>
 
@@ -72,7 +103,10 @@ export default function CourseForm({
             rows={2}
             className={inputClass}
             value={values.description}
-            onChange={(e) => setValues({ ...values, description: e.target.value })}
+            onChange={(e) => {
+              const description = e.target.value;
+              setValues((v) => ({ ...v, description }));
+            }}
           />
         </label>
 
@@ -82,7 +116,10 @@ export default function CourseForm({
             rows={4}
             className={inputClass}
             value={values.longDescription}
-            onChange={(e) => setValues({ ...values, longDescription: e.target.value })}
+            onChange={(e) => {
+              const longDescription = e.target.value;
+              setValues((v) => ({ ...v, longDescription }));
+            }}
           />
         </label>
 
@@ -91,7 +128,10 @@ export default function CourseForm({
           <select
             className={inputClass}
             value={values.level}
-            onChange={(e) => setValues({ ...values, level: e.target.value as CourseLevel })}
+            onChange={(e) => {
+              const level = e.target.value as CourseLevel;
+              setValues((v) => ({ ...v, level }));
+            }}
           >
             {LEVEL_OPTIONS.map((opt) => (
               <option key={opt.value} value={opt.value}>
@@ -102,22 +142,15 @@ export default function CourseForm({
         </label>
 
         <label className="text-p-small font-semibold text-navy/70">
-          Orden en el listado
-          <input
-            type="number"
-            className={inputClass}
-            value={values.displayOrder}
-            onChange={(e) => setValues({ ...values, displayOrder: Number(e.target.value) })}
-          />
-        </label>
-
-        <label className="text-p-small font-semibold text-navy/70 sm:col-span-2">
           URL de imagen de portada (opcional)
           <input
             className={inputClass}
             placeholder="https://…"
             value={values.coverImageUrl}
-            onChange={(e) => setValues({ ...values, coverImageUrl: e.target.value })}
+            onChange={(e) => {
+              const coverImageUrl = e.target.value;
+              setValues((v) => ({ ...v, coverImageUrl }));
+            }}
           />
         </label>
 
@@ -126,7 +159,10 @@ export default function CourseForm({
             type="checkbox"
             className="h-4 w-4"
             checked={values.published}
-            onChange={(e) => setValues({ ...values, published: e.target.checked })}
+            onChange={(e) => {
+              const published = e.target.checked;
+              setValues((v) => ({ ...v, published }));
+            }}
           />
           Publicado (visible en Aprender)
         </label>
@@ -145,13 +181,24 @@ export default function CourseForm({
         {onDelete && (
           <button
             type="button"
-            onClick={onDelete}
-            className="rounded-pill border border-coral/30 px-4 py-2.5 text-a-inline font-semibold text-coral hover:bg-coral-soft"
+            onClick={handleDeleteClick}
+            disabled={deleting}
+            className="rounded-pill border border-coral/30 px-4 py-2.5 text-a-inline font-semibold text-coral hover:bg-coral-soft disabled:opacity-50"
           >
-            Eliminar curso
+            {deleting ? "Eliminando…" : "Eliminar curso"}
           </button>
         )}
       </div>
+
+      <ConfirmDialog
+        open={confirmOpen}
+        title={`¿Eliminar "${values.title || "este curso"}"?`}
+        description="Se va a eliminar el curso junto con todos sus módulos y lecciones. Esta acción no se puede deshacer."
+        confirmLabel="Eliminar curso"
+        loading={deleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </form>
   );
 }

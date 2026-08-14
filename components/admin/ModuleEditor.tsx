@@ -1,43 +1,62 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
-import { Trash2, Plus, Save, Clock3 } from "lucide-react";
+import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import {
   updateModule,
   deleteModule,
-  createLesson,
-  deleteLesson,
+  updateLesson,
   type AdminCourseModule,
   type ModuleRequest,
   type LessonRequest,
 } from "@/lib/api/adminCourses";
+import LessonEditor from "@/components/admin/LessonEditor";
 
 const inputClass =
   "mt-1 w-full rounded-card-md border border-navy/15 bg-cream px-3 py-2 text-p-small text-navy outline-none focus:border-accent";
 
-const EMPTY_LESSON: LessonRequest = {
-  slug: "",
-  title: "",
-  videoUrl: "",
-  body: "",
-  objectives: "",
-  summary: "",
-  durationMinutes: 0,
-  published: false,
-  displayOrder: 0,
-};
+function toLessonRequest(lesson: AdminCourseModule["lessons"][number]): LessonRequest {
+  return {
+    slug: lesson.slug,
+    title: lesson.title,
+    videoUrl: lesson.videoUrl ?? "",
+    videoOrientation: lesson.videoOrientation,
+    imageUrl: lesson.imageUrl ?? "",
+    body: lesson.body ?? "",
+    objectives: lesson.objectives ?? "",
+    summary: lesson.summary ?? "",
+    durationMinutes: lesson.durationMinutes,
+    published: lesson.published,
+    displayOrder: lesson.displayOrder,
+  };
+}
 
+// Reescrito ago 2026 (a pedido: "la creacion de secciones de cursos debe ser
+// simple, con un cambio de orden simple"): antes el titulo/descripcion del
+// modulo se guardaban con un boton aparte y el orden de modulo/lecciones se
+// escribia a mano en un input numerico -- lo mismo que ya se habia sacado
+// del listado de cursos (ver reorderCourses) pero nunca se replico aca
+// adentro. Ahora: flechas arriba/abajo (mismo lenguaje visual que
+// /admin/courses y /admin/blog) y el titulo se autoguarda al salir del
+// campo (onBlur), sin un boton "Guardar modulo" que apretar aparte.
 export default function ModuleEditor({
-  courseId,
   module,
   token,
+  index,
+  total,
+  onMove,
+  moveDisabled,
   onChange,
+  onLiveChange,
 }: {
-  courseId: string;
   module: AdminCourseModule;
   token: string | null | undefined;
+  index: number;
+  total: number;
+  onMove: (direction: -1 | 1) => void;
+  moveDisabled?: boolean;
   onChange: () => void;
+  onLiveChange?: (draft: { moduleId: string; moduleTitle: string; lessonId: string | null; lesson: LessonRequest } | null) => void;
 }) {
   const [fields, setFields] = useState<ModuleRequest>({
     title: module.title,
@@ -46,15 +65,18 @@ export default function ModuleEditor({
   });
   const [savingModule, setSavingModule] = useState(false);
   const [addingLesson, setAddingLesson] = useState(false);
-  const [newLesson, setNewLesson] = useState<LessonRequest>(EMPTY_LESSON);
-  const [savingLesson, setSavingLesson] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function saveModule() {
+  const sortedLessons = [...module.lessons].sort((a, b) => a.displayOrder - b.displayOrder);
+
+  async function saveModuleField(patch: Partial<ModuleRequest>) {
+    const next = { ...fields, ...patch };
+    setFields(next);
+    if (next.title === module.title && next.description === (module.description ?? "")) return;
     setSavingModule(true);
     setError(null);
     try {
-      await updateModule(token, module.id, fields);
+      await updateModule(token, module.id, next);
       onChange();
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo guardar el módulo");
@@ -69,183 +91,131 @@ export default function ModuleEditor({
     onChange();
   }
 
-  async function addLesson(e: React.FormEvent) {
-    e.preventDefault();
-    setSavingLesson(true);
-    setError(null);
+  // Mismo patron que move() en /admin/courses y /admin/blog: swap local del
+  // displayOrder de los dos afectados + PUT de ambos (updateLesson ya existe
+  // y acepta el LessonRequest completo, asi que no hace falta un endpoint de
+  // reorder nuevo para lecciones -- a diferencia de la grilla de cursos/
+  // articulos, aca son pocos items por modulo).
+  async function moveLesson(lessonIndex: number, direction: -1 | 1) {
+    const targetIndex = lessonIndex + direction;
+    if (targetIndex < 0 || targetIndex >= sortedLessons.length) return;
+    const a = sortedLessons[lessonIndex];
+    const b = sortedLessons[targetIndex];
     try {
-      await createLesson(token, module.id, newLesson);
-      setNewLesson(EMPTY_LESSON);
-      setAddingLesson(false);
+      await Promise.all([
+        updateLesson(token, a.id, { ...toLessonRequest(a), displayOrder: b.displayOrder }),
+        updateLesson(token, b.id, { ...toLessonRequest(b), displayOrder: a.displayOrder }),
+      ]);
       onChange();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo crear la lección");
-    } finally {
-      setSavingLesson(false);
+      setError(err instanceof Error ? err.message : "No se pudo reordenar la lección");
     }
   }
 
-  async function removeLesson(lessonId: string, title: string) {
-    if (!confirm(`¿Eliminar la lección "${title}"?`)) return;
-    await deleteLesson(token, lessonId);
-    onChange();
-  }
-
   return (
-    <div className="rounded-card-md bg-white p-5 shadow-sm">
-      <div className="grid gap-3 sm:grid-cols-[1fr_1fr_auto]">
-        <label className="text-p-caption font-semibold text-navy/60">
-          Título del módulo
-          <input
-            className={inputClass}
-            value={fields.title}
-            onChange={(e) => setFields({ ...fields, title: e.target.value })}
-          />
-        </label>
-        <label className="text-p-caption font-semibold text-navy/60">
-          Descripción
-          <input
-            className={inputClass}
-            value={fields.description}
-            onChange={(e) => setFields({ ...fields, description: e.target.value })}
-          />
-        </label>
-        <label className="text-p-caption font-semibold text-navy/60">
-          Orden
-          <input
-            type="number"
-            className={`${inputClass} w-20`}
-            value={fields.displayOrder}
-            onChange={(e) => setFields({ ...fields, displayOrder: Number(e.target.value) })}
-          />
-        </label>
-      </div>
+    <div className="rounded-card-lg bg-white p-5 shadow-sm">
+      <div className="flex items-start gap-3">
+        <div className="flex shrink-0 flex-col pt-1">
+          <button
+            type="button"
+            disabled={index === 0 || moveDisabled}
+            onClick={() => onMove(-1)}
+            className="rounded p-0.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
+            aria-label="Mover módulo arriba"
+          >
+            <ChevronUp size={16} />
+          </button>
+          <button
+            type="button"
+            disabled={index === total - 1 || moveDisabled}
+            onClick={() => onMove(1)}
+            className="rounded p-0.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
+            aria-label="Mover módulo abajo"
+          >
+            <ChevronDown size={16} />
+          </button>
+        </div>
 
-      <div className="mt-3 flex items-center gap-2">
-        <button
-          type="button"
-          onClick={saveModule}
-          disabled={savingModule}
-          className="flex items-center gap-1 rounded-pill bg-navy/5 px-3 py-1.5 text-p-caption font-semibold text-navy hover:bg-navy/10 disabled:opacity-50"
-        >
-          <Save size={13} /> Guardar módulo
-        </button>
+        <div className="min-w-0 flex-1">
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="text-p-caption font-semibold text-navy/60">
+              Título del módulo
+              <input
+                className={inputClass}
+                value={fields.title}
+                onChange={(e) => setFields({ ...fields, title: e.target.value })}
+                onBlur={() => saveModuleField({ title: fields.title })}
+              />
+            </label>
+            <label className="text-p-caption font-semibold text-navy/60">
+              Descripción (opcional)
+              <input
+                className={inputClass}
+                value={fields.description}
+                onChange={(e) => setFields({ ...fields, description: e.target.value })}
+                onBlur={() => saveModuleField({ description: fields.description })}
+              />
+            </label>
+          </div>
+          {savingModule && <p className="mt-1 text-p-caption text-navy/40">Guardando…</p>}
+        </div>
+
         <button
           type="button"
           onClick={removeModule}
-          className="flex items-center gap-1 rounded-pill px-3 py-1.5 text-p-caption font-semibold text-coral hover:bg-coral-soft"
+          className="shrink-0 text-navy/40 hover:text-coral"
+          aria-label={`Eliminar módulo ${module.title}`}
         >
-          <Trash2 size={13} /> Eliminar módulo
+          <Trash2 size={15} />
         </button>
       </div>
 
       {error && <p className="mt-2 text-p-caption text-coral">{error}</p>}
 
-      <div className="mt-4 divide-y divide-navy/10 border-t border-navy/10">
-        {module.lessons.length === 0 && (
-          <p className="py-3 text-p-caption text-navy/50">Sin lecciones todavía.</p>
+      <div className="mt-4 space-y-2">
+        {sortedLessons.length === 0 && !addingLesson && (
+          <p className="py-2 text-p-caption text-navy/50">Sin lecciones todavía.</p>
         )}
-        {module.lessons.map((lesson) => (
-          <div key={lesson.id} className="flex items-center justify-between gap-3 py-3">
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <p className="truncate text-p-small font-semibold text-navy">{lesson.title}</p>
-                <span
-                  className={`shrink-0 rounded-pill px-2 py-0.5 text-p-caption font-semibold ${
-                    lesson.published ? "bg-accent/10 text-accent" : "bg-navy/10 text-navy/50"
-                  }`}
-                >
-                  {lesson.published ? "Publicada" : "Borrador"}
-                </span>
-              </div>
-              <p className="mt-0.5 flex items-center gap-1 text-p-caption text-navy/50">
-                <Clock3 size={11} /> {lesson.durationMinutes} min · /{lesson.slug}
-              </p>
-            </div>
-            <div className="flex shrink-0 items-center gap-3">
-              <Link
-                href={`/admin/courses/${courseId}/lessons/${lesson.id}`}
-                className="text-p-caption font-semibold text-accent"
-              >
-                Editar
-              </Link>
-              <button
-                type="button"
-                onClick={() => removeLesson(lesson.id, lesson.title)}
-                className="text-navy/40 hover:text-coral"
-                aria-label={`Eliminar ${lesson.title}`}
-              >
-                <Trash2 size={14} />
-              </button>
-            </div>
-          </div>
+        {sortedLessons.map((lesson, i) => (
+          <LessonEditor
+            key={lesson.id}
+            moduleId={module.id}
+            lesson={lesson}
+            token={token}
+            index={i}
+            total={sortedLessons.length}
+            onMove={(direction) => moveLesson(i, direction)}
+            onChange={onChange}
+            onLiveChange={(draft) =>
+              onLiveChange?.(draft ? { moduleId: module.id, moduleTitle: module.title, lessonId: lesson.id, lesson: draft } : null)
+            }
+          />
         ))}
+        {addingLesson && (
+          <div className="animate-reveal-in">
+            <LessonEditor
+              moduleId={module.id}
+              lesson={null}
+              token={token}
+              index={sortedLessons.length}
+              total={sortedLessons.length + 1}
+              onMove={() => {}}
+              onChange={onChange}
+              onLiveChange={(draft) =>
+                onLiveChange?.(draft ? { moduleId: module.id, moduleTitle: module.title, lessonId: null, lesson: draft } : null)
+              }
+              startOpen
+              onCancelNew={() => setAddingLesson(false)}
+            />
+          </div>
+        )}
       </div>
 
-      {addingLesson ? (
-        <form onSubmit={addLesson} className="mt-4 space-y-3 rounded-card-md bg-cream p-4">
-          <div className="grid gap-3 sm:grid-cols-2">
-            <label className="text-p-caption font-semibold text-navy/60">
-              Título
-              <input
-                required
-                className={inputClass}
-                value={newLesson.title}
-                onChange={(e) => setNewLesson({ ...newLesson, title: e.target.value })}
-              />
-            </label>
-            <label className="text-p-caption font-semibold text-navy/60">
-              Slug
-              <input
-                required
-                pattern="[a-z0-9]+(-[a-z0-9]+)*"
-                className={inputClass}
-                value={newLesson.slug}
-                onChange={(e) => setNewLesson({ ...newLesson, slug: e.target.value })}
-              />
-            </label>
-            <label className="text-p-caption font-semibold text-navy/60">
-              Duración (min)
-              <input
-                type="number"
-                min={0}
-                className={inputClass}
-                value={newLesson.durationMinutes}
-                onChange={(e) => setNewLesson({ ...newLesson, durationMinutes: Number(e.target.value) })}
-              />
-            </label>
-            <label className="text-p-caption font-semibold text-navy/60">
-              Orden
-              <input
-                type="number"
-                className={inputClass}
-                value={newLesson.displayOrder}
-                onChange={(e) => setNewLesson({ ...newLesson, displayOrder: Number(e.target.value) })}
-              />
-            </label>
-          </div>
-          <div className="flex items-center gap-3">
-            <button
-              type="submit"
-              disabled={savingLesson}
-              className="rounded-pill bg-navy px-4 py-2 text-p-caption font-semibold text-cream disabled:opacity-50"
-            >
-              {savingLesson ? "Creando…" : "Crear lección"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setAddingLesson(false)}
-              className="text-p-caption font-semibold text-navy/50"
-            >
-              Cancelar
-            </button>
-          </div>
-        </form>
-      ) : (
+      {!addingLesson && (
         <button
           type="button"
           onClick={() => setAddingLesson(true)}
-          className="mt-4 flex items-center gap-1 text-p-caption font-semibold text-accent"
+          className="mt-3 flex items-center gap-1 text-p-caption font-semibold text-accent"
         >
           <Plus size={14} /> Agregar lección
         </button>

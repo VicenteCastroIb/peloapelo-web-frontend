@@ -1,5 +1,5 @@
 import { apiFetch } from "./client";
-import type { CourseLevel, ResourceType } from "./courses";
+import type { CourseLevel, ResourceType, VideoOrientation } from "./courses";
 
 // Cliente del CRUD de cursos para el panel /admin (protegido ROLE_ADMIN en
 // el backend, ver AdminCourseController + SecurityConfig). A diferencia de
@@ -20,6 +20,10 @@ export interface AdminLesson {
   slug: string;
   title: string;
   videoUrl: string | null;
+  /** Solo importa cuando videoUrl esta cargado -- ver LessonMediaPicker.tsx. */
+  videoOrientation: VideoOrientation;
+  /** Alternativa a videoUrl: video e imagen son mutuamente excluyentes en la UI, ninguno es obligatorio. */
+  imageUrl: string | null;
   body: string | null;
   objectives: string | null;
   summary: string | null;
@@ -58,6 +62,7 @@ export interface AdminCourseSummary {
   slug: string;
   title: string;
   level: CourseLevel;
+  coverImageUrl: string | null;
   published: boolean;
   displayOrder: number;
   moduleCount: number;
@@ -86,6 +91,8 @@ export interface LessonRequest {
   slug: string;
   title: string;
   videoUrl: string;
+  videoOrientation: VideoOrientation;
+  imageUrl: string;
   body: string;
   objectives: string;
   summary: string;
@@ -119,6 +126,17 @@ export function updateCourse(token: string | null | undefined, courseId: string,
 
 export function deleteCourse(token: string | null | undefined, courseId: string) {
   return apiFetch<void>(`/api/admin/courses/${courseId}`, { method: "DELETE", token });
+}
+
+// Reordena la grilla de cursos (flechas arriba/abajo en /admin/courses, ver
+// AdminCourseController.reorderCourses) -- mismo patron que
+// reorderArticles en adminBlog.ts.
+export function reorderCourses(token: string | null | undefined, courseIds: string[]) {
+  return apiFetch<void>("/api/admin/courses/reorder", {
+    method: "PUT",
+    body: { courseIds },
+    token,
+  });
 }
 
 export function createModule(token: string | null | undefined, courseId: string, body: ModuleRequest) {
