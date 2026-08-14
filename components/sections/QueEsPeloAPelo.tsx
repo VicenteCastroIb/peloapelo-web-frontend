@@ -53,7 +53,7 @@ export default function QueEsPeloAPelo() {
         alt=""
         width={769}
         height={896}
-        className="pointer-events-none absolute -right-16 -top-10 -z-10 hidden w-[280px] rotate-[8deg] opacity-70 md:block lg:w-[340px]"
+        className="pointer-events-none absolute right-[26px] -top-10 -z-10 hidden w-[280px] rotate-[8deg] opacity-70 md:block lg:w-[340px]"
       />
 
       <FadeInOnScroll className="mx-auto max-w-6xl">
@@ -63,8 +63,17 @@ export default function QueEsPeloAPelo() {
             derecha, texto a la izquierda -- solo con sm:order (el orden en
             el DOM/mobile no cambia, sigue foto->texto apilado). */}
         <div className="grid gap-10 sm:grid-cols-2 sm:items-center">
-          <figure className="sm:order-2">
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card-lg bg-navy/10">
+          <figure className="sm:order-2 sm:self-stretch">
+            {/* aspect-[5/4] (antes 4/5, ago 2026, feedback): el crop vertical
+                original dejaba la foto notoriamente mas larga que su columna
+                de texto emparejada -- se veia descalzada, con la foto
+                sobrando por abajo. 5/4 recorta la foto (arriba/abajo, mismo
+                centro) a una proporcion mas cuadrada que ademas calza con el
+                alto real de este bloque de texto. sm:self-stretch en el
+                figure + h-full en el contenedor de la imagen para que en
+                desktop la foto tome el alto exacto de su fila en vez de
+                quedar centrada con aire de sobra a los lados. */}
+            <div className="relative aspect-[5/4] w-full overflow-hidden rounded-card-lg bg-navy/10 sm:aspect-auto sm:h-full">
               <Image
                 src="/images/community/manos-comunidad.jpg"
                 alt="Manos de distintas personas de la comunidad Pelo a Pelo unidas en un gesto de apoyo."
@@ -138,7 +147,22 @@ export default function QueEsPeloAPelo() {
             Orden invertido en desktop (ago 2026, a pedido): foto a la
             izquierda, texto a la derecha -- mismo sm:order que el bloque de
             arriba, mobile sigue apilando texto->foto sin cambios. */}
-        <div className="mt-16 grid gap-10 sm:grid-cols-2 sm:items-center">
+        <div className="relative mt-16 grid gap-10 sm:grid-cols-2 sm:items-center">
+          {/* Mismo adorno-rama de arriba, en espejo (flip horizontal +
+              rotacion invertida, para que la reflexion sea matematicamente
+              correcta y no solo "la misma rama de nuevo") y del lado
+              izquierdo -- la foto de esta fila esta a la izquierda (vs. la
+              de arriba, a la derecha), asi que el adorno la acompaña del
+              mismo modo que el original acompaña a la foto de manos. */}
+          <Image
+            aria-hidden
+            src="/images/adornos/adorno-rama.png"
+            alt=""
+            width={769}
+            height={896}
+            className="pointer-events-none absolute -left-[164px] -top-10 -z-10 hidden w-[280px] -rotate-[8deg] -scale-x-100 opacity-70 md:block lg:w-[340px]"
+          />
+
           <div className="sm:order-2">
             <h3 className="text-h2-md text-navy">
               Por qué <span className="italic text-accent">existimos</span>
@@ -167,8 +191,8 @@ export default function QueEsPeloAPelo() {
             </div>
           </div>
 
-          <figure className="sm:order-1">
-            <div className="relative aspect-[4/5] w-full overflow-hidden rounded-card-lg bg-navy/10">
+          <figure className="sm:order-1 sm:self-stretch">
+            <div className="relative aspect-[5/4] w-full overflow-hidden rounded-card-lg bg-navy/10 sm:aspect-auto sm:h-full">
               <Image
                 src="/images/community/pq-existimos.jpg"
                 alt="Una persona escribe con calma en un cuaderno, junto a una taza de té, en un momento de estructura y pausa."

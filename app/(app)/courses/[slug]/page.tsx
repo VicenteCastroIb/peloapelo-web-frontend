@@ -8,6 +8,7 @@ import { ArrowLeft, CheckCircle2, Clock3, BookOpen, PlayCircle } from "lucide-re
 import { useAuth } from "@/lib/auth/AuthContext";
 import { fetchCourseDetail, type CourseDetail } from "@/lib/api/courses";
 import { COURSE_LEVEL_LABEL } from "@/lib/data/courseLevels";
+import Skeleton from "@/components/shared/Skeleton";
 
 // Vista de curso -- replica el diseño de la version anterior de peloapelo.cl
 // (ver AprenderPaginaVieja.png / capturas enviadas por Vicente): portada a
@@ -20,15 +21,19 @@ import { COURSE_LEVEL_LABEL } from "@/lib/data/courseLevels";
 export default function CourseDetailPage() {
   const params = useParams<{ slug: string }>();
   const slug = params.slug;
-  const { token, status } = useAuth();
+  const { token } = useAuth();
   const [course, setCourse] = useState<CourseDetail | null | "not-found">(null);
 
+  // Optimizacion de tiempos de carga (ago 2026, a pedido): igual que en
+  // /courses (ver comentario en app/(app)/courses/page.tsx), se pide de
+  // inmediato sin esperar a que useAuth() resuelva -- GET /api/courses/{slug}
+  // es publico y la personalizacion (progressPercent, completed) ya viaja
+  // via la cookie httpOnly, no depende de este "token" en memoria.
   useEffect(() => {
-    if (status === "loading") return;
     fetchCourseDetail(slug, token)
       .then(setCourse)
       .catch(() => setCourse("not-found"));
-  }, [slug, status, token]);
+  }, [slug, token]);
 
   if (course === "not-found") {
     return (
@@ -62,7 +67,28 @@ export default function CourseDetailPage() {
         <ArrowLeft size={14} /> Aprender
       </Link>
 
-      {course === null && <p className="mt-6 text-p-small text-navy/50">Cargando…</p>}
+      {course === null && (
+        <div className="mt-4 grid gap-8 lg:grid-cols-[3fr_2fr]">
+          <div>
+            <Skeleton className="aspect-[16/10] w-full rounded-card-lg" />
+            <Skeleton className="mt-5 h-7 w-2/3 rounded-md" />
+            <Skeleton className="mt-2 h-4 w-full rounded-md" />
+            <div className="mt-3 flex gap-3">
+              <Skeleton className="h-6 w-20 rounded-pill" />
+              <Skeleton className="h-6 w-16 rounded-pill" />
+              <Skeleton className="h-6 w-24 rounded-pill" />
+            </div>
+          </div>
+          <div>
+            <Skeleton className="h-6 w-32 rounded-md" />
+            <div className="mt-4 space-y-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton key={i} className="h-16 w-full rounded-card-md" />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
 
       {course && (
         <div className="mt-4 grid gap-8 lg:grid-cols-[3fr_2fr]">
@@ -79,10 +105,14 @@ export default function CourseDetailPage() {
                 className="group relative block aspect-[16/10] overflow-hidden rounded-card-lg bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]"
               >
                 {course.coverImageUrl && (
+                  // unoptimized: coverImageUrl es una URL externa pegada a mano en
+                  // /admin/courses, mismo caso que article.coverImageUrl en el blog
+                  // (ver nota en components/sections/ArticleCard.tsx)
                   <Image
                     src={course.coverImageUrl}
                     alt=""
                     fill
+                    unoptimized
                     sizes="(min-width: 1024px) 60vw, 100vw"
                     className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                   />
@@ -98,7 +128,7 @@ export default function CourseDetailPage() {
             ) : (
               <div className="relative aspect-[16/10] overflow-hidden rounded-card-lg bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]">
                 {course.coverImageUrl && (
-                  <Image src={course.coverImageUrl} alt="" fill sizes="(min-width: 1024px) 60vw, 100vw" className="object-cover" />
+                  <Image src={course.coverImageUrl} alt="" fill unoptimized sizes="(min-width: 1024px) 60vw, 100vw" className="object-cover" />
                 )}
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-navy/10 text-center text-cream">
                   <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/25 text-cream backdrop-blur-sm">

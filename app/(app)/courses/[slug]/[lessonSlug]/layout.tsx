@@ -1,14 +1,16 @@
 "use client";
 
 // Shell de la inmersion de leccion, al estilo del reproductor de AWS Skill
-// Builder: una barra superior compacta con toda la navegacion (volver al
-// curso, titulo, avance, indice) reemplaza tanto al Header global como al
-// sidebar persistente que existia antes -- ver LessonImmersiveHeader,
-// CourseOutlineSidebar (ahora un panel deslizable) y lib/routes.ts (que
-// oculta Header/Footer/DashboardSidebar para esta ruta). El contenido de la
-// leccion queda con todo el ancho de la pantalla debajo de la barra.
+// Builder (ago 2026, con sidebar persistente restaurado a pedido -- ver
+// CourseOutlineSidebar): en lg+ es un layout de dos columnas, sidebar fijo a
+// la izquierda (curso + avance + modulos/lecciones, siempre a la vista
+// mientras se navega) y el contenido de la leccion a la derecha, con su
+// propia barra superior compacta (LessonImmersiveHeader). En mobile, sin
+// espacio para una columna permanente, el sidebar sigue siendo un panel
+// deslizable que se abre desde esa barra. lib/routes.ts oculta el
+// Header/Footer/DashboardSidebar globales para esta ruta.
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { fetchCourseDetail, type CourseDetail } from "@/lib/api/courses";
@@ -22,20 +24,32 @@ export default function LessonLayout({ children }: { children: React.ReactNode }
   const [course, setCourse] = useState<CourseDetail | null | "not-found">(null);
   const [outlineOpen, setOutlineOpen] = useState(false);
 
-  useEffect(() => {
+  // refresh (no solo el useEffect de montaje): completar o descompletar una
+  // leccion -- desde el circulo del sidebar o desde el boton de la pagina de
+  // leccion -- cambia progressPercent y el estado de otras lecciones/modulos,
+  // asi que ambos lados necesitan poder pedir el curso de nuevo sin esperar
+  // a que cambie el slug.
+  const refresh = useCallback(() => {
     if (status === "loading") return;
     fetchCourseDetail(slug, token)
       .then(setCourse)
       .catch(() => setCourse("not-found"));
   }, [slug, status, token]);
 
+  useEffect(() => {
+    refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug, status, token]);
+
   return (
-    <CourseOutlineProvider course={course}>
-      <div className="min-h-screen bg-cream">
-        <LessonImmersiveHeader courseSlug={slug} activeLessonSlug={lessonSlug} onOpenOutline={() => setOutlineOpen(true)} />
+    <CourseOutlineProvider course={course} refresh={refresh}>
+      <div className="min-h-screen bg-cream lg:flex">
         <CourseOutlineSidebar activeLessonSlug={lessonSlug} open={outlineOpen} onClose={() => setOutlineOpen(false)} />
 
-        <div className="px-6 py-10 lg:px-10">{children}</div>
+        <div className="min-w-0 flex-1">
+          <LessonImmersiveHeader courseSlug={slug} activeLessonSlug={lessonSlug} onOpenOutline={() => setOutlineOpen(true)} />
+          <div className="px-6 py-10 lg:px-10">{children}</div>
+        </div>
       </div>
     </CourseOutlineProvider>
   );

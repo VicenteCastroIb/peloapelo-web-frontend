@@ -42,6 +42,60 @@ body {
   }
 }
 
+/* Movimiento fluido en toda interaccion clickeable (ago 2026, a pedido:
+   "todas las interacciones deben ser fluidas"). En vez de agregar
+   `transition-*` componente por componente -- son cientos de botones/links
+   repartidos entre el sitio publico, el panel /admin y el visor de cursos --
+   una regla base que cubre sistematicamente cualquier elemento clickeable.
+   Antes, un monton de estados :hover (bg-navy/5, hover:shadow-md, etc.) ya
+   existian en los componentes pero cambiaban de golpe porque nada declaraba
+   `transition`: esta regla no le agrega ningun hover nuevo a nadie, solo
+   hace que los que ya existen se animen suave. Enumera propiedades en vez de
+   `all` a proposito (no queremos animar accidentalmente layout/width/height,
+   solo lo que cambia con el mouse). El leve "press" en :active da feedback
+   tactil al hacer clic; queda atras de `(hover: hover)` para no dejar
+   estados de escala "pegados" en pantallas tactiles (que no tienen hover
+   real, y donde :active se dispara distinto). prefers-reduced-motion apaga
+   todo para quien desactivo animaciones. */
+a,
+button,
+input,
+select,
+textarea,
+label,
+[role="button"],
+[role="tab"],
+.cursor-pointer {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease,
+    box-shadow 0.2s ease, opacity 0.2s ease, transform 0.15s ease;
+}
+
+@media (hover: hover) {
+  button:not(:disabled):active,
+  [role="button"]:not([aria-disabled="true"]):active {
+    transform: scale(0.97);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  label,
+  [role="button"],
+  [role="tab"],
+  .cursor-pointer {
+    transition: none;
+  }
+
+  button:active,
+  [role="button"]:active {
+    transform: none;
+  }
+}
+
 /* Escala tipográfica real de peloapelo.cl (ver docs/scan-22-07-2026).
    Una sola familia (Lato, heredada de --font-sans, ver layout.tsx) en todo
    el sitio; la jerarquía se construye variando tamaño (12px-112px) y peso
@@ -192,6 +246,35 @@ body {
   animation: fade-in-blur 0.7s ease-out both;
 }
 
+/* Entrada fluida para bloques que se MONTAN de cero (no que cambian de
+   alto 0->1fr como .collapse-panel) -- ej. el formulario "Agregar modulo" o
+   la fila de "Agregar leccion" nueva: cada vez que se abren son una
+   instancia recien creada del componente (asi arranca vacia y sin arrastrar
+   datos del intento anterior), no una que ya existia oculta. Un keyframe se
+   dispara solo con que el elemento aparezca en el DOM, sin necesitar un
+   cambio de estado previo -- por eso sirve aca donde .collapse-panel no
+   puede (esta "nace" ya abierto, no hay un 0 -> 1 que animar). */
+@keyframes reveal-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-reveal-in {
+  animation: reveal-in 0.25s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-reveal-in {
+    animation: none;
+  }
+}
+
 /* Carrusel de testimonios en movimiento continuo (TestimonialsCarousel.tsx,
    ago 2026): la pista duplica la lista de testimonios y se desliza -50%
    (el ancho de una sola copia) en loop, dando la ilusion de una cinta
@@ -213,6 +296,51 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .animate-marquee {
     animation: none;
+  }
+}
+
+/* Acordeon de FAQ (Faq.tsx, ago 2026): grid-template-rows 0fr -> 1fr es la
+   tecnica estandar para animar el alto de un elemento de alto variable sin
+   JS (no se puede hacer transition de height a "auto"). El contenido va en
+   un hijo con overflow-hidden para que no se vea mientras esta colapsado. */
+.faq-answer-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.35s ease-in-out;
+}
+
+.faq-answer-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-answer-panel {
+    transition: none;
+  }
+}
+
+/* Desplegable fluido generico (ago 2026, a pedido: "TODOS los desplegables
+   deben desplegarse fluidamente"): mismo truco que .faq-answer-panel de
+   arriba, pero reutilizable por cualquier componente -- ver
+   components/shared/Collapse.tsx. Antes cada "desplegable" del sitio
+   (edicion de bloques/lecciones, formularios "Agregar modulo/leccion/
+   recurso", la lista de lecciones de un modulo en el sidebar de un curso)
+   aparecia y desaparecia de golpe con un simple `{open && (...)}`, sin
+   transicion -- exactamente el mismo problema que ya se habia resuelto solo
+   para el FAQ. */
+.collapse-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-in-out;
+}
+
+.collapse-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collapse-panel {
+    transition: none;
   }
 }
 

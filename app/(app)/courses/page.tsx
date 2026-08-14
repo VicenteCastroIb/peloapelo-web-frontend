@@ -8,6 +8,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { fetchCourses, saveCourse, unsaveCourse, type CourseSummary } from "@/lib/api/courses";
 import { COURSE_LEVEL_LABEL } from "@/lib/data/courseLevels";
 import ProgressBar from "@/components/shared/ProgressBar";
+import CourseCardSkeleton from "@/components/courses/CourseCardSkeleton";
 
 type Tab = "all" | "completed" | "saved";
 
@@ -23,12 +24,20 @@ export default function CoursesPage() {
   const [tab, setTab] = useState<Tab>("all");
   const [pendingSlug, setPendingSlug] = useState<string | null>(null);
 
+  // Optimizacion de tiempos de carga (ago 2026, a pedido): antes esto
+  // esperaba a que useAuth() resolviera ("if status === loading return")
+  // antes de recien arrancar a pedir los cursos -- dos requests en cascada
+  // (primero /api/auth/me, despues /api/courses) cuando podian salir en
+  // paralelo. GET /api/courses es publico y siempre responde (con o sin
+  // token, ver fetchCourses) -- se pide de inmediato con el token que haya
+  // en ese momento (null mientras el auth esta cargando), y se vuelve a
+  // pedir solo si el token cambia (ej. termina de resolver la sesion) para
+  // traer progressPercent/saved personalizados.
   useEffect(() => {
-    if (status === "loading") return;
     fetchCourses(token)
       .then(setCourses)
       .catch(() => setCourses([]));
-  }, [status, token]);
+  }, [token]);
 
   const visibleCourses = useMemo(() => {
     if (!courses) return null;
@@ -85,7 +94,13 @@ export default function CoursesPage() {
         ))}
       </div>
 
-      {courses === null && <p className="mt-8 text-p-small text-navy/50">Cargando…</p>}
+      {courses === null && (
+        <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {Array.from({ length: 6 }).map((_, i) => (
+            <CourseCardSkeleton key={i} />
+          ))}
+        </div>
+      )}
 
       {visibleCourses?.length === 0 && (
         <div className="mt-8 rounded-card-lg bg-white p-10 text-center shadow-sm">
@@ -118,6 +133,7 @@ export default function CoursesPage() {
                       src={course.coverImageUrl}
                       alt=""
                       fill
+                      unoptimized
                       sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
                       className="object-cover"
                     />

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
@@ -13,10 +13,47 @@ const REDES = [{ label: "Instagram", href: "https://instagram.com/guia.peloapelo
 
 export default function Faq() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const sectionRef = useRef<HTMLElement>(null);
+  const openIndexRef = useRef<number | null>(null);
+  // El fondo (Image con fill + object-cover) vive dentro de la seccion. Si
+  // el fondo cubriera el 100% de la altura de la seccion (inset-0 normal),
+  // cada vez que un acordeon se abre y la seccion crece, object-cover
+  // recalcula el escalado para seguir cubriendo la caja mas alta -> se ve
+  // como un leve zoom/paneo del fondo (reportado 10 ago 2026). Fijamos la
+  // altura del fondo al alto "en reposo" (todas las preguntas cerradas) y
+  // no la tocamos mientras haya una pregunta abierta, para que el fondo
+  // quede fisicamente quieto y el contenido que crece de mas simplemente
+  // caiga sobre el fondo cream de la pagina.
+  const [bgHeight, setBgHeight] = useState<number | null>(null);
+
+  useEffect(() => {
+    openIndexRef.current = openIndex;
+  }, [openIndex]);
+
+  useEffect(() => {
+    const node = sectionRef.current;
+    if (!node) return;
+
+    const measure = () => setBgHeight(node.offsetHeight);
+    measure();
+
+    // Solo re-medimos en resize real de ventana (cambios de breakpoint,
+    // orientacion), y solo si no hay una pregunta abierta -- nunca durante
+    // la animacion del acordeon.
+    const handleResize = () => {
+      if (openIndexRef.current === null) measure();
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <section id="preguntas" className="relative scroll-mt-24 overflow-hidden px-6 py-24 lg:px-12 lg:py-28">
-      <div className="absolute inset-0 -z-10">
+    <section
+      ref={sectionRef}
+      id="preguntas"
+      className="relative scroll-mt-24 overflow-hidden px-6 py-24 lg:px-12 lg:py-28"
+    >
+      <div className="absolute inset-x-0 top-0 -z-10" style={{ height: bgHeight ?? "100%" }}>
         <Image
           src="/images/backgrounds/fondo-preguntas.jpg"
           alt=""
@@ -52,12 +89,22 @@ export default function Faq() {
                   {item.question}
                   <ChevronDown
                     size={18}
-                    className={`shrink-0 text-navy/50 transition-transform ${
+                    className={`shrink-0 text-navy/50 transition-transform duration-300 ease-in-out ${
                       isOpen ? "rotate-180" : ""
                     }`}
                   />
                 </button>
-                {isOpen && <p className="pb-5 text-p-body text-navy/70">{item.answer}</p>}
+                <div className="faq-answer-panel" data-open={isOpen}>
+                  <div className="overflow-hidden">
+                    <p
+                      className={`pb-5 text-p-body text-navy/70 transition-opacity duration-300 ease-in-out ${
+                        isOpen ? "opacity-100 delay-100" : "opacity-0"
+                      }`}
+                    >
+                      {item.answer}
+                    </p>
+                  </div>
+                </div>
               </div>
             );
           })}

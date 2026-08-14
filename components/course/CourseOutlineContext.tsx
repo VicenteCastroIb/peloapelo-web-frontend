@@ -12,18 +12,29 @@ import type { CourseDetail } from "@/lib/api/courses";
 
 interface CourseOutlineContextValue {
   course: CourseDetail | null | "not-found";
+  /**
+   * Vuelve a pedir el curso completo al backend (ver layout.tsx). Antes no
+   * existia: el curso se pedia una sola vez al entrar a la primera leccion y
+   * quedaba desactualizado -- si marcabas una leccion como completada (desde
+   * el boton de la pagina o, ahora, desde el circulo del sidebar), el %% de
+   * avance y los circulos de otras lecciones no se enteraban hasta
+   * recargar. Cualquier accion que cambie el progreso deberia llamar esto.
+   */
+  refresh: () => void;
 }
 
-const CourseOutlineContext = createContext<CourseOutlineContextValue>({ course: null });
+const CourseOutlineContext = createContext<CourseOutlineContextValue>({ course: null, refresh: () => {} });
 
 export function CourseOutlineProvider({
   course,
+  refresh,
   children,
 }: {
   course: CourseDetail | null | "not-found";
+  refresh: () => void;
   children: React.ReactNode;
 }) {
-  return <CourseOutlineContext.Provider value={{ course }}>{children}</CourseOutlineContext.Provider>;
+  return <CourseOutlineContext.Provider value={{ course, refresh }}>{children}</CourseOutlineContext.Provider>;
 }
 
 export function useCourseOutline() {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import Image from "next/image";
 import {
   ArrowLeft,
   ArrowRight,
@@ -12,7 +13,6 @@ import {
   Headphones,
   Link2,
   ListChecks,
-  PlayCircle,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 import {
@@ -22,7 +22,9 @@ import {
   type LessonDetail,
   type ResourceType,
 } from "@/lib/api/courses";
-import { useLessonPosition, useTotalLessons } from "@/components/course/CourseOutlineContext";
+import { useCourseOutline, useLessonPosition, useTotalLessons } from "@/components/course/CourseOutlineContext";
+import LessonReadingProgressRing from "@/components/course/LessonReadingProgressRing";
+import Skeleton from "@/components/shared/Skeleton";
 
 const RESOURCE_ICON: Record<ResourceType, typeof FileText> = {
   PDF: FileText,
@@ -48,19 +50,22 @@ function toEmbedUrl(url: string): string {
 export default function LessonPage() {
   const params = useParams<{ slug: string; lessonSlug: string }>();
   const { slug, lessonSlug } = params;
-  const { token, status } = useAuth();
+  const { token } = useAuth();
   const [lesson, setLesson] = useState<LessonDetail | null | "not-found">(null);
   const [saving, setSaving] = useState(false);
 
   const position = useLessonPosition(lessonSlug);
   const totalLessons = useTotalLessons();
+  const { refresh: refreshOutline } = useCourseOutline();
 
+  // Igual que en /courses y /courses/[slug] (optimizacion de tiempos de
+  // carga, ago 2026): no hace falta esperar a useAuth() para pedir la
+  // leccion, la personalizacion (completed) viaja via la cookie httpOnly.
   useEffect(() => {
-    if (status === "loading") return;
     fetchLesson(slug, lessonSlug, token)
       .then(setLesson)
       .catch(() => setLesson("not-found"));
-  }, [slug, lessonSlug, status, token]);
+  }, [slug, lessonSlug, token]);
 
   async function toggleCompleted() {
     if (!lesson || lesson === "not-found" || saving) return;
@@ -72,6 +77,11 @@ export default function LessonPage() {
         await completeLesson(token, lesson.id);
       }
       setLesson({ ...lesson, completed: !lesson.completed });
+      // El circulo/porcentaje del sidebar (CourseOutlineSidebar) vive en el
+      // curso completo del layout padre, no en el `lesson` local de esta
+      // pagina -- sin este refresh quedaba desactualizado hasta cambiar de
+      // leccion (ver comentario en CourseOutlineContext.tsx).
+      refreshOutline();
     } finally {
       setSaving(false);
     }
@@ -89,8 +99,23 @@ export default function LessonPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl">
-      {lesson === null && <p className="text-p-small text-navy/50">Cargando…</p>}
+    <div id="lesson-content" className="mx-auto max-w-3xl">
+      {lesson === null && (
+        <div>
+          <Skeleton className="h-4 w-40 rounded-md" />
+          <Skeleton className="mt-4 h-8 w-3/4 rounded-md" />
+          <Skeleton className="mt-6 aspect-video w-full rounded-card-lg" />
+          <div className="mt-8 space-y-3">
+            <Skeleton className="h-4 w-full rounded-md" />
+            <Skeleton className="h-4 w-full rounded-md" />
+            <Skeleton className="h-4 w-5/6 rounded-md" />
+            <Skeleton className="h-4 w-full rounded-md" />
+            <Skeleton className="h-4 w-2/3 rounded-md" />
+          </div>
+        </div>
+      )}
+
+      {lesson && <LessonReadingProgressRing />}
 
       {lesson && (
         <>
@@ -125,20 +150,40 @@ export default function LessonPage() {
             </div>
           )}
 
+          {/* Video e imagen son opcionales (ago 2026, ver LessonMediaPicker en
+              el panel) -- a diferencia de antes, si la leccion no tiene
+              ninguno de los dos simplemente no se muestra este bloque, en
+              vez de un placeholder "Video proximamente" que sugeria que
+              faltaba algo. El video puede ser horizontal (16:9, grabacion
+              tradicional) o vertical (9:16, celular/Reels) segun
+              lesson.videoOrientation -- el vertical se centra angosto para
+              no verse gigante y distorsionado en pantallas anchas. */}
           {lesson.videoUrl ? (
-            <div className="mt-6 aspect-video overflow-hidden rounded-card-lg bg-navy/5">
-              <iframe
-                src={toEmbedUrl(lesson.videoUrl)}
-                className="h-full w-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            </div>
+            lesson.videoOrientation === "VERTICAL" ? (
+              <div className="mx-auto mt-6 aspect-[9/16] w-full max-w-xs overflow-hidden rounded-card-lg bg-navy/5">
+                <iframe
+                  src={toEmbedUrl(lesson.videoUrl)}
+                  className="h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            ) : (
+              <div className="mt-6 aspect-video overflow-hidden rounded-card-lg bg-navy/5">
+                <iframe
+                  src={toEmbedUrl(lesson.videoUrl)}
+                  className="h-full w-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            )
           ) : (
-            <div className="mt-6 flex aspect-video flex-col items-center justify-center gap-2 rounded-card-lg bg-navy/5 text-navy/40">
-              <PlayCircle size={32} />
-              <p className="text-p-small">Video próximamente</p>
-            </div>
+            lesson.imageUrl && (
+              <div className="relative mt-6 aspect-video w-full overflow-hidden rounded-card-lg bg-navy/5">
+                <Image src={lesson.imageUrl} alt="" fill unoptimized sizes="700px" className="object-cover" />
+              </div>
+            )
           )}
 
           {lesson.body ? (
