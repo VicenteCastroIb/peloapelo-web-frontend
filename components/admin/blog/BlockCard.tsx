@@ -109,7 +109,7 @@ export default function BlockCard({
             type="button"
             disabled={index === 0 || moveDisabled}
             onClick={onMoveUp}
-            className="rounded-pill p-1.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
+            className="rounded-pill p-2 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
             aria-label="Subir"
           >
             <ChevronUp size={15} />
@@ -118,7 +118,7 @@ export default function BlockCard({
             type="button"
             disabled={index === total - 1 || moveDisabled}
             onClick={onMoveDown}
-            className="rounded-pill p-1.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
+            className="rounded-pill p-2 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
             aria-label="Bajar"
           >
             <ChevronDown size={15} />
@@ -127,7 +127,7 @@ export default function BlockCard({
             type="button"
             onClick={removeClick}
             disabled={removing}
-            className="rounded-pill p-1.5 text-navy/40 hover:bg-coral-soft hover:text-coral disabled:opacity-40"
+            className="rounded-pill p-2 text-navy/40 hover:bg-coral-soft hover:text-coral disabled:opacity-40"
             aria-label="Eliminar bloque"
           >
             <Trash2 size={15} />

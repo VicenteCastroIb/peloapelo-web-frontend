@@ -214,8 +214,11 @@ export default function BlockDataForm({
       return <TextField label="Texto del aviso" value={data.text} textarea rows={3} onChange={(v) => onChange({ ...data, text: v })} />;
 
     case "heading":
+      // md (no sm): a 640-700px la columna fija de 200px quedaba apretada
+      // contra el campo de texto (ago 2026, auditoria responsive) -- md da
+      // mas aire antes de partir en dos columnas.
       return (
-        <div className="grid gap-2 sm:grid-cols-[1fr_200px]">
+        <div className="grid gap-2 md:grid-cols-[1fr_200px]">
           <TextField label="Texto del subtítulo" value={data.text} onChange={(v) => onChange({ ...data, text: v })} />
           <IconSelect label="Ícono (opcional)" value={data.icon} onChange={(v) => onChange({ ...data, icon: v })} />
         </div>

@@ -167,7 +167,7 @@ export default function LessonEditor({
             type="button"
             disabled={index === 0 || moveDisabled || isNew}
             onClick={() => onMove(-1)}
-            className="rounded p-0.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
+            className="rounded p-1.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
             aria-label="Mover lección arriba"
           >
             <ChevronUp size={14} />
@@ -176,7 +176,7 @@ export default function LessonEditor({
             type="button"
             disabled={index === total - 1 || moveDisabled || isNew}
             onClick={() => onMove(1)}
-            className="rounded p-0.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
+            className="rounded p-1.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
             aria-label="Mover lección abajo"
           >
             <ChevronDown size={14} />

@@ -80,8 +80,14 @@ export default async function PlanesPage() {
             Tabla <span className="italic text-accent">comparativa</span>
           </h2>
 
-          <div className="mt-10 overflow-hidden rounded-card-lg border border-navy/10 bg-white">
-            <table className="w-full text-left text-p-small">
+          {/* overflow-x-auto, no overflow-hidden (ago 2026, auditoria
+              responsive): con overflow-hidden, las 4 columnas se apretaban
+              o recortaban en mobile (no entran comodas por debajo de
+              ~500px) sin ninguna forma de ver el resto -- con scroll
+              horizontal y un ancho minimo en la tabla, el contenido se lee
+              completo deslizando el dedo en vez de quedar cortado. */}
+          <div className="mt-10 overflow-x-auto rounded-card-lg border border-navy/10 bg-white">
+            <table className="w-full min-w-[560px] text-left text-p-small">
               <thead>
                 <tr className="border-b border-navy/10">
                   <th className="p-4 font-semibold">Característica</th>

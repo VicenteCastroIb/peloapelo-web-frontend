@@ -114,7 +114,10 @@ export default function SubscriptionPage() {
               </span>
             </div>
 
-            <div className="mt-4 grid grid-cols-2 gap-4 border-t border-navy/10 pt-4 text-p-small sm:grid-cols-3">
+            {/* grid-cols-1 en mobile (ago 2026, auditoria responsive): con
+                grid-cols-2 de base, el tercer dato (cuando esta presente)
+                quedaba solo en una segunda fila desbalanceada. */}
+            <div className="mt-4 grid grid-cols-1 gap-4 border-t border-navy/10 pt-4 text-p-small sm:grid-cols-3">
               <div>
                 <p className="text-navy/50">Precio</p>
                 <p className="mt-0.5 font-semibold">{formatClp(current.planPriceClp)}</p>

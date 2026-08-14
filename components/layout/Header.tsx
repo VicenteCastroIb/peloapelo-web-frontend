@@ -61,6 +61,15 @@ export default function Header() {
   // Blog/Planes/Fundacion desde el header. mobileNavOpen controla un panel
   // desplegable propio de este componente (no necesita compartirse con
   // nadie mas, a diferencia del sidebar del panel).
+  //
+  // xl (no md/lg) es el breakpoint real del nav horizontal (ago 2026,
+  // auditoria responsive): con 6 links + logo + CTA ("Iniciar sesion" +
+  // boton "Haz el Quiz"), el ancho que necesita el nav en una sola fila
+  // (~950-985px) no entra en el contenedor disponible ni a 768px (md) ni
+  // a 1024px (lg, ancho tipico de iPad en horizontal) -- se desbordaba o
+  // se apretaba en toda la franja de tablet. Se corre a xl (1280px) para
+  // que tablets e iPads (portrait Y landscape) sigan viendo el menu
+  // hamburguesa, que si tiene espacio de sobra.
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Panel interno: el toggle SI se comparte (con DashboardSidebar, que
@@ -114,7 +123,7 @@ export default function Header() {
         </div>
 
         {!appPanel && (
-          <nav className="hidden items-center gap-8 text-a-nav text-navy/70 md:flex">
+          <nav className="hidden items-center gap-6 text-a-nav text-navy/70 xl:flex">
             {NAV_LINKS.map((link) => (
               <Link key={link.href} href={link.href} className="hover:text-navy">
                 {link.label}
@@ -126,17 +135,17 @@ export default function Header() {
         <div className="flex items-center gap-1">
           <HeaderAuthCta />
 
-          {/* Hamburguesa del sitio publico (ago 2026, a pedido): antes
-              NAV_LINKS desaparecia sin reemplazo por debajo de md, dejando
-              el celular sin forma de navegar a Blog/Planes/Fundacion desde
-              aca. */}
+          {/* Hamburguesa del sitio publico: cubre mobile Y tablet/iPad
+              (portrait y landscape) -- ver comentario largo mas arriba,
+              junto a mobileNavOpen, sobre por que es xl:hidden y no
+              md:hidden. */}
           {!appPanel && (
             <button
               type="button"
               onClick={() => setMobileNavOpen((v) => !v)}
               aria-label={mobileNavOpen ? "Cerrar menú" : "Abrir menú"}
               aria-expanded={mobileNavOpen}
-              className="rounded-pill p-2 text-navy/70 hover:bg-navy/5 md:hidden"
+              className="rounded-pill p-2 text-navy/70 hover:bg-navy/5 xl:hidden"
             >
               {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -145,7 +154,7 @@ export default function Header() {
       </div>
 
       {!appPanel && (
-        <Collapse open={mobileNavOpen} className="md:hidden">
+        <Collapse open={mobileNavOpen} className="xl:hidden">
           <nav className="flex flex-col gap-1 border-t border-navy/10 bg-cream px-6 py-4 text-a-nav text-navy/70">
             {NAV_LINKS.map((link) => (
               <Link

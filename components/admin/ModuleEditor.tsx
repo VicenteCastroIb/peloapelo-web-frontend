@@ -120,7 +120,7 @@ export default function ModuleEditor({
             type="button"
             disabled={index === 0 || moveDisabled}
             onClick={() => onMove(-1)}
-            className="rounded p-0.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
+            className="rounded p-1.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
             aria-label="Mover módulo arriba"
           >
             <ChevronUp size={16} />
@@ -129,7 +129,7 @@ export default function ModuleEditor({
             type="button"
             disabled={index === total - 1 || moveDisabled}
             onClick={() => onMove(1)}
-            className="rounded p-0.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
+            className="rounded p-1.5 text-navy/40 hover:bg-navy/5 disabled:opacity-20"
             aria-label="Mover módulo abajo"
           >
             <ChevronDown size={16} />

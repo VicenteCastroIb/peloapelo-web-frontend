@@ -107,7 +107,7 @@ export default function AdminBlogPage() {
                   type="button"
                   disabled={i === 0 || reordering}
                   onClick={() => move(i, -1)}
-                  className="rounded-pill p-1 text-navy/50 hover:bg-navy/5 disabled:opacity-20"
+                  className="rounded-pill p-2 text-navy/50 hover:bg-navy/5 disabled:opacity-20"
                   aria-label="Mover a la izquierda"
                 >
                   <ChevronLeft size={15} />
@@ -116,7 +116,7 @@ export default function AdminBlogPage() {
                   type="button"
                   disabled={i === sorted.length - 1 || reordering}
                   onClick={() => move(i, 1)}
-                  className="rounded-pill p-1 text-navy/50 hover:bg-navy/5 disabled:opacity-20"
+                  className="rounded-pill p-2 text-navy/50 hover:bg-navy/5 disabled:opacity-20"
                   aria-label="Mover a la derecha"
                 >
                   <ChevronRight size={15} />
