@@ -1,9 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Menu, X } from "lucide-react";
 import HeaderAuthCta from "@/components/layout/HeaderAuthCta";
+import { usePanelSidebar } from "@/components/layout/PanelSidebarContext";
+import Collapse from "@/components/shared/Collapse";
 import { useScrolled } from "@/lib/hooks/useScrolled";
 import { isAppPanelPath } from "@/lib/routes";
 
@@ -51,6 +55,18 @@ export default function Header() {
   // Solo aplica al sitio publico -- ver comentario de appPanel arriba.
   const scrolled = useScrolled(40);
 
+  // Mobile (ago 2026, a pedido -- "adaptar para telefonos"): antes NAV_LINKS
+  // era "hidden md:flex" sin ningun reemplazo por debajo de ese breakpoint
+  // -- en el sitio publico, un celular se quedaba sin forma de navegar a
+  // Blog/Planes/Fundacion desde el header. mobileNavOpen controla un panel
+  // desplegable propio de este componente (no necesita compartirse con
+  // nadie mas, a diferencia del sidebar del panel).
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  // Panel interno: el toggle SI se comparte (con DashboardSidebar, que
+  // vive en otro punto del arbol -- ver PanelSidebarContext.tsx).
+  const { open: panelSidebarOpen, toggle: togglePanelSidebar } = usePanelSidebar();
+
   return (
     <header
       className={`fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300 ease-out ${
@@ -63,19 +79,39 @@ export default function Header() {
     >
       <div
         className={`flex items-center justify-between py-3 ${
-          appPanel ? "px-6" : "mx-auto max-w-[88rem] px-6 lg:px-12"
+          // px-5 en el panel (ago 2026): igual al nuevo padding de
+          // DashboardSidebar.tsx tras adelgazarlo, para que el logo siga
+          // alineado en la misma columna que los items del sidebar.
+          appPanel ? "px-5" : "mx-auto max-w-[88rem] px-6 lg:px-12"
         }`}
       >
-        <Link href="/" className="flex items-center gap-2 text-lg">
-          {/* Logo achicado (26 jul 2026) para adelgazar el header: header
-              total pasa de 104px a 72px (48px logo + 12px*2 de padding
-              vertical). Ver los otros 104px->72px en layout.tsx, Hero.tsx,
-              auth/page.tsx y (app)/layout.tsx -- todos asumen el mismo alto. */}
-          <Image src="/images/brand/logo.png" alt="" aria-hidden width={48} height={48} className="h-12 w-12" />
-          <span className="font-semibold text-navy">
-            Pelo a <span className="italic text-accent">Pelo</span>
-          </span>
-        </Link>
+        <div className="flex items-center gap-1">
+          {/* Hamburguesa del panel (ago 2026, a pedido): solo bajo lg, solo
+              en rutas del panel -- en desktop DashboardSidebar ya es una
+              columna fija siempre visible, no hay nada que abrir/cerrar. */}
+          {appPanel && (
+            <button
+              type="button"
+              onClick={togglePanelSidebar}
+              aria-label={panelSidebarOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-expanded={panelSidebarOpen}
+              className="-ml-1 rounded-pill p-2 text-navy/70 hover:bg-navy/5 lg:hidden"
+            >
+              {panelSidebarOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          )}
+
+          <Link href="/" className="flex items-center gap-2 text-lg">
+            {/* Logo achicado (26 jul 2026) para adelgazar el header: header
+                total pasa de 104px a 72px (48px logo + 12px*2 de padding
+                vertical). Ver los otros 104px->72px en layout.tsx, Hero.tsx,
+                auth/page.tsx y (app)/layout.tsx -- todos asumen el mismo alto. */}
+            <Image src="/images/brand/logo.png" alt="" aria-hidden width={48} height={48} className="h-12 w-12" />
+            <span className="font-semibold text-navy">
+              Pelo a <span className="italic text-accent">Pelo</span>
+            </span>
+          </Link>
+        </div>
 
         {!appPanel && (
           <nav className="hidden items-center gap-8 text-a-nav text-navy/70 md:flex">
@@ -87,8 +123,43 @@ export default function Header() {
           </nav>
         )}
 
-        <HeaderAuthCta />
+        <div className="flex items-center gap-1">
+          <HeaderAuthCta />
+
+          {/* Hamburguesa del sitio publico (ago 2026, a pedido): antes
+              NAV_LINKS desaparecia sin reemplazo por debajo de md, dejando
+              el celular sin forma de navegar a Blog/Planes/Fundacion desde
+              aca. */}
+          {!appPanel && (
+            <button
+              type="button"
+              onClick={() => setMobileNavOpen((v) => !v)}
+              aria-label={mobileNavOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-expanded={mobileNavOpen}
+              className="rounded-pill p-2 text-navy/70 hover:bg-navy/5 md:hidden"
+            >
+              {mobileNavOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          )}
+        </div>
       </div>
+
+      {!appPanel && (
+        <Collapse open={mobileNavOpen} className="md:hidden">
+          <nav className="flex flex-col gap-1 border-t border-navy/10 bg-cream px-6 py-4 text-a-nav text-navy/70">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMobileNavOpen(false)}
+                className="rounded-card-md px-3 py-2.5 hover:bg-navy/5 hover:text-navy"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        </Collapse>
+      )}
     </header>
   );
 }

@@ -60,9 +60,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
           entera scrollee -- eso arrastraria a DashboardSidebar con ella (ver
           comentario de mas arriba sobre por que esta fila es h-, no min-h-).
           El padding del contenido vive en un div interno para que el footer
-          pueda ir a sangre completa, sin heredar ese padding. */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="px-8 py-10 lg:px-12">{children}</div>
+          pueda ir a sangre completa, sin heredar ese padding.
+          flex flex-col + flex-1 en el div de contenido (ago 2026, a pedido
+          -- "cuando hay poca info queda un espacio debajo del footer"):
+          antes el contenido ocupaba solo su alto natural y el footer
+          quedaba pegado justo debajo de el, dejando el resto de esta
+          columna (que SI esta estirada a la altura completa del panel via
+          el flex del padre) en blanco por debajo del footer. Con
+          flex-1 el contenido crece para llenar el espacio disponible
+          cuando es corto -- empujando el footer al fondo real, sin hueco --
+          y si el contenido es mas alto que la pantalla simplemente sigue
+          su alto natural y el footer aparece al final del scroll, como
+          corresponde. */}
+      <div className="flex flex-1 flex-col overflow-y-auto">
+        <div className="flex-1 px-8 py-10 lg:px-12">{children}</div>
         <CompactFooter />
       </div>
     </div>

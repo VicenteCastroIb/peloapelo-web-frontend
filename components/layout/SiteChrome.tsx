@@ -10,6 +10,7 @@
 import { usePathname } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { PanelSidebarProvider } from "@/components/layout/PanelSidebarContext";
 import { isAppPanelPath, isImmersiveLessonPath } from "@/lib/routes";
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
@@ -31,10 +32,14 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
   const appPanel = isAppPanelPath(pathname);
 
   return (
-    <>
+    // El Provider envuelve Header y main (ver PanelSidebarContext.tsx): el
+    // boton hamburguesa del panel vive en Header, el drawer que abre vive
+    // adentro de main (DashboardSidebar, ver app/(app)/layout.tsx) -- este
+    // es el ancestro comun mas cercano a ambos.
+    <PanelSidebarProvider>
       <Header />
       <main className="flex-1 pt-[72px]">{children}</main>
       {!appPanel && <Footer />}
-    </>
+    </PanelSidebarProvider>
   );
 }

@@ -8,12 +8,15 @@ import Skeleton from "@/components/shared/Skeleton";
 // mostrar contenido protegido) -- pero un spinner solo en el medio de una
 // pantalla vacia se siente mucho mas lento que ver de entrada la silueta del
 // panel (sidebar + bloques de contenido) donde va a aparecer todo. Misma
-// estructura que el layout real (aside w-56 + columna de contenido) para
-// que no haya salto cuando el layout de verdad se monta.
+// estructura que el layout real (aside w-48 + columna de contenido) para
+// que no haya salto cuando el layout de verdad se monta. hidden lg:flex en
+// el aside (ago 2026, "adaptar para telefonos"): DashboardSidebar real es
+// un drawer oculto por defecto en mobile, asi que esbozarlo siempre aca
+// causaria el salto de layout que este componente justamente busca evitar.
 export default function AppShellSkeleton() {
   return (
     <div className="flex h-[calc(100vh-72px)]">
-      <aside className="flex h-full w-56 shrink-0 flex-col gap-1 border-r border-navy/10 bg-white px-6 py-8">
+      <aside className="hidden h-full w-48 shrink-0 flex-col gap-1 border-r border-navy/10 bg-white px-5 py-8 lg:flex">
         {Array.from({ length: 5 }).map((_, i) => (
           <Skeleton key={i} className="h-9 w-full rounded-pill" />
         ))}
