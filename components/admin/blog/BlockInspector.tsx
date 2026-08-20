@@ -3,10 +3,63 @@
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Save, Trash2 } from "lucide-react";
 import type { AdminArticleBlock } from "@/lib/api/adminBlog";
-import type { BlockData, BlockType } from "@/lib/types/blogBlocks";
+import type {
+  BlockData,
+  BlockType,
+  DisclaimerBlockData,
+  HeadingBlockData,
+  RichTextBlockData,
+  TextColorToken,
+  TextSizeToken,
+} from "@/lib/types/blogBlocks";
 import { BLOCK_TYPE_LABEL } from "@/lib/admin/blogBlockDefaults";
+import { TEXT_COLOR_LABEL, TEXT_COLOR_OPTIONS, TEXT_SIZE_LABEL, TEXT_SIZE_OPTIONS } from "@/lib/blog/textStyleTokens";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import { SelectField } from "./blockFieldEditors";
 import BlockDataForm from "./BlockDataForm";
+
+// Bloques "de texto libre" (fase 1, ago 2026): los unicos que exponen el
+// control de Tipografia de abajo. El resto (icon_card_grid, checklist,
+// etc.) son bloques compuestos con varios textos internos de distinto rol
+// (titulo de tarjeta, parrafo, etiqueta...) -- un tamaño/color unico a nivel
+// de bloque no encaja ahi, asi que quedan fuera por ahora.
+type TextBlockData = DisclaimerBlockData | HeadingBlockData | RichTextBlockData;
+
+function isTextBlock(data: BlockData): data is TextBlockData {
+  return data.type === "disclaimer" || data.type === "heading" || data.type === "rich_text";
+}
+
+function TypographyFields({
+  data,
+  onChange,
+}: {
+  data: TextBlockData;
+  onChange: (data: BlockData) => void;
+}) {
+  return (
+    <div className="mb-4 space-y-3 rounded-card-md border border-navy/10 bg-cream p-3">
+      <p className="text-p-caption font-semibold text-navy/60">Tipografía</p>
+      <SelectField<TextSizeToken | "">
+        label="Tamaño"
+        value={data.fontSize ?? ""}
+        onChange={(v) => onChange({ ...data, fontSize: v === "" ? null : v })}
+        options={[
+          { value: "", label: "Por defecto" },
+          ...TEXT_SIZE_OPTIONS.map((token) => ({ value: token, label: TEXT_SIZE_LABEL[token] })),
+        ]}
+      />
+      <SelectField<TextColorToken | "">
+        label="Color"
+        value={data.color ?? ""}
+        onChange={(v) => onChange({ ...data, color: v === "" ? null : v })}
+        options={[
+          { value: "", label: "Por defecto" },
+          ...TEXT_COLOR_OPTIONS.map((token) => ({ value: token, label: TEXT_COLOR_LABEL[token] })),
+        ]}
+      />
+    </div>
+  );
+}
 
 // Panel derecho del editor visual (fase 0): inspector contextual del bloque
 // seleccionado en el lienzo (ver BlockDataList editable + BlockList). Vacio
@@ -88,6 +141,7 @@ export default function BlockInspector({
       </div>
 
       <div className="p-4">
+        {isTextBlock(data) && <TypographyFields data={data} onChange={onDataChange} />}
         <BlockDataForm data={data} onChange={onDataChange} />
         <button
           type="button"

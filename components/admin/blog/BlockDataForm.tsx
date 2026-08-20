@@ -225,17 +225,12 @@ export default function BlockDataForm({
       );
 
     case "rich_text":
+      // El tamaño (antes "Estilo": parrafo normal/introduccion) ahora se
+      // elige desde el control de Tipografia del inspector (fase 1, ago
+      // 2026) -- ver BlockInspector.tsx. `variant` sigue en el dato solo
+      // como fallback legacy (ver RichTextBlock.tsx).
       return (
         <div className="space-y-3">
-          <SelectField
-            label="Estilo"
-            value={data.variant ?? "body"}
-            onChange={(v) => onChange({ ...data, variant: v })}
-            options={[
-              { value: "body", label: "Párrafo normal" },
-              { value: "lead", label: "Párrafo de introducción (más grande)" },
-            ]}
-          />
           <StringListField
             label="Párrafos (uno por caja de texto; admite [[cite:N]] y [texto](url))"
             items={data.paragraphs}

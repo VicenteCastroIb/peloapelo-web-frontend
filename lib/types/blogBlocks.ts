@@ -19,9 +19,19 @@ export interface RichParagraph {
   tone?: ParagraphTone;
 }
 
+// Escala tipografica y de color limitada para bloques de texto libre (fase 1
+// del editor visual, ago 2026) -- ver lib/blog/textStyleTokens.ts para las
+// clases Tailwind que representa cada token. A proposito una lista cerrada
+// (no px/color libres): protege la identidad visual de la fundacion.
+export type TextSizeToken = "caption" | "small" | "body" | "lead" | "h3" | "h2" | "h1";
+export type TextColorToken = "navy" | "navy-soft" | "accent" | "coral";
+
 export interface DisclaimerBlockData {
   type: "disclaimer";
   text: string;
+  /** undefined/null = usa el tamaño/color por defecto de este tipo de bloque (ver DisclaimerBlock.tsx). */
+  fontSize?: TextSizeToken | null;
+  color?: TextColorToken | null;
 }
 
 export interface HeadingBlockData {
@@ -29,13 +39,20 @@ export interface HeadingBlockData {
   text: string;
   /** Nombre de icono lucide-react (ver components/articles/blocks/iconMap.ts). Opcional. */
   icon?: string | null;
+  fontSize?: TextSizeToken | null;
+  color?: TextColorToken | null;
 }
 
 export interface RichTextBlockData {
   type: "rich_text";
-  /** "lead" = intro del articulo (text-p-lead, mas grande); "body" (default) = parrafo normal. */
+  /** "lead" = intro del articulo (text-p-lead, mas grande); "body" (default) = parrafo normal.
+   *  Legacy (pre-fase-1): sigue siendo el fallback cuando `fontSize` no esta definido, para no
+   *  romper el aspecto de articulos publicados antes de que existiera `fontSize`. El panel ya no
+   *  expone un selector aparte para esto -- lo reemplazo el control de Tipografia del inspector. */
   variant?: "lead" | "body";
   paragraphs: string[];
+  fontSize?: TextSizeToken | null;
+  color?: TextColorToken | null;
 }
 
 export interface IconCardItem {
