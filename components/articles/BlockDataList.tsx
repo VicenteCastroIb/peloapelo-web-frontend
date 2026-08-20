@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+import { GripVertical } from "lucide-react";
 import type { BlockData } from "@/lib/types/blogBlocks";
 import DisclaimerBlock from "./blocks/DisclaimerBlock";
 import HeadingBlock from "./blocks/HeadingBlock";
@@ -12,12 +16,17 @@ import ReferencesBlock from "./blocks/ReferencesBlock";
 
 // Nucleo de render compartido: dado un array de bloques YA parseados
 // (BlockData, no el dataJson crudo), decide el componente y el margen entre
-// bloques. Extraido de ArticleBlocksRenderer.tsx (ago 2026) para que la
-// vista previa en vivo del panel /admin/blog (ver
-// components/admin/blog/LiveArticlePreview.tsx) pueda reusar exactamente
-// esta misma logica -- misma funcion, mismos componentes, mismas clases --
-// en vez de reimplementar el render y arriesgarse a que la vista previa se
-// desincronice de como se ve el articulo publicado de verdad.
+// bloques. Usado tanto por la pagina publica del blog (ArticleBlocksRenderer)
+// como por el editor visual de /admin/blog (BlockList.tsx) -- misma funcion,
+// mismos componentes, mismas clases, para que el editor muestre el contenido
+// exactamente como se va a ver publicado.
+//
+// `editable` (fase 0 del editor visual) agrega la capa de seleccion/drag&drop
+// sobre el mismo render, SIN bifurcar el arbol de componentes: cada bloque se
+// envuelve en un contenedor clickeable/arrastrable (drag-and-drop nativo
+// HTML5, sin libreria nueva) que dispara `onSelect`/`onReorder`. Sin
+// `editable` (paginas publicas) el envoltorio ni existe -- cero costo/riesgo
+// para el render publico.
 const TOP_MARGIN_BY_TYPE: Record<string, string> = {
   disclaimer: "",
   heading: "mt-12",
@@ -31,14 +40,92 @@ const TOP_MARGIN_BY_TYPE: Record<string, string> = {
   references: "",
 };
 
-export default function BlockDataList({ blocks }: { blocks: BlockData[] }) {
+export default function BlockDataList({
+  blocks,
+  editable = false,
+  selectedIndex = null,
+  onSelect,
+  onReorder,
+}: {
+  blocks: BlockData[];
+  /** Modo editor: agrega seleccion y reordenamiento por drag&drop sobre el mismo render. */
+  editable?: boolean;
+  selectedIndex?: number | null;
+  onSelect?: (index: number) => void;
+  onReorder?: (from: number, to: number) => void;
+}) {
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
   return (
     <div className="mx-auto max-w-3xl">
       {blocks.map((data, index) => {
         const margin = index === 0 ? "" : (TOP_MARGIN_BY_TYPE[data.type] ?? "mt-6");
+
+        if (!editable) {
+          return (
+            <div key={index} className={margin || undefined}>
+              <RenderBlock data={data} />
+            </div>
+          );
+        }
+
+        const selected = selectedIndex === index;
         return (
           <div key={index} className={margin || undefined}>
-            <RenderBlock data={data} />
+            <div
+              role="button"
+              tabIndex={0}
+              draggable
+              onDragStart={(e) => {
+                setDragIndex(index);
+                e.dataTransfer.effectAllowed = "move";
+                e.dataTransfer.setData("text/plain", String(index));
+              }}
+              onDragEnd={() => {
+                setDragIndex(null);
+                setDragOverIndex(null);
+              }}
+              onDragOver={(e) => {
+                // Sin esto el navegador no permite soltar (onDrop nunca dispara) --
+                // comportamiento por defecto de HTML5 drag&drop.
+                e.preventDefault();
+                if (dragOverIndex !== index) setDragOverIndex(index);
+              }}
+              onDragLeave={() => {
+                setDragOverIndex((prev) => (prev === index ? null : prev));
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                const from = Number(e.dataTransfer.getData("text/plain"));
+                setDragOverIndex(null);
+                if (!Number.isNaN(from)) onReorder?.(from, index);
+              }}
+              onClick={() => onSelect?.(index)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  onSelect?.(index);
+                }
+              }}
+              className={`group relative -m-2 cursor-pointer rounded-card-md border-2 p-2 transition-colors ${
+                selected
+                  ? "border-accent bg-accent/5"
+                  : dragOverIndex === index
+                    ? "border-accent/40"
+                    : "border-transparent hover:border-navy/15"
+              } ${dragIndex === index ? "opacity-40" : ""}`}
+            >
+              <span
+                className={`pointer-events-none absolute -top-3 left-1 z-10 flex items-center gap-1 rounded-pill bg-navy px-2 py-0.5 text-[10px] font-semibold text-cream transition-opacity ${
+                  selected ? "opacity-100" : "opacity-0 group-hover:opacity-100"
+                }`}
+              >
+                <GripVertical size={10} />
+                {index + 1}
+              </span>
+              <RenderBlock data={data} />
+            </div>
           </div>
         );
       })}

@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Eye } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Eye } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 import {
   getAdminArticle,
@@ -13,11 +13,9 @@ import {
   type ArticleRequest,
 } from "@/lib/api/adminBlog";
 import { ApiError } from "@/lib/api/client";
-import type { BlockData } from "@/lib/types/blogBlocks";
 import ArticleForm from "@/components/admin/blog/ArticleForm";
 import BlockList from "@/components/admin/blog/BlockList";
-import LiveArticlePreview from "@/components/admin/blog/LiveArticlePreview";
-import PreviewErrorBoundary from "@/components/admin/PreviewErrorBoundary";
+import Collapse from "@/components/shared/Collapse";
 
 function toArticleRequest(article: AdminArticle): ArticleRequest {
   return {
@@ -32,21 +30,22 @@ function toArticleRequest(article: AdminArticle): ArticleRequest {
   };
 }
 
-// Vista previa en vivo (ago 2026): mientras Jessica edita el titulo, los
-// campos de portada o cualquier bloque, esta pagina mantiene un "borrador"
-// en memoria (draftFields/draftBlocks) separado de lo guardado en el
-// backend, y se lo pasa a LiveArticlePreview para que se vea la
-// construccion del articulo en tiempo real -- sin necesidad de guardar
-// primero. ArticleForm/BlockList siguen guardando explicitamente (botones
-// "Guardar cambios"/"Guardar bloque"); el borrador es solo para la
-// vista previa, nunca se manda solo por existir.
+// Editor visual de 3 columnas (fase 0, ago 2026): el lienzo central de
+// BlockList ya muestra el articulo completo (encabezado + bloques) tal como
+// va a quedar publicado, asi que no hace falta un panel de preview aparte
+// como antes -- esta pagina solo mantiene el "borrador" en memoria
+// (draftFields) de los campos de portada (titulo, resumen, etc.) y se lo
+// pasa a BlockList para que el lienzo se actualice en tiempo real mientras
+// se escribe en "Ajustes del articulo", sin necesidad de guardar primero.
+// ArticleForm/BlockList siguen guardando explicitamente (botones "Guardar
+// cambios"/"Guardar bloque"); el borrador nunca se manda solo por existir.
 export default function EditArticlePage() {
   const { id } = useParams<{ id: string }>();
   const { token } = useAuth();
   const router = useRouter();
   const [article, setArticle] = useState<AdminArticle | null>(null);
   const [draftFields, setDraftFields] = useState<ArticleRequest | null>(null);
-  const [draftBlocks, setDraftBlocks] = useState<BlockData[]>([]);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
 
   // Bug real (ago 2026): esta llamada no tenia catch. Se dispara sola al
@@ -124,25 +123,33 @@ export default function EditArticlePage() {
   }
 
   return (
-    <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-      <div className="min-w-0">
-        <Link href="/admin/blog" className="inline-flex items-center gap-1 text-a-inline font-semibold text-navy/60">
-          <ArrowLeft size={14} /> Panel de blog
-        </Link>
-        <div className="mt-4 flex items-center gap-3">
-          <h1 className="text-h3-lg text-navy">{article.title}</h1>
-          {article.published && (
-            <Link
-              href={`/blog/${article.slug}`}
-              target="_blank"
-              className="flex items-center gap-1 text-p-caption font-semibold text-accent hover:underline"
-            >
-              <Eye size={13} /> Ver en el sitio
-            </Link>
-          )}
-        </div>
+    <div>
+      <Link href="/admin/blog" className="inline-flex items-center gap-1 text-a-inline font-semibold text-navy/60">
+        <ArrowLeft size={14} /> Panel de blog
+      </Link>
+      <div className="mt-4 flex items-center gap-3">
+        <h1 className="text-h3-lg text-navy">{article.title}</h1>
+        {article.published && (
+          <Link
+            href={`/blog/${article.slug}`}
+            target="_blank"
+            className="flex items-center gap-1 text-p-caption font-semibold text-accent hover:underline"
+          >
+            <Eye size={13} /> Ver en el sitio
+          </Link>
+        )}
+      </div>
 
-        <div className="mt-6">
+      <div className="mt-6">
+        <button
+          type="button"
+          onClick={() => setSettingsOpen((v) => !v)}
+          className="flex items-center gap-1.5 text-a-inline font-semibold text-navy/70 hover:text-navy"
+        >
+          {settingsOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+          Ajustes del artículo (título, resumen, portada, categoría…)
+        </button>
+        <Collapse open={settingsOpen} className="mt-3">
           <ArticleForm
             initial={draftFields}
             submitLabel="Guardar cambios"
@@ -150,30 +157,24 @@ export default function EditArticlePage() {
             onDelete={handleDelete}
             onChange={setDraftFields}
           />
-        </div>
-
-        <h2 className="mt-10 text-h3-md text-navy">Contenido del artículo</h2>
-        <p className="mt-1 text-p-small text-navy/60">
-          Agrega, edita, reordena o elimina los bloques que forman el cuerpo del artículo. Los
-          cambios se ven al instante en la vista previa.
-        </p>
-
-        <div className="mt-4">
-          <BlockList articleId={id} blocks={article.blocks} token={token} onChange={load} onLiveChange={setDraftBlocks} />
-        </div>
+        </Collapse>
       </div>
 
-      {/* self-start: sin esto, el grid (align-items: stretch por defecto)
-          estira este item a la misma altura que la columna izquierda -- un
-          elemento sticky exactamente tan alto como su contenedor scrolleable
-          no tiene "margen" para moverse y position:sticky deja de pegarse
-          (se mueve 1 a 1 con el scroll, como si fuera position:static). Con
-          self-start el item vuelve a su alto natural (el de la preview) y
-          sticky si tiene espacio dentro de la fila para quedarse fijo. */}
-      <div className="xl:sticky xl:top-6 xl:self-start">
-        <PreviewErrorBoundary>
-          <LiveArticlePreview fields={draftFields} blocks={draftBlocks} />
-        </PreviewErrorBoundary>
+      <h2 className="mt-10 text-h3-md text-navy">Contenido del artículo</h2>
+      <p className="mt-1 text-p-small text-navy/60">
+        Hacé click en cualquier bloque del lienzo para editarlo desde el panel de la derecha,
+        arrastralo para reordenarlo, o agregá uno nuevo desde el panel de la izquierda. Los cambios
+        se ven al instante tal como van a quedar publicados.
+      </p>
+
+      <div className="mt-4">
+        <BlockList
+          articleId={id}
+          blocks={article.blocks}
+          articleFields={draftFields}
+          token={token}
+          onChange={load}
+        />
       </div>
     </div>
   );

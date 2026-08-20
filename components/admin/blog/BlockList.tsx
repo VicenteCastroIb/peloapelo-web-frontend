@@ -1,12 +1,22 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus } from "lucide-react";
-import { createBlock, reorderBlocks, type AdminArticleBlock } from "@/lib/api/adminBlog";
+import {
+  createBlock,
+  deleteBlock,
+  reorderBlocks,
+  updateBlock,
+  type AdminArticleBlock,
+  type ArticleRequest,
+} from "@/lib/api/adminBlog";
 import { ApiError } from "@/lib/api/client";
 import type { BlockData, BlockType } from "@/lib/types/blogBlocks";
-import { BLOCK_TYPE_LABEL, BLOCK_TYPE_OPTIONS, defaultBlockData } from "@/lib/admin/blogBlockDefaults";
-import BlockCard from "./BlockCard";
+import { BLOCK_TYPE_LABEL, defaultBlockData } from "@/lib/admin/blogBlockDefaults";
+import BlockDataList from "@/components/articles/BlockDataList";
+import PreviewErrorBoundary from "@/components/admin/PreviewErrorBoundary";
+import ArticleHeaderPreview from "./ArticleHeaderPreview";
+import BlockPalette from "./BlockPalette";
+import BlockInspector from "./BlockInspector";
 
 function parseBlockData(dataJson: string, blockType: string): BlockData | null {
   try {
@@ -17,33 +27,35 @@ function parseBlockData(dataJson: string, blockType: string): BlockData | null {
   }
 }
 
-const PARSE_ERROR_MESSAGE =
-  "El contenido de este bloque no se pudo leer (JSON inválido). Puede haberse editado fuera del panel.";
-
-// Dueño del "borrador en vivo" de todos los bloques del articulo: parsea
-// cada `dataJson` apenas llega (no solo el que se expande, a diferencia del
-// diseño original) y mantiene ese estado actualizado con cada tecla que
-// Jessica escribe en cualquier BlockCard. `onLiveChange` sube la lista
-// ordenada y ya tipada a la pagina de edicion para alimentar
-// LiveArticlePreview -- el guardado real a la API sigue siendo por bloque
-// (boton "Guardar bloque"), esto es solo lo que se ve mientras se escribe.
+// Editor visual del contenido de un articulo (fase 0, ago 2026): reemplaza
+// el formulario-lista-aparte-de-la-preview por un lienzo de 3 columnas --
+// paleta (agregar) | lienzo (encabezado del articulo + BlockDataList en modo
+// editable: el contenido real, seleccionable/arrastrable) | inspector
+// (editar el bloque seleccionado). El "borrador en vivo" de los bloques se
+// mantiene aca (parsea cada `dataJson` apenas llega, actualiza en cada tecla
+// que Jessica escribe en el inspector) para que el lienzo se vea siempre
+// actualizado -- el guardado real a la API sigue siendo por bloque (boton
+// "Guardar bloque" del inspector).
 export default function BlockList({
   articleId,
   blocks,
+  articleFields,
   token,
   onChange,
-  onLiveChange,
 }: {
   articleId: string;
   blocks: AdminArticleBlock[];
+  /** Borrador en vivo de los campos de portada (titulo, resumen, etc.) -- ver ArticleForm en la pagina de edicion. Se muestra arriba de los bloques para que el lienzo sea el articulo completo, no solo el contenido. */
+  articleFields: ArticleRequest;
   token: string | null | undefined;
   onChange: () => void;
-  onLiveChange?: (blocks: BlockData[]) => void;
 }) {
-  const [newType, setNewType] = useState<BlockType>("rich_text");
   const [adding, setAdding] = useState(false);
   const [reordering, setReordering] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [removing, setRemoving] = useState(false);
   const [draft, setDraft] = useState<Record<string, BlockData | null>>({});
+  const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const sorted = [...blocks].sort((a, b) => a.position - b.position);
@@ -57,33 +69,45 @@ export default function BlockList({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blocks]);
 
-  useEffect(() => {
-    const ordered = sorted.map((b) => draft[b.id]).filter((d): d is BlockData => d != null);
-    onLiveChange?.(ordered);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [draft]);
+  // Bloques con dataJson invalido (ej. editado fuera del panel) -- no se
+  // pueden renderizar en el lienzo, asi que quedan afuera de `visibleSorted`
+  // (que es lo que alimenta BlockDataList/seleccion/reorder) y en cambio se
+  // listan aparte con la unica accion posible: eliminarlos.
+  const brokenBlocks = sorted.filter((b) => draft[b.id] === null);
+  const visibleSorted = sorted.filter((b) => draft[b.id] != null);
 
-  // Sin try/catch (bug real, ago 2026): un click en subir/bajar mientras el
-  // articulo ya no existe mas (ej. se borro desde otra pestaña) hacia que
-  // reorderBlocks tirara 404 "Articulo no encontrado" SIN atajar -- esa
-  // excepcion se escapaba de un handler de click (nadie hace await de un
-  // onClick), quedaba como promise rejection sin manejar y tumbaba toda la
-  // pagina con la pantalla roja de Next.js. `reordering` de paso evita
-  // mandar dos reorders en simultaneo si se clickea rapido.
-  async function move(index: number, direction: -1 | 1) {
-    const target = index + direction;
-    if (target < 0 || target >= sorted.length || reordering) return;
-    const reordered = [...sorted];
-    [reordered[index], reordered[target]] = [reordered[target], reordered[index]];
+  const selectedIndex = selectedBlockId ? visibleSorted.findIndex((b) => b.id === selectedBlockId) : -1;
+  const selectedBlock = selectedIndex >= 0 ? visibleSorted[selectedIndex] : null;
+  const selectedData = selectedBlock ? (draft[selectedBlock.id] ?? null) : null;
+
+  // Sin try/catch (bug real, ago 2026): un reorder mientras el articulo ya
+  // no existe mas (ej. se borro desde otra pestaña) hacia que reorderBlocks
+  // tirara 404 "Articulo no encontrado" SIN atajar -- esa excepcion quedaba
+  // como promise rejection sin manejar y tumbaba toda la pagina con la
+  // pantalla roja de Next.js. `reordering` de paso evita mandar dos reorders
+  // en simultaneo con drags/clicks rapidos.
+  async function handleReorder(from: number, to: number) {
+    if (reordering) return;
+    const clampedTo = Math.max(0, Math.min(to, visibleSorted.length - 1));
+    if (from === clampedTo || from < 0 || from >= visibleSorted.length) return;
+
+    // `visibleSorted` puede ser un subconjunto de `sorted` si hay bloques
+    // rotos (ver brokenBlocks) -- se reordena solo dentro de los indices
+    // visibles y despues se reinserta ese nuevo orden en los huecos que
+    // ocupaban los bloques visibles dentro del orden completo, dejando los
+    // rotos fijos en su posicion.
+    const reorderedVisibleIds = visibleSorted.map((b) => b.id);
+    const [movedId] = reorderedVisibleIds.splice(from, 1);
+    reorderedVisibleIds.splice(clampedTo, 0, movedId);
+    let vi = 0;
+    const fullOrder = sorted.map((b) => (draft[b.id] != null ? reorderedVisibleIds[vi++] : b.id));
+
     setReordering(true);
     setError(null);
     try {
-      await reorderBlocks(token, articleId, reordered.map((b) => b.id));
+      await reorderBlocks(token, articleId, fullOrder);
       onChange();
     } catch (err) {
-      // 404 = el articulo ya no existe -- onChange() dispara el load() de la
-      // pagina, que ahora redirige sola a /admin/blog en ese caso (ver
-      // app/(app)/admin/blog/[id]/page.tsx).
       if (err instanceof ApiError && err.status === 404) {
         onChange();
         return;
@@ -94,15 +118,21 @@ export default function BlockList({
     }
   }
 
-  async function addBlock() {
+  function moveSelected(direction: -1 | 1) {
+    if (selectedIndex < 0) return;
+    handleReorder(selectedIndex, selectedIndex + direction);
+  }
+
+  async function addBlock(type: BlockType) {
     setAdding(true);
     setError(null);
     try {
-      await createBlock(token, articleId, {
-        blockType: newType,
+      const created = await createBlock(token, articleId, {
+        blockType: type,
         position: sorted.length,
-        dataJson: JSON.stringify(defaultBlockData(newType)),
+        dataJson: JSON.stringify(defaultBlockData(type)),
       });
+      setSelectedBlockId(created.id);
       onChange();
     } catch (err) {
       if (err instanceof ApiError && err.status === 404) {
@@ -115,55 +145,114 @@ export default function BlockList({
     }
   }
 
+  async function saveSelected() {
+    if (!selectedBlock || !selectedData) return;
+    setSaving(true);
+    setError(null);
+    try {
+      await updateBlock(token, selectedBlock.id, {
+        blockType: selectedData.type,
+        position: selectedBlock.position,
+        dataJson: JSON.stringify(selectedData),
+      });
+      onChange();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo guardar el bloque");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function removeBlock(id: string) {
+    setRemoving(true);
+    setError(null);
+    try {
+      await deleteBlock(token, id);
+      setSelectedBlockId((current) => (current === id ? null : current));
+      onChange();
+    } catch (err) {
+      // 404 = ya no existe -- el resultado buscado ya esta logrado.
+      if (err instanceof ApiError && err.status === 404) {
+        setSelectedBlockId((current) => (current === id ? null : current));
+        onChange();
+        return;
+      }
+      setError(err instanceof Error ? err.message : "No se pudo eliminar el bloque");
+    } finally {
+      setRemoving(false);
+    }
+  }
+
   return (
     <div>
       {error && <p className="mb-3 text-p-small text-coral">{error}</p>}
 
-      {sorted.length === 0 && (
-        <p className="rounded-card-md bg-white p-6 text-center text-p-small text-navy/50 shadow-sm">
-          Este artículo todavía no tiene contenido. Agrega el primer bloque abajo.
-        </p>
+      {brokenBlocks.length > 0 && (
+        <div className="mb-4 rounded-card-md border border-coral/30 bg-coral-soft p-3 text-p-caption text-coral">
+          <p className="font-semibold">
+            {brokenBlocks.length === 1
+              ? "Hay 1 bloque con contenido inválido que no se puede mostrar en el lienzo."
+              : `Hay ${brokenBlocks.length} bloques con contenido inválido que no se pueden mostrar en el lienzo.`}
+          </p>
+          <ul className="mt-1.5 space-y-1">
+            {brokenBlocks.map((b) => (
+              <li key={b.id} className="flex items-center justify-between gap-2">
+                <span>
+                  {BLOCK_TYPE_LABEL[b.blockType as BlockType] ?? b.blockType} (posición {b.position + 1})
+                </span>
+                <button type="button" className="font-semibold underline" onClick={() => removeBlock(b.id)}>
+                  Eliminar
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
       )}
 
-      <div className="space-y-3">
-        {sorted.map((block, i) => (
-          <BlockCard
-            key={block.id}
-            block={block}
-            data={draft[block.id] ?? null}
-            parseError={block.id in draft && draft[block.id] === null ? PARSE_ERROR_MESSAGE : null}
-            token={token}
-            index={i}
-            total={sorted.length}
-            moveDisabled={reordering}
-            onMoveUp={() => move(i, -1)}
-            onMoveDown={() => move(i, 1)}
-            onDataChange={(data) => setDraft((prev) => ({ ...prev, [block.id]: data }))}
-            onChange={onChange}
-          />
-        ))}
-      </div>
+      <div className="grid gap-4 lg:grid-cols-[200px_minmax(0,1fr)_320px]">
+        <BlockPalette onAdd={addBlock} disabled={adding} />
 
-      <div className="mt-5 flex items-center gap-2 rounded-card-md border border-dashed border-navy/20 p-3">
-        <select
-          className="rounded-card-md border border-navy/15 bg-cream px-3 py-2 text-p-small text-navy outline-none focus:border-accent"
-          value={newType}
-          onChange={(e) => setNewType(e.target.value as BlockType)}
-        >
-          {BLOCK_TYPE_OPTIONS.map((type) => (
-            <option key={type} value={type}>
-              {BLOCK_TYPE_LABEL[type]}
-            </option>
-          ))}
-        </select>
-        <button
-          type="button"
-          onClick={addBlock}
-          disabled={adding}
-          className="flex items-center gap-1.5 rounded-pill bg-navy/5 px-4 py-2 text-p-caption font-semibold text-navy hover:bg-navy/10 disabled:opacity-50"
-        >
-          <Plus size={14} /> {adding ? "Agregando…" : "Agregar bloque"}
-        </button>
+        <div className="min-w-0 rounded-card-lg border border-navy/10 bg-white p-6 shadow-sm sm:p-8">
+          <PreviewErrorBoundary>
+            <ArticleHeaderPreview fields={articleFields} />
+          </PreviewErrorBoundary>
+
+          <div className="mt-10">
+            {visibleSorted.length === 0 ? (
+              <p className="mx-auto max-w-3xl rounded-card-md bg-cream p-6 text-center text-p-small text-navy/50">
+                Este artículo todavía no tiene contenido. Agregá el primer bloque desde el panel de la
+                izquierda.
+              </p>
+            ) : (
+              <PreviewErrorBoundary>
+                <BlockDataList
+                  blocks={visibleSorted.map((b) => draft[b.id]!)}
+                  editable
+                  selectedIndex={selectedIndex >= 0 ? selectedIndex : null}
+                  onSelect={(i) => setSelectedBlockId(visibleSorted[i]?.id ?? null)}
+                  onReorder={handleReorder}
+                />
+              </PreviewErrorBoundary>
+            )}
+          </div>
+        </div>
+
+        <BlockInspector
+          block={selectedBlock}
+          data={selectedData}
+          index={selectedIndex}
+          total={visibleSorted.length}
+          saving={saving}
+          removing={removing}
+          moveDisabled={reordering}
+          onDataChange={(data) => {
+            if (selectedBlock) setDraft((prev) => ({ ...prev, [selectedBlock.id]: data }));
+          }}
+          onSave={saveSelected}
+          onDelete={() => selectedBlock && removeBlock(selectedBlock.id)}
+          onMoveUp={() => moveSelected(-1)}
+          onMoveDown={() => moveSelected(1)}
+        />
       </div>
     </div>
   );

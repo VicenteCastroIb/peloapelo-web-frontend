@@ -1,10 +1,23 @@
+import {
+  AlertTriangle,
+  BookOpen,
+  Heading2,
+  LayoutGrid,
+  ListChecks,
+  Megaphone,
+  Pilcrow,
+  PieChart,
+  RefreshCcw,
+  Scale,
+  type LucideIcon,
+} from "lucide-react";
 import type { BlockData, BlockType } from "@/lib/types/blogBlocks";
 
 // Catalogo de tipos de bloque que Jessica puede agregar desde /admin/blog, con
 // su valor inicial ("en blanco pero valido") al crear uno nuevo. Mismo set de
 // 10 tipos que sabe interpretar ArticleBlocksRenderer.tsx (ver
 // lib/types/blogBlocks.ts) -- si se agrega un tipo nuevo ahi, agregarlo
-// tambien aca para que aparezca en el selector "Agregar bloque".
+// tambien aca para que aparezca en la galeria "Agregar bloque".
 export const BLOCK_TYPE_LABEL: Record<BlockType, string> = {
   disclaimer: "Aviso / disclaimer",
   heading: "Subtítulo",
@@ -16,6 +29,21 @@ export const BLOCK_TYPE_LABEL: Record<BlockType, string> = {
   loop_diagram: "Diagrama circular (pasos)",
   cta_card: "Tarjeta de invitación a contactar",
   references: "Referencias / fuentes",
+};
+
+// Icono por tipo para la galeria visual del panel izquierdo del editor
+// (BlockPalette.tsx) -- reemplaza el <select> de texto plano original.
+export const BLOCK_TYPE_ICON: Record<BlockType, LucideIcon> = {
+  disclaimer: AlertTriangle,
+  heading: Heading2,
+  rich_text: Pilcrow,
+  icon_card_grid: LayoutGrid,
+  myth_reality_grid: Scale,
+  checklist: ListChecks,
+  stat_ring_row: PieChart,
+  loop_diagram: RefreshCcw,
+  cta_card: Megaphone,
+  references: BookOpen,
 };
 
 export const BLOCK_TYPE_OPTIONS = Object.keys(BLOCK_TYPE_LABEL) as BlockType[];
