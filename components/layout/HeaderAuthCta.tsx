@@ -15,34 +15,31 @@ export default function HeaderAuthCta() {
   }
 
   if (status === "authenticated" && user) {
-    const firstName = user.fullName?.split(" ")[0] || user.email;
-    // "Ingresar" (ago 2026, a pedido): antes, para llegar a /admin/blog desde
-    // la pagina de inicio, Jessica tenia que ir primero a /dashboard y ahi
-    // recien clickear "Panel de blog" en el sidebar -- este Header es global
-    // (se ve en "/" tambien), asi que un acceso directo aca ahorra ese paso
-    // intermedio. Solo se muestra a ADMIN; un usuario normal no tiene panel
-    // al que entrar.
+    // "Ingresar" (ago 2026, a pedido): antes, para llegar a su panel desde
+    // la pagina de inicio, habia que ir primero a /dashboard -- este Header
+    // es global (se ve en "/" tambien), asi que un acceso directo aca
+    // ahorra ese paso intermedio. Antes era solo para ADMIN (directo a
+    // /admin/blog); ahora tambien para usuarios normales (directo a
+    // /dashboard, ya que "Hola, {nombre}" -- que cumplia ese rol -- se
+    // saco del header a pedido).
     // "Volver a inicio" (ago 2026, a pedido -- "el 'ingresar' solo debe estar
     // en la pagina principal, no en el panel; en el panel debe decir 'volver
-    // a inicio'"): mismo lugar en el layout, pero invertido -- una vez que
-    // Jessica ya esta adentro del panel, "Ingresar" no tiene sentido (ya
-    // entro), lo util ahi es el camino de vuelta al sitio publico. Fuera de
-    // "/" y fuera del panel (ej. /blog, /fundacion) no se muestra ninguno de
-    // los dos, tal como se pidio explicitamente para "Ingresar".
+    // a inicio'"): mismo lugar en el layout, pero invertido -- una vez ya
+    // adentro del panel, "Ingresar" no tiene sentido (ya entro), lo util ahi
+    // es el camino de vuelta al sitio publico. Fuera de "/" y fuera del
+    // panel (ej. /blog, /fundacion) no se muestra ninguno de los dos.
     const isHome = pathname === "/";
     const appPanel = isAppPanelPath(pathname);
+    const panelHref = user.role === "ADMIN" ? "/admin/blog" : "/dashboard";
 
     return (
       <div className="flex items-center gap-3">
-        <Link href="/dashboard" className="hidden text-a-nav text-navy/70 hover:text-navy sm:inline">
-          Hola, {firstName}
-        </Link>
-        {user.role === "ADMIN" && isHome && (
-          <Link href="/admin/blog" className="hidden text-a-nav font-semibold text-accent hover:underline sm:inline">
+        {isHome && (
+          <Link href={panelHref} className="hidden text-a-nav font-semibold text-accent hover:underline sm:inline">
             Ingresar
           </Link>
         )}
-        {user.role === "ADMIN" && appPanel && (
+        {appPanel && (
           <Link href="/" className="hidden text-a-nav font-semibold text-accent hover:underline sm:inline">
             Volver a inicio
           </Link>
