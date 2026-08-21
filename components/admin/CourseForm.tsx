@@ -110,19 +110,6 @@ export default function CourseForm({
           />
         </label>
 
-        <label className="text-p-small font-semibold text-navy/70 sm:col-span-2">
-          Descripción larga (párrafo en la página del curso, opcional)
-          <textarea
-            rows={4}
-            className={inputClass}
-            value={values.longDescription}
-            onChange={(e) => {
-              const longDescription = e.target.value;
-              setValues((v) => ({ ...v, longDescription }));
-            }}
-          />
-        </label>
-
         <label className="text-p-small font-semibold text-navy/70">
           Nivel
           <select
