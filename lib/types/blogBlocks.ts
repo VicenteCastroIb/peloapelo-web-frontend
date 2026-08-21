@@ -141,6 +141,28 @@ export interface ReferencesBlockData extends BlockStyle {
   items: Array<{ text: string; url: string }>;
 }
 
+// Bloques de media (fase 3, ago 2026). "image" sube un archivo real a
+// Supabase Storage (ver lib/api/adminMedia.ts + backend AdminMediaController)
+// -- `url` queda vacio hasta que termina de subir. "video_embed" NO sube
+// ningun archivo: solo guarda el id de un video de YouTube ya publicado ahi
+// (ver lib/blog/youtube.ts) y se renderiza como iframe -- decision de
+// infraestructura confirmada con Vicente: evita compresion/hosting de video
+// propio, YouTube ya sirve el streaming adaptativo.
+export interface ImageBlockData extends BlockStyle {
+  type: "image";
+  url: string;
+  /** Texto alternativo -- requerido para accesibilidad/SEO, a diferencia de coverImageUrl (decorativo). */
+  alt: string;
+  caption?: string | null;
+}
+
+export interface VideoEmbedBlockData extends BlockStyle {
+  type: "video_embed";
+  /** Solo el id de 11 caracteres (ver lib/blog/youtube.ts#extractYouTubeId), no la URL completa pegada. */
+  youtubeId: string;
+  caption?: string | null;
+}
+
 export type BlockData =
   | DisclaimerBlockData
   | HeadingBlockData
@@ -151,7 +173,9 @@ export type BlockData =
   | StatRingRowBlockData
   | LoopDiagramBlockData
   | CtaCardBlockData
-  | ReferencesBlockData;
+  | ReferencesBlockData
+  | ImageBlockData
+  | VideoEmbedBlockData;
 
 export type BlockType = BlockData["type"];
 

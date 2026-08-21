@@ -1,8 +1,10 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Plus, Trash2 } from "lucide-react";
 import { ICON_MAP, ICON_LABEL_ES } from "@/components/articles/blocks/iconMap";
 import type { RichParagraph } from "@/lib/types/blogBlocks";
+import { extractYouTubeId } from "@/lib/blog/youtube";
 
 // Atomos de formulario reutilizados por BlockDataForm.tsx para editar cada
 // tipo de bloque. Todo controlado (value/onChange), sin estado propio, para
@@ -354,6 +356,58 @@ export function NumberField({
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
       />
+    </label>
+  );
+}
+
+// Bloque "video_embed" (fase 3, ago 2026): a diferencia de los demas campos
+// de este archivo, el `value` que se guarda (youtubeId, 11 caracteres) NO es
+// lo mismo que lo que la persona pega en el input (cualquier link de
+// YouTube) -- por eso, a diferencia del resto de estos campos "tontos", este
+// necesita su propio estado local para el texto crudo del input mientras
+// deriva el id ya limpio hacia `onChange`.
+export function YouTubeUrlField({
+  value,
+  onChange,
+}: {
+  /** El youtubeId ya guardado (o "" si el bloque es nuevo). */
+  value: string;
+  onChange: (youtubeId: string) => void;
+}) {
+  const [raw, setRaw] = useState(value);
+
+  // Si el bloque seleccionado cambia (otro bloque, u otro articulo), el
+  // input debe reflejar el nuevo valor guardado, no arrastrar el texto
+  // crudo del bloque anterior.
+  useEffect(() => {
+    setRaw(value);
+  }, [value]);
+
+  const parsed = extractYouTubeId(raw);
+  const invalid = raw.trim() !== "" && !parsed;
+
+  return (
+    <label className="block text-p-caption font-semibold text-navy/60">
+      Link o ID de YouTube
+      <input
+        className={fieldClass}
+        value={raw}
+        placeholder="https://www.youtube.com/watch?v=…"
+        onChange={(e) => {
+          const next = e.target.value;
+          setRaw(next);
+          const id = extractYouTubeId(next);
+          if (id) onChange(id);
+        }}
+      />
+      {invalid && (
+        <span className="mt-1 block text-p-caption font-normal text-coral">
+          No reconocí un video de YouTube ahí -- pegá el link completo.
+        </span>
+      )}
+      {parsed && (
+        <span className="mt-1 block text-p-caption font-normal text-accent">Video reconocido ✓</span>
+      )}
     </label>
   );
 }

@@ -14,6 +14,8 @@ import StatRingRowBlock from "./blocks/StatRingRowBlock";
 import LoopDiagramBlock from "./blocks/LoopDiagramBlock";
 import CtaCardBlock from "./blocks/CtaCardBlock";
 import ReferencesBlock from "./blocks/ReferencesBlock";
+import ImageBlock from "./blocks/ImageBlock";
+import VideoEmbedBlock from "./blocks/VideoEmbedBlock";
 
 // Nucleo de render compartido: dado un array de bloques YA parseados
 // (BlockData, no el dataJson crudo), decide el componente y el margen entre
@@ -39,6 +41,8 @@ const TOP_MARGIN_BY_TYPE: Record<string, string> = {
   loop_diagram: "mt-6",
   cta_card: "mt-8",
   references: "",
+  image: "mt-8",
+  video_embed: "mt-8",
 };
 
 export default function BlockDataList({
@@ -170,6 +174,10 @@ function RenderBlock({ data }: { data: BlockData }) {
       return <CtaCardBlock data={data} />;
     case "references":
       return <ReferencesBlock data={data} />;
+    case "image":
+      return <ImageBlock data={data} />;
+    case "video_embed":
+      return <VideoEmbedBlock data={data} />;
     default:
       return null;
   }

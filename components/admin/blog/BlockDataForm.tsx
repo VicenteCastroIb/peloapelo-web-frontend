@@ -15,7 +15,9 @@ import {
   CheckboxField,
   SelectField,
   NumberField,
+  YouTubeUrlField,
 } from "./blockFieldEditors";
+import ImageUploadField from "./ImageUploadField";
 
 // Formulario estructurado por tipo de bloque: recibe el `data` tipado de
 // BlockData (ver lib/types/blogBlocks.ts) y lo edita in-place via onChange.
@@ -204,9 +206,12 @@ function IconCardGridForm({
 
 export default function BlockDataForm({
   data,
+  token,
   onChange,
 }: {
   data: BlockData;
+  /** Solo lo usa el caso "image" (sube el archivo a Supabase Storage, ver ImageUploadField.tsx) -- el resto de los campos son controlados sin llamadas a la API. */
+  token: string | null | undefined;
   onChange: (data: BlockData) => void;
 }) {
   switch (data.type) {
@@ -327,6 +332,21 @@ export default function BlockDataForm({
           label1="Texto de la cita"
           label2="URL"
         />
+      );
+
+    case "image":
+      return <ImageUploadField data={data} token={token} onChange={onChange} />;
+
+    case "video_embed":
+      return (
+        <div className="space-y-3">
+          <YouTubeUrlField value={data.youtubeId} onChange={(youtubeId) => onChange({ ...data, youtubeId })} />
+          <TextField
+            label="Leyenda (opcional, aparece debajo del video)"
+            value={data.caption ?? ""}
+            onChange={(v) => onChange({ ...data, caption: v || null })}
+          />
+        </div>
       );
 
     default: {

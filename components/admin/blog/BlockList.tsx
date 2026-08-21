@@ -245,6 +245,7 @@ export default function BlockList({
           saving={saving}
           removing={removing}
           moveDisabled={reordering}
+          token={token}
           onDataChange={(data) => {
             if (selectedBlock) setDraft((prev) => ({ ...prev, [selectedBlock.id]: data }));
           }}

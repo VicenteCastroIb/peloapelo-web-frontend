@@ -23,6 +23,7 @@ export async function apiFetch<T>(
   path: string,
   options: {
     method?: string;
+    /** FormData (ver adminMedia.ts) se manda tal cual, sin JSON.stringify ni Content-Type -- el navegador arma el boundary multipart solo; fijarlo a mano rompe el parseo en el backend. */
     body?: unknown;
     token?: string | null;
     cache?: RequestCache;
@@ -45,8 +46,9 @@ export async function apiFetch<T>(
   } = {}
 ): Promise<T> {
   const { method = "GET", body, token, cache, revalidate } = options;
+  const isFormData = typeof FormData !== "undefined" && body instanceof FormData;
 
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  const headers: Record<string, string> = isFormData ? {} : { "Content-Type": "application/json" };
   if (token) {
     headers["Authorization"] = `Bearer ${token}`;
   }
@@ -60,7 +62,7 @@ export async function apiFetch<T>(
     // comportamiento default. Los dos son mutuamente excluyentes en la API
     // de fetch de Next -- cache/revalidate no pueden ir juntos.
     ...(cache ? { cache } : revalidate !== undefined ? { next: { revalidate } } : {}),
-    body: body !== undefined ? JSON.stringify(body) : undefined,
+    body: body === undefined ? undefined : isFormData ? (body as FormData) : JSON.stringify(body),
   });
 
   if (!response.ok) {

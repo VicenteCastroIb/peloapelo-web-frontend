@@ -2,6 +2,7 @@ import {
   AlertTriangle,
   BookOpen,
   Heading2,
+  ImageIcon,
   LayoutGrid,
   ListChecks,
   Megaphone,
@@ -9,13 +10,14 @@ import {
   PieChart,
   RefreshCcw,
   Scale,
+  Youtube,
   type LucideIcon,
 } from "lucide-react";
 import type { BlockData, BlockType } from "@/lib/types/blogBlocks";
 
 // Catalogo de tipos de bloque que Jessica puede agregar desde /admin/blog, con
 // su valor inicial ("en blanco pero valido") al crear uno nuevo. Mismo set de
-// 10 tipos que sabe interpretar ArticleBlocksRenderer.tsx (ver
+// 12 tipos que sabe interpretar ArticleBlocksRenderer.tsx (ver
 // lib/types/blogBlocks.ts) -- si se agrega un tipo nuevo ahi, agregarlo
 // tambien aca para que aparezca en la galeria "Agregar bloque".
 export const BLOCK_TYPE_LABEL: Record<BlockType, string> = {
@@ -29,6 +31,8 @@ export const BLOCK_TYPE_LABEL: Record<BlockType, string> = {
   loop_diagram: "Diagrama circular (pasos)",
   cta_card: "Tarjeta de invitación a contactar",
   references: "Referencias / fuentes",
+  image: "Imagen",
+  video_embed: "Video (YouTube)",
 };
 
 // Icono por tipo para la galeria visual del panel izquierdo del editor
@@ -44,6 +48,8 @@ export const BLOCK_TYPE_ICON: Record<BlockType, LucideIcon> = {
   loop_diagram: RefreshCcw,
   cta_card: Megaphone,
   references: BookOpen,
+  image: ImageIcon,
+  video_embed: Youtube,
 };
 
 export const BLOCK_TYPE_OPTIONS = Object.keys(BLOCK_TYPE_LABEL) as BlockType[];
@@ -83,5 +89,9 @@ export function defaultBlockData(type: BlockType): BlockData {
       return { type, question: "", subtext: "" };
     case "references":
       return { type, items: [] };
+    case "image":
+      return { type, url: "", alt: "" };
+    case "video_embed":
+      return { type, youtubeId: "" };
   }
 }

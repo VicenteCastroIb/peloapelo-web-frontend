@@ -127,6 +127,7 @@ export default function BlockInspector({
   saving,
   removing,
   moveDisabled,
+  token,
   onDataChange,
   onSave,
   onDelete,
@@ -140,6 +141,8 @@ export default function BlockInspector({
   saving: boolean;
   removing: boolean;
   moveDisabled?: boolean;
+  /** Solo lo necesita el bloque "image" para subir el archivo (ver BlockDataForm -> ImageUploadField). */
+  token: string | null | undefined;
   onDataChange: (data: BlockData) => void;
   onSave: () => void;
   onDelete: () => void;
@@ -196,7 +199,7 @@ export default function BlockInspector({
       <div className="p-4">
         {isTextBlock(data) && <TypographyFields data={data} onChange={onDataChange} />}
         <SectionStyleFields data={data} onChange={onDataChange} />
-        <BlockDataForm data={data} onChange={onDataChange} />
+        <BlockDataForm data={data} token={token} onChange={onDataChange} />
         <button
           type="button"
           onClick={onSave}
