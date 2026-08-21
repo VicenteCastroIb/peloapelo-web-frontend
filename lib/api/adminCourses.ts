@@ -53,11 +53,21 @@ export interface AdminCourseModule {
   lessons: AdminLesson[];
 }
 
+/** Bloque de contenido del curso en si (fase 5 del editor visual, ago 2026) -- mismo esquema que AdminArticleBlock/AdminLessonBlock, espejado del lado de cursos. */
+export interface AdminCourseBlock {
+  id: string;
+  courseId: string;
+  blockType: string;
+  position: number;
+  dataJson: string;
+}
+
 export interface AdminCourse {
   id: string;
   slug: string;
   title: string;
   description: string | null;
+  /** Fallback de texto plano (fase 5): cursos sin bloques propios siguen mostrando esto -- ver admin/courses/[id]/page.tsx. */
   longDescription: string | null;
   level: CourseLevel;
   coverImageUrl: string | null;
@@ -66,6 +76,7 @@ export interface AdminCourse {
   createdAt: string;
   updatedAt: string;
   modules: AdminCourseModule[];
+  blocks: AdminCourseBlock[];
 }
 
 export interface AdminCourseSummary {
@@ -120,6 +131,12 @@ export interface LessonResourceRequest {
 }
 
 export interface LessonBlockRequest {
+  blockType: string;
+  position: number;
+  dataJson: string;
+}
+
+export interface CourseBlockRequest {
   blockType: string;
   position: number;
   dataJson: string;
@@ -218,6 +235,30 @@ export function deleteLessonBlock(token: string | null | undefined, blockId: str
 
 export function reorderLessonBlocks(token: string | null | undefined, lessonId: string, blockIds: string[]) {
   return apiFetch<void>(`/api/admin/courses/lessons/${lessonId}/blocks/reorder`, {
+    method: "PUT",
+    body: { blockIds },
+    token,
+  });
+}
+
+// Bloques de contenido del curso en si (fase 5 del editor visual, ago 2026)
+// -- mismo patron que createLessonBlock/etc. de arriba, espejado del lado
+// de cursos (ver BlockList.tsx, que recibe estas 4 funciones inyectadas via
+// su prop `api`).
+export function createCourseBlock(token: string | null | undefined, courseId: string, body: CourseBlockRequest) {
+  return apiFetch<AdminCourseBlock>(`/api/admin/courses/${courseId}/blocks`, { method: "POST", body, token });
+}
+
+export function updateCourseBlock(token: string | null | undefined, blockId: string, body: CourseBlockRequest) {
+  return apiFetch<AdminCourseBlock>(`/api/admin/courses/blocks/${blockId}`, { method: "PUT", body, token });
+}
+
+export function deleteCourseBlock(token: string | null | undefined, blockId: string) {
+  return apiFetch<void>(`/api/admin/courses/blocks/${blockId}`, { method: "DELETE", token });
+}
+
+export function reorderCourseBlocks(token: string | null | undefined, courseId: string, blockIds: string[]) {
+  return apiFetch<void>(`/api/admin/courses/${courseId}/blocks/reorder`, {
     method: "PUT",
     body: { blockIds },
     token,

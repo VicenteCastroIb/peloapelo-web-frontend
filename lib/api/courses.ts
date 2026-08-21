@@ -45,7 +45,10 @@ export interface CourseDetail {
   slug: string;
   title: string;
   description: string | null;
+  /** Fallback de texto plano (fase 5 del editor visual, ago 2026): se usa en el sitio publico solo cuando `blocks` viene vacio. */
   longDescription: string | null;
+  /** Contenido en bloques (fase 5) -- misma forma cruda que article_blocks/lesson_blocks, ver lib/types/blogBlocks.ts. */
+  blocks: RawArticleBlock[];
   level: CourseLevel;
   coverImageUrl: string | null;
   progressPercent: number | null;
