@@ -41,6 +41,7 @@ export const TEXT_COLOR_LABEL: Record<TextColorToken, string> = {
   "navy-soft": "Navy suave",
   accent: "Violeta de marca",
   coral: "Coral (alerta)",
+  cream: "Cream (para fondos oscuros)",
 };
 
 export const TEXT_COLOR_CLASS: Record<TextColorToken, string> = {
@@ -48,6 +49,7 @@ export const TEXT_COLOR_CLASS: Record<TextColorToken, string> = {
   "navy-soft": "text-navy/60",
   accent: "text-accent",
   coral: "text-coral",
+  cream: "text-cream",
 };
 
 export const TEXT_COLOR_OPTIONS = Object.keys(TEXT_COLOR_LABEL) as TextColorToken[];

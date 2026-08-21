@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { GripVertical } from "lucide-react";
 import type { BlockData } from "@/lib/types/blogBlocks";
+import { blockSectionClassName } from "@/lib/blog/blockStyleTokens";
 import DisclaimerBlock from "./blocks/DisclaimerBlock";
 import HeadingBlock from "./blocks/HeadingBlock";
 import RichTextBlock from "./blocks/RichTextBlock";
@@ -65,7 +66,7 @@ export default function BlockDataList({
         if (!editable) {
           return (
             <div key={index} className={margin || undefined}>
-              <RenderBlock data={data} />
+              <StyledBlock data={data} />
             </div>
           );
         }
@@ -124,11 +125,25 @@ export default function BlockDataList({
                 <GripVertical size={10} />
                 {index + 1}
               </span>
-              <RenderBlock data={data} />
+              <StyledBlock data={data} />
             </div>
           </div>
         );
       })}
+    </div>
+  );
+}
+
+// Fondo/padding de seccion (fase 2, ago 2026) -- envuelve el bloque en un
+// div con las clases de BlockStyle SOLO si el bloque eligio algo (background
+// y/o padding), asi que un bloque sin esa eleccion se ve pixel-a-pixel igual
+// que antes de la fase 2.
+function StyledBlock({ data }: { data: BlockData }) {
+  const sectionClass = blockSectionClassName(data);
+  if (!sectionClass) return <RenderBlock data={data} />;
+  return (
+    <div className={sectionClass}>
+      <RenderBlock data={data} />
     </div>
   );
 }

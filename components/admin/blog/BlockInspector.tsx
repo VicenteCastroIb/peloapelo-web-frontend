@@ -4,7 +4,9 @@ import { useState } from "react";
 import { ChevronDown, ChevronUp, Save, Trash2 } from "lucide-react";
 import type { AdminArticleBlock } from "@/lib/api/adminBlog";
 import type {
+  BackgroundToken,
   BlockData,
+  BlockPaddingToken,
   BlockType,
   DisclaimerBlockData,
   HeadingBlockData,
@@ -14,6 +16,13 @@ import type {
 } from "@/lib/types/blogBlocks";
 import { BLOCK_TYPE_LABEL } from "@/lib/admin/blogBlockDefaults";
 import { TEXT_COLOR_LABEL, TEXT_COLOR_OPTIONS, TEXT_SIZE_LABEL, TEXT_SIZE_OPTIONS } from "@/lib/blog/textStyleTokens";
+import {
+  BACKGROUND_LABEL,
+  BACKGROUND_OPTIONS,
+  DARK_BACKGROUND_TOKENS,
+  PADDING_LABEL,
+  PADDING_OPTIONS,
+} from "@/lib/blog/blockStyleTokens";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
 import { SelectField } from "./blockFieldEditors";
 import BlockDataForm from "./BlockDataForm";
@@ -57,6 +66,50 @@ function TypographyFields({
           ...TEXT_COLOR_OPTIONS.map((token) => ({ value: token, label: TEXT_COLOR_LABEL[token] })),
         ]}
       />
+    </div>
+  );
+}
+
+// Fondo y alto de seccion (fase 2, ago 2026): a diferencia de Tipografia,
+// aplica a CUALQUIER tipo de bloque (ver BlockStyle en lib/types/blogBlocks).
+// "navy"/"gradient" (fondos oscuros) quedan afuera de las opciones salvo en
+// bloques de texto libre -- son los unicos con control de color de texto
+// propio (ver TypographyFields) para poder acompañarlos con texto "cream" y
+// mantener contraste; el resto de los bloques trae texto navy hardcodeado
+// que quedaria ilegible encima de un fondo oscuro.
+function SectionStyleFields({ data, onChange }: { data: BlockData; onChange: (data: BlockData) => void }) {
+  const allowDarkBackground = isTextBlock(data);
+  const backgroundOptions = BACKGROUND_OPTIONS.filter(
+    (token) => allowDarkBackground || !DARK_BACKGROUND_TOKENS.includes(token)
+  );
+
+  return (
+    <div className="mb-4 space-y-3 rounded-card-md border border-navy/10 bg-cream p-3">
+      <p className="text-p-caption font-semibold text-navy/60">Fondo y tamaño de la sección</p>
+      <SelectField<BackgroundToken | "">
+        label="Fondo"
+        value={data.background ?? ""}
+        onChange={(v) => onChange({ ...data, background: v === "" ? null : v })}
+        options={[
+          { value: "", label: "Ninguno" },
+          ...backgroundOptions.map((token) => ({ value: token, label: BACKGROUND_LABEL[token] })),
+        ]}
+      />
+      <SelectField<BlockPaddingToken | "">
+        label="Alto (padding)"
+        value={data.padding ?? ""}
+        onChange={(v) => onChange({ ...data, padding: v === "" ? null : v })}
+        options={[
+          { value: "", label: "Normal (por defecto)" },
+          ...PADDING_OPTIONS.map((token) => ({ value: token, label: PADDING_LABEL[token] })),
+        ]}
+      />
+      {!allowDarkBackground && (
+        <p className="text-p-caption text-navy/40">
+          Navy y degradado no están disponibles acá: este bloque todavía no tiene control de color de
+          texto propio y quedaría poco legible sobre un fondo oscuro.
+        </p>
+      )}
     </div>
   );
 }
@@ -142,6 +195,7 @@ export default function BlockInspector({
 
       <div className="p-4">
         {isTextBlock(data) && <TypographyFields data={data} onChange={onDataChange} />}
+        <SectionStyleFields data={data} onChange={onDataChange} />
         <BlockDataForm data={data} onChange={onDataChange} />
         <button
           type="button"

@@ -24,9 +24,25 @@ export interface RichParagraph {
 // clases Tailwind que representa cada token. A proposito una lista cerrada
 // (no px/color libres): protege la identidad visual de la fundacion.
 export type TextSizeToken = "caption" | "small" | "body" | "lead" | "h3" | "h2" | "h1";
-export type TextColorToken = "navy" | "navy-soft" | "accent" | "coral";
+/** "cream" (fase 2) es el que se usa para que el texto siga legible sobre un fondo de seccion oscuro (navy/gradient, ver BackgroundToken). */
+export type TextColorToken = "navy" | "navy-soft" | "accent" | "coral" | "cream";
 
-export interface DisclaimerBlockData {
+// Fondo y alto (padding) de seccion (fase 2, ago 2026) -- ver
+// lib/blog/blockStyleTokens.ts para las clases Tailwind de cada token.
+// Aplica a CUALQUIER bloque (no solo los de texto), por eso vive en una
+// interfaz aparte que todos los *BlockData extienden, en vez de duplicar
+// estos 2 campos en cada uno.
+export type BackgroundToken = "cream" | "navy" | "accent-soft" | "gradient" | "coral-soft";
+export type BlockPaddingToken = "compact" | "normal" | "spacious";
+
+export interface BlockStyle {
+  /** undefined/null = sin fondo de seccion (el bloque se ve igual que antes de la fase 2). */
+  background?: BackgroundToken | null;
+  /** undefined/null = "normal" cuando hay fondo, o sin padding extra cuando no lo hay. */
+  padding?: BlockPaddingToken | null;
+}
+
+export interface DisclaimerBlockData extends BlockStyle {
   type: "disclaimer";
   text: string;
   /** undefined/null = usa el tamaño/color por defecto de este tipo de bloque (ver DisclaimerBlock.tsx). */
@@ -34,7 +50,7 @@ export interface DisclaimerBlockData {
   color?: TextColorToken | null;
 }
 
-export interface HeadingBlockData {
+export interface HeadingBlockData extends BlockStyle {
   type: "heading";
   text: string;
   /** Nombre de icono lucide-react (ver components/articles/blocks/iconMap.ts). Opcional. */
@@ -43,7 +59,7 @@ export interface HeadingBlockData {
   color?: TextColorToken | null;
 }
 
-export interface RichTextBlockData {
+export interface RichTextBlockData extends BlockStyle {
   type: "rich_text";
   /** "lead" = intro del articulo (text-p-lead, mas grande); "body" (default) = parrafo normal.
    *  Legacy (pre-fase-1): sigue siendo el fallback cuando `fontSize` no esta definido, para no
@@ -69,7 +85,7 @@ export interface IconCardItem {
   paragraphs: RichParagraph[];
 }
 
-export interface IconCardGridBlockData {
+export interface IconCardGridBlockData extends BlockStyle {
   type: "icon_card_grid";
   /** "horizontal-row" = icono izquierda/texto derecha, 1 columna (TOOLS). "vertical-card" = franja de color + circulo superpuesto arriba, texto abajo (HAIR_TYPES/TREATMENTS/BODY_HABITS/MIND_HABITS). */
   layout: "horizontal-row" | "vertical-card";
@@ -89,12 +105,12 @@ export interface IconCardGridBlockData {
   items: IconCardItem[];
 }
 
-export interface MythRealityGridBlockData {
+export interface MythRealityGridBlockData extends BlockStyle {
   type: "myth_reality_grid";
   items: Array<{ myth: string; reality: string }>;
 }
 
-export interface ChecklistBlockData {
+export interface ChecklistBlockData extends BlockStyle {
   type: "checklist";
   /** "list" = check + texto en columna unica (SIGNALS). "chips" = tarjetas de color rotando paleta, 2 columnas, texto centrado (HAIR_CARE_TIPS). */
   style: "list" | "chips";
@@ -102,25 +118,25 @@ export interface ChecklistBlockData {
   items: string[];
 }
 
-export interface StatRingRowBlockData {
+export interface StatRingRowBlockData extends BlockStyle {
   type: "stat_ring_row";
   items: Array<{ value: number; label: string }>;
 }
 
-export interface LoopDiagramBlockData {
+export interface LoopDiagramBlockData extends BlockStyle {
   type: "loop_diagram";
   steps: Array<{ image: string; label: string }>;
   loopLabel: string;
   closingText: string;
 }
 
-export interface CtaCardBlockData {
+export interface CtaCardBlockData extends BlockStyle {
   type: "cta_card";
   question: string;
   subtext: string;
 }
 
-export interface ReferencesBlockData {
+export interface ReferencesBlockData extends BlockStyle {
   type: "references";
   items: Array<{ text: string; url: string }>;
 }
