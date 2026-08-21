@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp, Save, Trash2 } from "lucide-react";
-import type { AdminArticleBlock } from "@/lib/api/adminBlog";
+import type { OwnedBlock } from "./BlockList";
 import type {
   BackgroundToken,
   BlockData,
@@ -134,7 +134,7 @@ export default function BlockInspector({
   onMoveUp,
   onMoveDown,
 }: {
-  block: AdminArticleBlock | null;
+  block: OwnedBlock | null;
   data: BlockData | null;
   index: number;
   total: number;
@@ -153,7 +153,7 @@ export default function BlockInspector({
 
   if (!block || !data) {
     return (
-      <div className="rounded-card-md border border-dashed border-navy/15 bg-white p-6 text-center lg:sticky lg:top-6 lg:self-start">
+      <div className="rounded-card-md border border-dashed border-navy/15 bg-white p-6 text-center @5xl:sticky @5xl:top-6 @5xl:self-start">
         <p className="text-p-small text-navy/50">Seleccioná un bloque en el lienzo para editarlo acá.</p>
       </div>
     );
@@ -162,7 +162,7 @@ export default function BlockInspector({
   const label = BLOCK_TYPE_LABEL[block.blockType as BlockType] ?? block.blockType;
 
   return (
-    <div className="rounded-card-md border border-navy/10 bg-white shadow-sm lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+    <div className="rounded-card-md border border-navy/10 bg-white shadow-sm @5xl:sticky @5xl:top-6 @5xl:max-h-[calc(100vh-3rem)] @5xl:self-start @5xl:overflow-y-auto">
       <div className="flex items-center gap-1 border-b border-navy/10 px-4 py-3">
         <span className="mr-auto rounded-pill bg-navy/5 px-2.5 py-0.5 text-p-caption font-semibold text-navy/70">
           {label}

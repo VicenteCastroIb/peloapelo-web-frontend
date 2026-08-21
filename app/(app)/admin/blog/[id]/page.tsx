@@ -6,16 +6,28 @@ import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, ChevronDown, ChevronUp, Eye } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 import {
+  createBlock,
+  deleteBlock,
   getAdminArticle,
+  reorderBlocks,
   updateArticle,
+  updateBlock,
   deleteArticle,
   type AdminArticle,
   type ArticleRequest,
 } from "@/lib/api/adminBlog";
 import { ApiError } from "@/lib/api/client";
 import ArticleForm from "@/components/admin/blog/ArticleForm";
-import BlockList from "@/components/admin/blog/BlockList";
+import ArticleHeaderPreview from "@/components/admin/blog/ArticleHeaderPreview";
+import BlockList, { type BlockListApi } from "@/components/admin/blog/BlockList";
 import Collapse from "@/components/shared/Collapse";
+
+const BLOCK_API: BlockListApi = {
+  create: createBlock,
+  update: updateBlock,
+  remove: deleteBlock,
+  reorder: reorderBlocks,
+};
 
 function toArticleRequest(article: AdminArticle): ArticleRequest {
   return {
@@ -169,10 +181,12 @@ export default function EditArticlePage() {
 
       <div className="mt-4">
         <BlockList
-          articleId={id}
+          ownerId={id}
           blocks={article.blocks}
-          articleFields={draftFields}
+          headerPreview={<ArticleHeaderPreview fields={draftFields} />}
+          emptyMessage="Este artículo todavía no tiene contenido. Agregá el primer bloque desde el panel de la izquierda."
           token={token}
+          api={BLOCK_API}
           onChange={load}
         />
       </div>

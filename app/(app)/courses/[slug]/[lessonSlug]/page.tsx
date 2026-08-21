@@ -25,6 +25,7 @@ import {
 import { useCourseOutline, useLessonPosition, useTotalLessons } from "@/components/course/CourseOutlineContext";
 import LessonReadingProgressRing from "@/components/course/LessonReadingProgressRing";
 import Skeleton from "@/components/shared/Skeleton";
+import ArticleBlocksRenderer from "@/components/articles/ArticleBlocksRenderer";
 
 const RESOURCE_ICON: Record<ResourceType, typeof FileText> = {
   PDF: FileText,
@@ -186,7 +187,16 @@ export default function LessonPage() {
             )
           )}
 
-          {lesson.body ? (
+          {/* Bloques (fase 4 del editor visual, ago 2026) tienen prioridad sobre
+              `body` -- lecciones editadas antes de esta fase no tienen bloques
+              propios, asi que siguen mostrando el texto plano de siempre como
+              fallback (decision confirmada: sin migracion automatica de
+              contenido ya publicado). */}
+          {lesson.blocks.length > 0 ? (
+            <div className="mt-6">
+              <ArticleBlocksRenderer blocks={lesson.blocks} />
+            </div>
+          ) : lesson.body ? (
             <div className="mt-6 space-y-4 text-p-body text-navy/80">
               {lesson.body.split(/\n{2,}/).map((paragraph, i) => (
                 <p key={i}>{paragraph}</p>

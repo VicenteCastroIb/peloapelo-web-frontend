@@ -14,6 +14,10 @@ import {
   createLesson,
   updateLesson,
   deleteLesson,
+  createLessonBlock,
+  updateLessonBlock,
+  deleteLessonBlock,
+  reorderLessonBlocks,
   type AdminLesson,
   type LessonRequest,
 } from "@/lib/api/adminCourses";
@@ -21,6 +25,18 @@ import { slugify } from "@/lib/slugify";
 import LessonMediaPicker from "@/components/admin/LessonMediaPicker";
 import ResourceList from "@/components/admin/ResourceList";
 import Collapse from "@/components/shared/Collapse";
+import BlockList, { type BlockListApi } from "@/components/admin/blog/BlockList";
+
+// Contenido de la leccion (fase 4 del editor visual, ago 2026): mismo editor
+// de bloques que /admin/blog, inyectando el CRUD de lecciones en vez del de
+// articulos (ver BlockList.tsx). `body` (texto plano) sigue existiendo como
+// fallback -- ver nota en el textarea de abajo.
+const LESSON_BLOCK_API: BlockListApi = {
+  create: createLessonBlock,
+  update: updateLessonBlock,
+  remove: deleteLessonBlock,
+  reorder: reorderLessonBlocks,
+};
 
 const inputClass =
   "mt-1 w-full rounded-card-md border border-navy/15 bg-cream px-3 py-2 text-p-small text-navy outline-none focus:border-accent";
@@ -306,20 +322,46 @@ export default function LessonEditor({
               />
             </label>
 
-            <label className="text-p-caption font-semibold text-navy/60 sm:col-span-2">
-              Contenido de la lección
-              <textarea
-                rows={5}
-                className={inputClass}
-                placeholder="Texto de la lección. Separa párrafos con una línea en blanco."
-                value={values.body}
-                onChange={(e) => {
-                  const body = e.target.value;
-                  setValues((v) => ({ ...v, body }));
-                }}
-              />
-            </label>
           </div>
+
+          <div className="mt-3">
+            <p className="text-p-caption font-semibold text-navy/60">Contenido de la lección</p>
+            {lesson ? (
+              <div className="mt-1">
+                <BlockList
+                  ownerId={lesson.id}
+                  blocks={lesson.blocks}
+                  emptyMessage="Todavía no hay contenido. Agregá el primer bloque desde el panel de la izquierda."
+                  token={token}
+                  api={LESSON_BLOCK_API}
+                  onChange={onChange}
+                />
+              </div>
+            ) : (
+              <p className="mt-1 rounded-card-md bg-cream p-4 text-center text-p-caption text-navy/50">
+                Creá la lección primero (botón &quot;Crear lección&quot; más abajo) para poder agregar
+                contenido en bloques.
+              </p>
+            )}
+          </div>
+
+          <label className="mt-3 block text-p-caption font-semibold text-navy/60">
+            Texto de respaldo (versión anterior, opcional)
+            <textarea
+              rows={3}
+              className={inputClass}
+              placeholder="Texto de la lección. Separa párrafos con una línea en blanco."
+              value={values.body}
+              onChange={(e) => {
+                const body = e.target.value;
+                setValues((v) => ({ ...v, body }));
+              }}
+            />
+            <span className="mt-1 block font-normal text-navy/40">
+              Solo se muestra en el sitio si esta lección todavía no tiene ningún bloque de contenido
+              arriba. Podés dejarlo vacío una vez que termines de pasar el texto a bloques.
+            </span>
+          </label>
 
           <div className="mt-3">
             <LessonMediaPicker

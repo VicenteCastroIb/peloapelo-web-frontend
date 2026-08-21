@@ -14,6 +14,15 @@ export interface AdminLessonResource {
   displayOrder: number;
 }
 
+/** Bloque de contenido de una leccion (fase 4 del editor visual, ago 2026) -- mismo esquema que AdminArticleBlock (ver adminBlog.ts), espejado del lado de lecciones. */
+export interface AdminLessonBlock {
+  id: string;
+  lessonId: string;
+  blockType: string;
+  position: number;
+  dataJson: string;
+}
+
 export interface AdminLesson {
   id: string;
   moduleId: string;
@@ -24,6 +33,7 @@ export interface AdminLesson {
   videoOrientation: VideoOrientation;
   /** Alternativa a videoUrl: video e imagen son mutuamente excluyentes en la UI, ninguno es obligatorio. */
   imageUrl: string | null;
+  /** Fallback de texto plano (fase 4): lecciones sin bloques propios siguen mostrando esto -- ver LessonEditor.tsx. */
   body: string | null;
   objectives: string | null;
   summary: string | null;
@@ -31,6 +41,7 @@ export interface AdminLesson {
   published: boolean;
   displayOrder: number;
   resources: AdminLessonResource[];
+  blocks: AdminLessonBlock[];
 }
 
 export interface AdminCourseModule {
@@ -108,6 +119,12 @@ export interface LessonResourceRequest {
   displayOrder: number;
 }
 
+export interface LessonBlockRequest {
+  blockType: string;
+  position: number;
+  dataJson: string;
+}
+
 export function listAdminCourses(token?: string | null) {
   return apiFetch<AdminCourseSummary[]>("/api/admin/courses", { token });
 }
@@ -181,4 +198,28 @@ export function updateResource(token: string | null | undefined, resourceId: str
 
 export function deleteResource(token: string | null | undefined, resourceId: string) {
   return apiFetch<void>(`/api/admin/courses/resources/${resourceId}`, { method: "DELETE", token });
+}
+
+// Bloques de contenido de una leccion (fase 4 del editor visual, ago 2026) --
+// mismo patron que createBlock/updateBlock/deleteBlock/reorderBlocks en
+// adminBlog.ts, espejado del lado de lecciones (ver BlockList.tsx, que
+// recibe estas 4 funciones inyectadas via su prop `api`).
+export function createLessonBlock(token: string | null | undefined, lessonId: string, body: LessonBlockRequest) {
+  return apiFetch<AdminLessonBlock>(`/api/admin/courses/lessons/${lessonId}/blocks`, { method: "POST", body, token });
+}
+
+export function updateLessonBlock(token: string | null | undefined, blockId: string, body: LessonBlockRequest) {
+  return apiFetch<AdminLessonBlock>(`/api/admin/courses/lessons/blocks/${blockId}`, { method: "PUT", body, token });
+}
+
+export function deleteLessonBlock(token: string | null | undefined, blockId: string) {
+  return apiFetch<void>(`/api/admin/courses/lessons/blocks/${blockId}`, { method: "DELETE", token });
+}
+
+export function reorderLessonBlocks(token: string | null | undefined, lessonId: string, blockIds: string[]) {
+  return apiFetch<void>(`/api/admin/courses/lessons/${lessonId}/blocks/reorder`, {
+    method: "PUT",
+    body: { blockIds },
+    token,
+  });
 }

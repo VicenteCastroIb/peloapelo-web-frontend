@@ -1,4 +1,5 @@
 import { apiFetch } from "./client";
+import type { RawArticleBlock } from "@/lib/types/blogBlocks";
 
 export type CourseLevel = "BASICO" | "INTERMEDIO" | "AVANZADO";
 export type ResourceType = "PDF" | "AUDIO" | "LINK";
@@ -66,7 +67,10 @@ export interface LessonDetail {
   videoUrl: string | null;
   videoOrientation: VideoOrientation;
   imageUrl: string | null;
+  /** Fallback de texto plano (fase 4 del editor visual, ago 2026): se usa en el sitio publico solo cuando `blocks` viene vacio. */
   body: string | null;
+  /** Contenido en bloques (fase 4) -- misma forma cruda que article_blocks, ver lib/types/blogBlocks.ts. */
+  blocks: RawArticleBlock[];
   objectives: string[];
   durationMinutes: number;
   completed: boolean;

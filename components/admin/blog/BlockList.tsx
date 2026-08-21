@@ -1,22 +1,35 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import {
-  createBlock,
-  deleteBlock,
-  reorderBlocks,
-  updateBlock,
-  type AdminArticleBlock,
-  type ArticleRequest,
-} from "@/lib/api/adminBlog";
+import { useEffect, useState, type ReactNode } from "react";
 import { ApiError } from "@/lib/api/client";
 import type { BlockData, BlockType } from "@/lib/types/blogBlocks";
 import { BLOCK_TYPE_LABEL, defaultBlockData } from "@/lib/admin/blogBlockDefaults";
 import BlockDataList from "@/components/articles/BlockDataList";
 import PreviewErrorBoundary from "@/components/admin/PreviewErrorBoundary";
-import ArticleHeaderPreview from "./ArticleHeaderPreview";
 import BlockPalette from "./BlockPalette";
 import BlockInspector from "./BlockInspector";
+
+/** Forma minima que necesita este editor de un bloque ya guardado -- tanto AdminArticleBlock como AdminLessonBlock (fase 4) la cumplen. */
+export interface OwnedBlock {
+  id: string;
+  blockType: string;
+  position: number;
+  dataJson: string;
+}
+
+interface BlockRequestBody {
+  blockType: string;
+  position: number;
+  dataJson: string;
+}
+
+/** CRUD de bloques inyectado por quien usa el editor -- ver lib/api/adminBlog.ts (articulos) y lib/api/adminCourses.ts (lecciones, fase 4). Mismo componente, dos consumidores, sin duplicar esta logica. */
+export interface BlockListApi {
+  create: (token: string | null | undefined, ownerId: string, body: BlockRequestBody) => Promise<{ id: string }>;
+  update: (token: string | null | undefined, blockId: string, body: BlockRequestBody) => Promise<unknown>;
+  remove: (token: string | null | undefined, blockId: string) => Promise<void>;
+  reorder: (token: string | null | undefined, ownerId: string, blockIds: string[]) => Promise<void>;
+}
 
 function parseBlockData(dataJson: string, blockType: string): BlockData | null {
   try {
@@ -27,27 +40,31 @@ function parseBlockData(dataJson: string, blockType: string): BlockData | null {
   }
 }
 
-// Editor visual del contenido de un articulo (fase 0, ago 2026): reemplaza
-// el formulario-lista-aparte-de-la-preview por un lienzo de 3 columnas --
-// paleta (agregar) | lienzo (encabezado del articulo + BlockDataList en modo
-// editable: el contenido real, seleccionable/arrastrable) | inspector
-// (editar el bloque seleccionado). El "borrador en vivo" de los bloques se
-// mantiene aca (parsea cada `dataJson` apenas llega, actualiza en cada tecla
-// que Jessica escribe en el inspector) para que el lienzo se vea siempre
-// actualizado -- el guardado real a la API sigue siendo por bloque (boton
-// "Guardar bloque" del inspector).
+// Editor visual de bloques (fase 0, ago 2026; generico desde fase 4) -- un
+// lienzo de 3 columnas: paleta (agregar) | lienzo (headerPreview opcional +
+// BlockDataList en modo editable: el contenido real, seleccionable/
+// arrastrable) | inspector (editar el bloque seleccionado). El "borrador en
+// vivo" de los bloques se mantiene aca (parsea cada `dataJson` apenas llega,
+// actualiza en cada tecla que se escribe en el inspector) para que el
+// lienzo se vea siempre actualizado -- el guardado real a la API sigue
+// siendo por bloque (boton "Guardar bloque" del inspector).
 export default function BlockList({
-  articleId,
+  ownerId,
   blocks,
-  articleFields,
+  headerPreview,
+  emptyMessage = "Todavía no hay contenido. Agregá el primer bloque desde el panel de la izquierda.",
   token,
+  api,
   onChange,
 }: {
-  articleId: string;
-  blocks: AdminArticleBlock[];
-  /** Borrador en vivo de los campos de portada (titulo, resumen, etc.) -- ver ArticleForm en la pagina de edicion. Se muestra arriba de los bloques para que el lienzo sea el articulo completo, no solo el contenido. */
-  articleFields: ArticleRequest;
+  /** id del articulo o leccion dueño de estos bloques. */
+  ownerId: string;
+  blocks: OwnedBlock[];
+  /** Se muestra arriba de los bloques dentro del mismo lienzo (ej. ArticleHeaderPreview con titulo/portada) -- opcional porque no todos los consumidores tienen un "encabezado" propio (ver LessonEditor.tsx, fase 4). */
+  headerPreview?: ReactNode;
+  emptyMessage?: string;
   token: string | null | undefined;
+  api: BlockListApi;
   onChange: () => void;
 }) {
   const [adding, setAdding] = useState(false);
@@ -80,12 +97,12 @@ export default function BlockList({
   const selectedBlock = selectedIndex >= 0 ? visibleSorted[selectedIndex] : null;
   const selectedData = selectedBlock ? (draft[selectedBlock.id] ?? null) : null;
 
-  // Sin try/catch (bug real, ago 2026): un reorder mientras el articulo ya
-  // no existe mas (ej. se borro desde otra pestaña) hacia que reorderBlocks
-  // tirara 404 "Articulo no encontrado" SIN atajar -- esa excepcion quedaba
-  // como promise rejection sin manejar y tumbaba toda la pagina con la
-  // pantalla roja de Next.js. `reordering` de paso evita mandar dos reorders
-  // en simultaneo con drags/clicks rapidos.
+  // Sin try/catch (bug real, ago 2026): un reorder mientras el dueño (articulo
+  // o leccion) ya no existe mas (ej. se borro desde otra pestaña) hacia que
+  // reorder tirara 404 SIN atajar -- esa excepcion quedaba como promise
+  // rejection sin manejar y tumbaba toda la pagina con la pantalla roja de
+  // Next.js. `reordering` de paso evita mandar dos reorders en simultaneo con
+  // drags/clicks rapidos.
   async function handleReorder(from: number, to: number) {
     if (reordering) return;
     const clampedTo = Math.max(0, Math.min(to, visibleSorted.length - 1));
@@ -105,7 +122,7 @@ export default function BlockList({
     setReordering(true);
     setError(null);
     try {
-      await reorderBlocks(token, articleId, fullOrder);
+      await api.reorder(token, ownerId, fullOrder);
       onChange();
     } catch (err) {
       if (err instanceof ApiError && err.status === 404) {
@@ -127,7 +144,7 @@ export default function BlockList({
     setAdding(true);
     setError(null);
     try {
-      const created = await createBlock(token, articleId, {
+      const created = await api.create(token, ownerId, {
         blockType: type,
         position: sorted.length,
         dataJson: JSON.stringify(defaultBlockData(type)),
@@ -150,7 +167,7 @@ export default function BlockList({
     setSaving(true);
     setError(null);
     try {
-      await updateBlock(token, selectedBlock.id, {
+      await api.update(token, selectedBlock.id, {
         blockType: selectedData.type,
         position: selectedBlock.position,
         dataJson: JSON.stringify(selectedData),
@@ -167,7 +184,7 @@ export default function BlockList({
     setRemoving(true);
     setError(null);
     try {
-      await deleteBlock(token, id);
+      await api.remove(token, id);
       setSelectedBlockId((current) => (current === id ? null : current));
       onChange();
     } catch (err) {
@@ -184,7 +201,16 @@ export default function BlockList({
   }
 
   return (
-    <div>
+    // @container (fase 4, ago 2026): el mismo editor ahora se embebe tanto a
+    // pagina completa (blog, /admin/blog/[id]) como adentro de una fila de
+    // acordeon mas angosta (leccion, ver LessonEditor.tsx dentro de
+    // /admin/courses/[id]) -- un breakpoint de VIEWPORT (lg:) no distingue
+    // esos dos casos: en la fila angosta el viewport puede ser ancho igual,
+    // asi que forzaba 3 columnas apretadas contra el ancho real disponible.
+    // Con @container, el layout reacciona al ancho del propio contenedor
+    // (@5xl ~ los mismos 1024px que antes usaba `lg`), asi que se ve bien en
+    // los dos lugares sin duplicar el componente.
+    <div className="@container">
       {error && <p className="mb-3 text-p-small text-coral">{error}</p>}
 
       {brokenBlocks.length > 0 && (
@@ -209,19 +235,16 @@ export default function BlockList({
         </div>
       )}
 
-      <div className="grid gap-4 lg:grid-cols-[200px_minmax(0,1fr)_320px]">
+      <div className="grid gap-4 @5xl:grid-cols-[200px_minmax(0,1fr)_320px]">
         <BlockPalette onAdd={addBlock} disabled={adding} />
 
         <div className="min-w-0 rounded-card-lg border border-navy/10 bg-white p-6 shadow-sm sm:p-8">
-          <PreviewErrorBoundary>
-            <ArticleHeaderPreview fields={articleFields} />
-          </PreviewErrorBoundary>
+          {headerPreview && <PreviewErrorBoundary>{headerPreview}</PreviewErrorBoundary>}
 
-          <div className="mt-10">
+          <div className={headerPreview ? "mt-10" : undefined}>
             {visibleSorted.length === 0 ? (
               <p className="mx-auto max-w-3xl rounded-card-md bg-cream p-6 text-center text-p-small text-navy/50">
-                Este artículo todavía no tiene contenido. Agregá el primer bloque desde el panel de la
-                izquierda.
+                {emptyMessage}
               </p>
             ) : (
               <PreviewErrorBoundary>

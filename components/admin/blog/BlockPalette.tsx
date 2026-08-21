@@ -16,9 +16,9 @@ export default function BlockPalette({
   disabled?: boolean;
 }) {
   return (
-    <div className="rounded-card-md border border-navy/10 bg-white p-3 shadow-sm lg:sticky lg:top-6 lg:max-h-[calc(100vh-3rem)] lg:self-start lg:overflow-y-auto">
+    <div className="rounded-card-md border border-navy/10 bg-white p-3 shadow-sm @5xl:sticky @5xl:top-6 @5xl:max-h-[calc(100vh-3rem)] @5xl:self-start @5xl:overflow-y-auto">
       <p className="px-1 text-p-caption font-semibold text-navy/50">Agregar bloque</p>
-      <div className="mt-2 grid grid-cols-2 gap-2 lg:grid-cols-1">
+      <div className="mt-2 grid grid-cols-2 gap-2 @5xl:grid-cols-1">
         {BLOCK_TYPE_OPTIONS.map((type) => {
           const Icon = BLOCK_TYPE_ICON[type];
           return (
@@ -27,7 +27,7 @@ export default function BlockPalette({
               type="button"
               disabled={disabled}
               onClick={() => onAdd(type)}
-              className="flex flex-col items-center gap-1.5 rounded-card-md border border-navy/10 bg-cream px-2 py-3 text-center text-p-caption font-semibold text-navy/70 transition-colors hover:border-accent hover:bg-accent/5 hover:text-accent disabled:opacity-50 lg:flex-row lg:justify-start lg:text-left"
+              className="flex flex-col items-center gap-1.5 rounded-card-md border border-navy/10 bg-cream px-2 py-3 text-center text-p-caption font-semibold text-navy/70 transition-colors hover:border-accent hover:bg-accent/5 hover:text-accent disabled:opacity-50 @5xl:flex-row @5xl:justify-start @5xl:text-left"
             >
               <Icon size={18} className="shrink-0" />
               <span>{BLOCK_TYPE_LABEL[type]}</span>
