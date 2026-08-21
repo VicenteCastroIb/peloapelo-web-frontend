@@ -80,8 +80,12 @@ export default function BlockList({
   // Resembrar el borrador cuando cambia la lista de bloques en si (carga
   // inicial, o despues de agregar/eliminar/reordenar, que van directo a la
   // API y recargan) -- NO en cada tecla, eso lo maneja onDataChange abajo
-  // actualizando `draft` directamente sin volver a parsear todo.
+  // actualizando `draft` directamente sin volver a parsear todo. No se puede
+  // calcular `draft` directo en el render (regla react-hooks/set-state-in-effect)
+  // porque diverge a proposito de `blocks` mientras se tipea; y un `key` que
+  // remonte el arbol en cada reload tiraria la seleccion/scroll actual.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setDraft(Object.fromEntries(sorted.map((b) => [b.id, parseBlockData(b.dataJson, b.blockType)])));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [blocks]);

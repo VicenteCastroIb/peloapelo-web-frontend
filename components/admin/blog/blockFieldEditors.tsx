@@ -378,8 +378,13 @@ export function YouTubeUrlField({
 
   // Si el bloque seleccionado cambia (otro bloque, u otro articulo), el
   // input debe reflejar el nuevo valor guardado, no arrastrar el texto
-  // crudo del bloque anterior.
+  // crudo del bloque anterior. No se puede calcular `raw` directo en el
+  // render (regla react-hooks/set-state-in-effect) porque diverge a
+  // proposito de `value` mientras se tipea un link invalido/a medio pegar;
+  // y un `key={value}` remontaria el input en CADA tecla valida (value
+  // cambia con cada id reconocido), perdiendo foco/cursor.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setRaw(value);
   }, [value]);
 
