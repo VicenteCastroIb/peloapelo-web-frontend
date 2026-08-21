@@ -23,13 +23,14 @@ export const BACKGROUND_CLASS: Record<BackgroundToken, string> = {
 
 export const BACKGROUND_OPTIONS = Object.keys(BACKGROUND_LABEL) as BackgroundToken[];
 
-// "navy" y "gradient" son fondos oscuros/medios -- el texto navy que traen
-// hardcodeado por defecto la mayoria de los bloques queda ilegible encima.
-// Los 3 bloques de texto libre (disclaimer/heading/rich_text) pueden pedir
-// color de texto "cream" para acompañarlos (ver textStyleTokens.ts); el
-// resto de los bloques compuestos todavia no tiene control de color de
-// texto propio, asi que el inspector no les ofrece estos 2 tokens (ver
-// BlockInspector.tsx) para no dejar un bloque ilegible por accidente.
+// "navy" y "gradient" son fondos oscuros/medios -- no todos los bloques
+// mantienen su texto legible encima. El inspector decide por tipo si los
+// ofrece o no (ver supportsDarkBackground() en BlockInspector.tsx): los 3
+// bloques de texto libre pueden pedir color de texto "cream" para
+// acompañarlos (ver textStyleTokens.ts); varios bloques compuestos ya
+// envuelven su texto en una tarjeta clara propia y son seguros sin cambios;
+// los que van con texto pelado (sin tarjeta) quedan afuera para no dejarlos
+// ilegibles por accidente.
 export const DARK_BACKGROUND_TOKENS: BackgroundToken[] = ["navy", "gradient"];
 
 export const PADDING_LABEL: Record<BlockPaddingToken, string> = {

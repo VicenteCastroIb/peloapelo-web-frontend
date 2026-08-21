@@ -38,6 +38,31 @@ function isTextBlock(data: BlockData): data is TextBlockData {
   return data.type === "disclaimer" || data.type === "heading" || data.type === "rich_text";
 }
 
+// Bloques compuestos que envuelven su propio texto en una tarjeta clara
+// interna (bg-white, bg-navy/5, un degradado suave propio, etc.) -- su
+// contraste no depende de que fondo tenga la seccion que los rodea, asi que
+// quedan seguros con fondo oscuro (navy/gradient) sin tocarles el codigo:
+// ver IconCardGridBlock (cards bg-white), MythRealityGridBlock (zonas
+// bg-coral-soft/bg-accent-5), StatRingRowBlock (cards bg-navy/5),
+// LoopDiagramBlock (degradado propio muy claro) y CtaCardBlock (card
+// bg-white con borde). "checklist" cuenta SOLO en su variante "chips" --
+// cada item ya es su propia tarjeta de color; en "list" el texto va pelado,
+// sin tarjeta. "references" siempre va pelado (lista de texto con un borde
+// arriba, sin tarjeta), asi que queda afuera en cualquier variante.
+const SELF_CONTAINED_DARK_SAFE_TYPES = new Set<BlockType>([
+  "icon_card_grid",
+  "myth_reality_grid",
+  "stat_ring_row",
+  "loop_diagram",
+  "cta_card",
+]);
+
+function supportsDarkBackground(data: BlockData): boolean {
+  if (isTextBlock(data)) return true;
+  if (data.type === "checklist") return data.style === "chips";
+  return SELF_CONTAINED_DARK_SAFE_TYPES.has(data.type);
+}
+
 function TypographyFields({
   data,
   onChange,
@@ -72,13 +97,11 @@ function TypographyFields({
 
 // Fondo y alto de seccion (fase 2, ago 2026): a diferencia de Tipografia,
 // aplica a CUALQUIER tipo de bloque (ver BlockStyle en lib/types/blogBlocks).
-// "navy"/"gradient" (fondos oscuros) quedan afuera de las opciones salvo en
-// bloques de texto libre -- son los unicos con control de color de texto
-// propio (ver TypographyFields) para poder acompañarlos con texto "cream" y
-// mantener contraste; el resto de los bloques trae texto navy hardcodeado
-// que quedaria ilegible encima de un fondo oscuro.
+// "navy"/"gradient" (fondos oscuros) quedan afuera de las opciones cuando el
+// bloque no tiene forma de mantener su texto legible encima -- ver
+// supportsDarkBackground() arriba para el criterio exacto por tipo.
 function SectionStyleFields({ data, onChange }: { data: BlockData; onChange: (data: BlockData) => void }) {
-  const allowDarkBackground = isTextBlock(data);
+  const allowDarkBackground = supportsDarkBackground(data);
   const backgroundOptions = BACKGROUND_OPTIONS.filter(
     (token) => allowDarkBackground || !DARK_BACKGROUND_TOKENS.includes(token)
   );
@@ -106,8 +129,9 @@ function SectionStyleFields({ data, onChange }: { data: BlockData; onChange: (da
       />
       {!allowDarkBackground && (
         <p className="text-p-caption text-navy/40">
-          Navy y degradado no están disponibles acá: este bloque todavía no tiene control de color de
-          texto propio y quedaría poco legible sobre un fondo oscuro.
+          Navy y degradado no están disponibles acá: el texto de este bloque no tiene su propia
+          tarjeta clara y quedaría poco legible sobre un fondo oscuro.
+          {data.type === "checklist" && " Cambiá el estilo a \"Tarjetas de color\" para poder usarlos."}
         </p>
       )}
     </div>
