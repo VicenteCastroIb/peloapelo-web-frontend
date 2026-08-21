@@ -9,6 +9,7 @@ import { useAuth } from "@/lib/auth/AuthContext";
 import { fetchCourseDetail, type CourseDetail } from "@/lib/api/courses";
 import { COURSE_LEVEL_LABEL } from "@/lib/data/courseLevels";
 import Skeleton from "@/components/shared/Skeleton";
+import ArticleBlocksRenderer from "@/components/articles/ArticleBlocksRenderer";
 
 // Vista de curso -- replica el diseño de la version anterior de peloapelo.cl
 // (ver AprenderPaginaVieja.png / capturas enviadas por Vicente): portada a
@@ -155,8 +156,20 @@ export default function CourseDetailPage() {
               </span>
             </div>
 
-            {course.longDescription && (
-              <p className="mt-4 text-p-body text-navy/70">{course.longDescription}</p>
+            {/* Bloques (fase 5 del editor visual, ago 2026) tienen prioridad
+                sobre `longDescription` -- cursos editados antes de esta fase
+                (incluidos los sembrados por V14/V19) no tienen bloques
+                propios, asi que siguen mostrando el texto plano de siempre
+                como fallback (mismo criterio que ya se uso con `body` en
+                lecciones). */}
+            {course.blocks.length > 0 ? (
+              <div className="mt-4">
+                <ArticleBlocksRenderer blocks={course.blocks} />
+              </div>
+            ) : (
+              course.longDescription && (
+                <p className="mt-4 text-p-body text-navy/70">{course.longDescription}</p>
+              )
             )}
           </div>
 
