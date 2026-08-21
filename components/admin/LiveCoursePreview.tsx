@@ -1,9 +1,7 @@
 "use client";
 
-import Image from "next/image";
-import { BookOpen, Clock3, Eye, Image as ImageIcon, PlayCircle, Video } from "lucide-react";
-import type { AdminCourseModule, CourseRequest, LessonRequest } from "@/lib/api/adminCourses";
-import { COURSE_LEVEL_LABEL } from "@/lib/data/courseLevels";
+import { BookOpen, Clock3, Image as ImageIcon, Video } from "lucide-react";
+import type { AdminCourseModule, LessonRequest } from "@/lib/api/adminCourses";
 
 export interface ActiveLessonDraft {
   moduleId: string;
@@ -23,79 +21,44 @@ interface PreviewRow {
   isDraft: boolean;
 }
 
-// Vista previa en vivo del curso tal como se veria en /courses/[slug] (ver
-// esa pagina para el original). A diferencia de LiveArticlePreview (que
-// recibe un borrador completo en memoria, porque el editor de blog nunca
-// guarda hasta apretar "Guardar"), aca las lecciones SI se guardan de
-// inmediato al confirmar cada una (ver LessonEditor.tsx) -- por eso
-// `modules` son los datos reales del curso (se actualizan solos cada vez
-// que se guarda algo) y solo `activeDraft` es un borrador de verdad: la
-// UNICA leccion que se esta escribiendo en este momento (acordeon abierto),
-// para que esa fila puntual se sienta "en vivo" mientras se tipea, igual
-// que el resto del panel.
+// Vista previa en vivo de MODULOS Y LECCIONES (fase 5, ago 2026: recortada
+// de su version original, que tambien mostraba portada/titulo/descripcion
+// del curso -- eso ahora lo cubre CourseHeaderPreview.tsx dentro del lienzo
+// de bloques de admin/courses/[id]/page.tsx, asi que mostrarlo aca tambien
+// era pura redundancia). Lo que queda es lo unico que el lienzo de bloques
+// NO puede cubrir: modulos y lecciones son estructura editada por
+// formulario (ModuleEditor/LessonEditor), no bloques -- esta vista es su
+// unica forma de verse "tal como van a quedar" mientras se editan.
+//
+// Las lecciones SI se guardan de inmediato al confirmar cada una (ver
+// LessonEditor.tsx) -- por eso `modules` son los datos reales del curso (se
+// actualizan solos cada vez que se guarda algo) y solo `activeDraft` es un
+// borrador de verdad: la UNICA leccion que se esta escribiendo en este
+// momento (acordeon abierto), para que esa fila puntual se sienta "en vivo"
+// mientras se tipea, igual que el resto del panel.
 export default function LiveCoursePreview({
-  fields,
   modules,
   activeDraft,
 }: {
-  fields: CourseRequest;
-  modules?: AdminCourseModule[];
+  modules: AdminCourseModule[];
   activeDraft?: ActiveLessonDraft | null;
 }) {
-  const sortedModules = modules ? [...modules].sort((a, b) => a.displayOrder - b.displayOrder) : [];
+  const sortedModules = [...modules].sort((a, b) => a.displayOrder - b.displayOrder);
 
   return (
     <div className="rounded-card-lg border border-navy/10 bg-white shadow-sm">
       <div className="flex items-center gap-2 rounded-t-card-lg border-b border-navy/10 bg-navy/5 px-4 py-2.5 text-p-caption font-semibold text-navy/60">
-        <Eye size={14} />
-        Vista previa en vivo
+        <BookOpen size={14} />
+        Módulos y lecciones
       </div>
 
-      <div className="max-h-[calc(100vh-10rem)] overflow-y-auto px-6 py-8 sm:px-10">
-        <div className="relative aspect-[16/10] overflow-hidden rounded-card-lg bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]">
-          {fields.coverImageUrl && (
-            <Image
-              src={fields.coverImageUrl}
-              alt=""
-              aria-hidden
-              fill
-              unoptimized
-              sizes="600px"
-              className="object-cover"
-            />
-          )}
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-navy/10 text-center text-cream">
-            <span className="flex h-14 w-14 items-center justify-center rounded-full bg-white/25 text-cream backdrop-blur-sm">
-              <PlayCircle size={26} />
-            </span>
-            <p className="text-h3-sm text-cream">Muy pronto</p>
-            <p className="text-p-small text-cream/85">Todavía no hay lecciones en este curso</p>
-          </div>
-        </div>
-
-        <h1 className="mt-5 text-h3-lg text-navy">{fields.title || "Título del curso"}</h1>
-        {fields.description && <p className="mt-1 text-p-body text-navy/60">{fields.description}</p>}
-
-        <div className="mt-3 flex flex-wrap items-center gap-3">
-          <span className="rounded-pill bg-accent/10 px-2.5 py-1 text-p-caption font-semibold text-accent">
-            {COURSE_LEVEL_LABEL[fields.level]}
-          </span>
-          <span className="flex items-center gap-1 text-p-caption text-navy/50">
-            <Clock3 size={14} /> 0 min
-          </span>
-          <span className="flex items-center gap-1 text-p-caption text-navy/50">
-            <BookOpen size={14} /> 0 lecciones
-          </span>
-        </div>
-
-        {fields.longDescription && <p className="mt-4 text-p-body text-navy/70">{fields.longDescription}</p>}
-
+      <div className="max-h-[calc(100vh-10rem)] overflow-y-auto px-6 py-6">
         {sortedModules.length === 0 ? (
-          <div className="mt-8 rounded-card-lg border border-navy/10 bg-cream p-6 text-center">
-            <p className="text-p-body text-navy/60">Después de crear el curso podrás agregar módulos y lecciones.</p>
-          </div>
+          <p className="rounded-card-lg border border-navy/10 bg-cream p-6 text-center text-p-body text-navy/60">
+            Todavía no agregaste módulos.
+          </p>
         ) : (
-          <div className="mt-8 space-y-6">
+          <div className="space-y-6">
             {sortedModules.map((module) => {
               const rows: PreviewRow[] = [...module.lessons]
                 .sort((a, b) => a.displayOrder - b.displayOrder)

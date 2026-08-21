@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { ArrowLeft, Plus } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronUp, Eye, Plus } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 import {
   getAdminCourse,
@@ -11,31 +11,48 @@ import {
   deleteCourse,
   createModule,
   updateModule,
+  createCourseBlock,
+  updateCourseBlock,
+  deleteCourseBlock,
+  reorderCourseBlocks,
   type AdminCourse,
   type CourseRequest,
   type ModuleRequest,
 } from "@/lib/api/adminCourses";
 import CourseForm from "@/components/admin/CourseForm";
+import CourseHeaderPreview from "@/components/admin/CourseHeaderPreview";
 import ModuleEditor from "@/components/admin/ModuleEditor";
 import LiveCoursePreview, { type ActiveLessonDraft } from "@/components/admin/LiveCoursePreview";
 import PreviewErrorBoundary from "@/components/admin/PreviewErrorBoundary";
+import BlockList, { type BlockListApi } from "@/components/admin/blog/BlockList";
+import Collapse from "@/components/shared/Collapse";
 
 const EMPTY_MODULE: ModuleRequest = { title: "", description: "", displayOrder: 0 };
 
-// Vista previa en vivo (ago 2026, mismo patron que admin/blog/[id]/page.tsx):
-// draftFields guarda un "borrador" en memoria de los campos generales del
-// curso, separado de lo guardado en el backend, para que LiveCoursePreview
-// muestre el curso tomando forma mientras Jessica escribe -- CourseForm
-// sigue guardando explicitamente con el boton "Guardar cambios". Modulos y
-// lecciones, en cambio, se guardan solos apenas se confirman (ver
-// ModuleEditor/LessonEditor) -- activeLessonDraft es el unico borrador de
-// verdad que queda: la leccion que se esta escribiendo ahora mismo.
+const COURSE_BLOCK_API: BlockListApi = {
+  create: createCourseBlock,
+  update: updateCourseBlock,
+  remove: deleteCourseBlock,
+  reorder: reorderCourseBlocks,
+};
+
+// Editor visual de 3 columnas (fase 5, ago 2026 -- mismo patron que
+// admin/blog/[id]/page.tsx): el lienzo central de BlockList ya muestra el
+// curso completo (encabezado + contenido) tal como va a quedar publicado,
+// asi que esta pagina solo mantiene el "borrador" en memoria (draftFields)
+// de los campos de portada (titulo, descripcion corta, etc.) para que el
+// lienzo se actualice en tiempo real mientras se escribe en "Ajustes del
+// curso". Modulos y lecciones son otra cosa (estructura editada por
+// formulario, no bloques) -- siguen su propio flujo con ModuleEditor/
+// LessonEditor y su propia vista previa en vivo (LiveCoursePreview,
+// recortada en esta fase a solo esa parte -- ver ese archivo).
 export default function EditCoursePage() {
   const { id } = useParams<{ id: string }>();
   const { token } = useAuth();
   const router = useRouter();
   const [course, setCourse] = useState<AdminCourse | null>(null);
   const [draftFields, setDraftFields] = useState<CourseRequest | null>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const [activeLessonDraft, setActiveLessonDraft] = useState<ActiveLessonDraft | null>(null);
   const [addingModule, setAddingModule] = useState(false);
   const [newModule, setNewModule] = useState<ModuleRequest>(EMPTY_MODULE);
@@ -118,14 +135,33 @@ export default function EditCoursePage() {
   const sortedModules = [...course.modules].sort((a, b) => a.displayOrder - b.displayOrder);
 
   return (
-    <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
-      <div className="min-w-0">
-        <Link href="/admin/courses" className="inline-flex items-center gap-1 text-a-inline font-semibold text-navy/60">
-          <ArrowLeft size={14} /> Panel de cursos
-        </Link>
-        <h1 className="mt-4 text-h3-lg text-navy">{course.title}</h1>
+    <div>
+      <Link href="/admin/courses" className="inline-flex items-center gap-1 text-a-inline font-semibold text-navy/60">
+        <ArrowLeft size={14} /> Panel de cursos
+      </Link>
+      <div className="mt-4 flex items-center gap-3">
+        <h1 className="text-h3-lg text-navy">{course.title}</h1>
+        {course.published && (
+          <Link
+            href={`/courses/${course.slug}`}
+            target="_blank"
+            className="flex items-center gap-1 text-p-caption font-semibold text-accent hover:underline"
+          >
+            <Eye size={13} /> Ver en el sitio
+          </Link>
+        )}
+      </div>
 
-        <div className="mt-6">
+      <div className="mt-6">
+        <button
+          type="button"
+          onClick={() => setSettingsOpen((v) => !v)}
+          className="flex items-center gap-1.5 text-a-inline font-semibold text-navy/70 hover:text-navy"
+        >
+          {settingsOpen ? <ChevronUp size={15} /> : <ChevronDown size={15} />}
+          Ajustes del curso (título, descripción corta, nivel, portada…)
+        </button>
+        <Collapse open={settingsOpen} className="mt-3">
           <CourseForm
             initial={draftFields}
             submitLabel="Guardar cambios"
@@ -133,79 +169,102 @@ export default function EditCoursePage() {
             onDelete={handleDelete}
             onChange={setDraftFields}
           />
-        </div>
-
-        <h2 className="mt-10 text-h3-md text-navy">Módulos y lecciones</h2>
-        <p className="mt-1 text-p-small text-navy/60">
-          Agrupa las lecciones por módulo. Usa las flechas para cambiar el orden -- se ve al instante en la vista previa.
-        </p>
-
-        {moduleError && <p className="mt-2 text-p-small text-coral">{moduleError}</p>}
-
-        <div className="mt-4 space-y-4">
-          {sortedModules.map((module, i) => (
-            <ModuleEditor
-              key={module.id}
-              module={module}
-              token={token}
-              index={i}
-              total={sortedModules.length}
-              onMove={(direction) => moveModule(i, direction)}
-              onChange={load}
-              onLiveChange={setActiveLessonDraft}
-            />
-          ))}
-        </div>
-
-        {addingModule ? (
-          <form onSubmit={handleAddModule} className="mt-4 animate-reveal-in space-y-3 rounded-card-md bg-white p-5 shadow-sm">
-            <div className="grid gap-3 sm:grid-cols-2">
-              <label className="text-p-caption font-semibold text-navy/60">
-                Título del módulo
-                <input
-                  required
-                  className="mt-1 w-full rounded-card-md border border-navy/15 bg-cream px-3 py-2 text-p-small text-navy outline-none focus:border-accent"
-                  value={newModule.title}
-                  onChange={(e) => setNewModule({ ...newModule, title: e.target.value })}
-                />
-              </label>
-              <label className="text-p-caption font-semibold text-navy/60">
-                Descripción (opcional)
-                <input
-                  className="mt-1 w-full rounded-card-md border border-navy/15 bg-cream px-3 py-2 text-p-small text-navy outline-none focus:border-accent"
-                  value={newModule.description}
-                  onChange={(e) => setNewModule({ ...newModule, description: e.target.value })}
-                />
-              </label>
-            </div>
-            <div className="flex items-center gap-3">
-              <button
-                type="submit"
-                disabled={savingModule}
-                className="rounded-pill bg-navy px-4 py-2 text-p-caption font-semibold text-cream disabled:opacity-50"
-              >
-                {savingModule ? "Creando…" : "Crear módulo"}
-              </button>
-              <button type="button" onClick={() => setAddingModule(false)} className="text-p-caption font-semibold text-navy/50">
-                Cancelar
-              </button>
-            </div>
-          </form>
-        ) : (
-          <button
-            type="button"
-            onClick={() => setAddingModule(true)}
-            className="mt-4 flex items-center gap-1 text-a-inline font-semibold text-accent"
-          >
-            <Plus size={16} /> Agregar módulo
-          </button>
-        )}
+        </Collapse>
       </div>
 
-      <div className="xl:sticky xl:top-6 xl:self-start">
-        <PreviewErrorBoundary>
-          <LiveCoursePreview fields={draftFields} modules={course.modules} activeDraft={activeLessonDraft} />
-        </PreviewErrorBoundary>
+      <h2 className="mt-10 text-h3-md text-navy">Contenido del curso</h2>
+      <p className="mt-1 text-p-small text-navy/60">
+        Hacé click en cualquier bloque del lienzo para editarlo desde el panel de la derecha,
+        arrastralo para reordenarlo, o agregá uno nuevo desde el panel de la izquierda. Los cambios
+        se ven al instante tal como van a quedar publicados.
+      </p>
+
+      <div className="mt-4">
+        <BlockList
+          ownerId={id}
+          blocks={course.blocks}
+          headerPreview={<CourseHeaderPreview fields={draftFields} />}
+          emptyMessage="Este curso todavía no tiene contenido. Agregá el primer bloque desde el panel de la izquierda."
+          token={token}
+          api={COURSE_BLOCK_API}
+          onChange={load}
+        />
+      </div>
+
+      <h2 className="mt-10 text-h3-md text-navy">Módulos y lecciones</h2>
+      <p className="mt-1 text-p-small text-navy/60">
+        Agrupa las lecciones por módulo. Usa las flechas para cambiar el orden -- se ve al instante en la vista previa.
+      </p>
+
+      {moduleError && <p className="mt-2 text-p-small text-coral">{moduleError}</p>}
+
+      <div className="mt-4 grid gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+        <div className="min-w-0">
+          <div className="space-y-4">
+            {sortedModules.map((module, i) => (
+              <ModuleEditor
+                key={module.id}
+                module={module}
+                token={token}
+                index={i}
+                total={sortedModules.length}
+                onMove={(direction) => moveModule(i, direction)}
+                onChange={load}
+                onLiveChange={setActiveLessonDraft}
+              />
+            ))}
+          </div>
+
+          {addingModule ? (
+            <form onSubmit={handleAddModule} className="mt-4 animate-reveal-in space-y-3 rounded-card-md bg-white p-5 shadow-sm">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <label className="text-p-caption font-semibold text-navy/60">
+                  Título del módulo
+                  <input
+                    required
+                    className="mt-1 w-full rounded-card-md border border-navy/15 bg-cream px-3 py-2 text-p-small text-navy outline-none focus:border-accent"
+                    value={newModule.title}
+                    onChange={(e) => setNewModule({ ...newModule, title: e.target.value })}
+                  />
+                </label>
+                <label className="text-p-caption font-semibold text-navy/60">
+                  Descripción (opcional)
+                  <input
+                    className="mt-1 w-full rounded-card-md border border-navy/15 bg-cream px-3 py-2 text-p-small text-navy outline-none focus:border-accent"
+                    value={newModule.description}
+                    onChange={(e) => setNewModule({ ...newModule, description: e.target.value })}
+                  />
+                </label>
+              </div>
+              <div className="flex items-center gap-3">
+                <button
+                  type="submit"
+                  disabled={savingModule}
+                  className="rounded-pill bg-navy px-4 py-2 text-p-caption font-semibold text-cream disabled:opacity-50"
+                >
+                  {savingModule ? "Creando…" : "Crear módulo"}
+                </button>
+                <button type="button" onClick={() => setAddingModule(false)} className="text-p-caption font-semibold text-navy/50">
+                  Cancelar
+                </button>
+              </div>
+            </form>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setAddingModule(true)}
+              className="mt-4 flex items-center gap-1 text-a-inline font-semibold text-accent"
+            >
+              <Plus size={16} /> Agregar módulo
+            </button>
+          )}
+        </div>
+
+        <div className="xl:sticky xl:top-6 xl:self-start">
+          <PreviewErrorBoundary>
+            <LiveCoursePreview modules={course.modules} activeDraft={activeLessonDraft} />
+          </PreviewErrorBoundary>
+        </div>
       </div>
     </div>
   );

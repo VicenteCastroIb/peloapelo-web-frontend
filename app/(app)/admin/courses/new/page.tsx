@@ -3,11 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Eye } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { createCourse, listAdminCourses, type CourseRequest } from "@/lib/api/adminCourses";
 import CourseForm from "@/components/admin/CourseForm";
-import LiveCoursePreview from "@/components/admin/LiveCoursePreview";
+import CourseHeaderPreview from "@/components/admin/CourseHeaderPreview";
 import PreviewErrorBoundary from "@/components/admin/PreviewErrorBoundary";
 
 const EMPTY: CourseRequest = {
@@ -72,7 +72,15 @@ export default function NewCoursePage() {
 
       <div className="xl:sticky xl:top-6 xl:self-start">
         <PreviewErrorBoundary>
-          <LiveCoursePreview fields={draftFields} />
+          <div className="rounded-card-lg border border-navy/10 bg-white shadow-sm">
+            <div className="flex items-center gap-2 rounded-t-card-lg border-b border-navy/10 bg-navy/5 px-4 py-2.5 text-p-caption font-semibold text-navy/60">
+              <Eye size={14} />
+              Vista previa en vivo
+            </div>
+            <div className="px-6 py-8 sm:px-10">
+              <CourseHeaderPreview fields={draftFields} />
+            </div>
+          </div>
         </PreviewErrorBoundary>
       </div>
     </div>
