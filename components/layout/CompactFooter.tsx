@@ -54,7 +54,7 @@ export default function CompactFooter() {
           </div>
 
           <div>
-            <p className="text-h4-label text-cream/40">Plataforma</p>
+            <p className="text-h4-label text-cream/70">Plataforma</p>
             <ul className="mt-2 space-y-1.5 text-p-small">
               <li><Link href="/#como-funciona" className="hover:text-cream/80">Cómo funciona</Link></li>
               <li><Link href="/planes" className="hover:text-cream/80">Precios</Link></li>
@@ -64,7 +64,7 @@ export default function CompactFooter() {
           </div>
 
           <div>
-            <p className="text-h4-label text-cream/40">Fundación</p>
+            <p className="text-h4-label text-cream/70">Fundación</p>
             <ul className="mt-2 space-y-1.5 text-p-small">
               <li><Link href="/fundacion" className="hover:text-cream/80">Quiénes somos</Link></li>
               <li><Link href="/#fundadora" className="hover:text-cream/80">Nuestra historia</Link></li>
@@ -73,7 +73,7 @@ export default function CompactFooter() {
           </div>
 
           <div>
-            <p className="text-h4-label text-cream/40">Síguenos</p>
+            <p className="text-h4-label text-cream/70">Síguenos</p>
             <ul className="mt-2 space-y-1.5 text-p-small">
               <li>
                 <a

@@ -10,7 +10,7 @@ export default function Footer() {
     <footer className="bg-navy text-cream">
       <div className="mx-auto max-w-[88rem] px-6 py-16 lg:px-12">
         <div className="mb-16">
-          <p className="text-h4-label text-cream/50">
+          <p className="text-h4-label text-cream/70">
             Cierre · V
           </p>
           <h2 className="mt-4 text-h2-xl">
@@ -58,7 +58,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="text-h4-label text-cream/50">Plataforma</p>
+            <p className="text-h4-label text-cream/70">Plataforma</p>
             <ul className="mt-3 space-y-2 text-a-inline">
               <li><Link href="/#como-funciona" className="hover:text-cream/80">Cómo funciona</Link></li>
               <li><Link href="/planes" className="hover:text-cream/80">Precios</Link></li>
@@ -68,7 +68,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="text-h4-label text-cream/50">Fundación</p>
+            <p className="text-h4-label text-cream/70">Fundación</p>
             <ul className="mt-3 space-y-2 text-a-inline">
               <li><Link href="/fundacion" className="hover:text-cream/80">Quiénes somos</Link></li>
               <li><Link href="/#fundadora" className="hover:text-cream/80">Nuestra historia</Link></li>
@@ -77,7 +77,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <p className="text-h4-label text-cream/50">Síguenos</p>
+            <p className="text-h4-label text-cream/70">Síguenos</p>
             {/* Solo Instagram (27 jul 2026, a peticion explicita): la
                 fundacion no tiene TikTok, se saca en vez de dejar un link
                 muerto. Handle real: @guia.peloapelo. */}
@@ -96,7 +96,7 @@ export default function Footer() {
           </div>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-cream/10 pt-6 text-p-caption text-cream/50 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-10 flex flex-col gap-3 border-t border-cream/10 pt-6 text-p-caption text-cream/70 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Fundación Pelo a Pelo · Chile</p>
           <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
             <Link href="/terminos" className="hover:text-cream/80">Términos y condiciones</Link>
