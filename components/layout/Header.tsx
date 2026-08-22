@@ -110,7 +110,7 @@ export default function Header() {
             </button>
           )}
 
-          <Link href="/" className="flex items-center gap-2 text-lg">
+          <Link href="/" className={`flex items-center gap-2 ${appPanel ? "text-xl" : "text-lg"}`}>
             {/* Logo achicado (26 jul 2026) para adelgazar el header: header
                 total pasa de 104px a 72px (48px logo + 12px*2 de padding
                 vertical). Ver los otros 104px->72px en layout.tsx, Hero.tsx,

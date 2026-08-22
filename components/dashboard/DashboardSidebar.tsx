@@ -65,13 +65,13 @@ export default function DashboardSidebar() {
                 key={item.href}
                 href={item.href}
                 onClick={close}
-                className={`flex items-center gap-2.5 rounded-pill px-2.5 py-2 text-a-nav transition-colors ${
+                className={`flex items-center gap-2.5 rounded-pill px-2.5 py-2 text-[17px] transition-colors ${
                   isActive
                     ? "bg-accent/10 font-semibold text-accent"
-                    : "text-navy/70 hover:bg-navy/5"
+                    : "font-medium text-navy/70 hover:bg-navy/5"
                 }`}
               >
-                <Icon size={17} className="shrink-0" />
+                <Icon size={19} className="shrink-0" />
                 <span className="truncate">{item.label}</span>
               </Link>
             );
