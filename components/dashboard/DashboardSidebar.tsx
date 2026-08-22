@@ -52,7 +52,7 @@ export default function DashboardSidebar() {
       )}
 
       <aside
-        className={`fixed bottom-0 left-0 top-[72px] z-40 flex w-64 max-w-[80vw] shrink-0 flex-col overflow-y-auto border-r border-navy/10 bg-white px-5 py-8 shadow-xl transition-transform duration-200 lg:static lg:z-auto lg:h-full lg:w-48 lg:max-w-none lg:translate-x-0 lg:shadow-none ${
+        className={`fixed bottom-0 left-0 top-[72px] z-40 flex w-64 max-w-[80vw] shrink-0 flex-col overflow-y-auto border-r border-navy/10 bg-white px-5 py-8 shadow-xl transition-transform duration-200 lg:static lg:z-auto lg:h-full lg:w-56 lg:max-w-none lg:translate-x-0 lg:shadow-none ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
