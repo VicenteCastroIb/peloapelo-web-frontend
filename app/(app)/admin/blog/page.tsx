@@ -3,17 +3,20 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus, Layers, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, Layers, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { listAdminArticles, reorderArticles, type AdminArticleSummary } from "@/lib/api/adminBlog";
+import { listAdminArticles, reorderArticles, deleteArticle, type AdminArticleSummary } from "@/lib/api/adminBlog";
 import { formatDate } from "@/lib/format";
 import ArticleCardSkeleton from "@/components/articles/ArticleCardSkeleton";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 export default function AdminBlogPage() {
   const { token } = useAuth();
   const [articles, setArticles] = useState<AdminArticleSummary[] | null>(null);
   const [reordering, setReordering] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     listAdminArticles(token)
@@ -55,6 +58,24 @@ export default function AdminBlogPage() {
       setReordering(false);
     }
   }
+
+  async function confirmDelete() {
+    if (!confirmId) return;
+    const id = confirmId;
+    setConfirmId(null);
+    setDeletingId(id);
+    setError(null);
+    try {
+      await deleteArticle(token, id);
+      setArticles((prev) => (prev ? prev.filter((a) => a.id !== id) : prev));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo eliminar el artículo");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  const articleToDelete = sorted.find((a) => a.id === confirmId) ?? null;
 
   return (
     <div className="max-w-6xl">
@@ -121,6 +142,16 @@ export default function AdminBlogPage() {
                 >
                   <ChevronRight size={15} />
                 </button>
+                <span className="mx-0.5 h-4 w-px bg-navy/10" aria-hidden />
+                <button
+                  type="button"
+                  disabled={deletingId === article.id}
+                  onClick={() => setConfirmId(article.id)}
+                  className="rounded-pill p-2 text-navy/50 hover:bg-coral-soft hover:text-coral disabled:opacity-20"
+                  aria-label={`Eliminar ${article.title}`}
+                >
+                  <Trash2 size={15} />
+                </button>
               </div>
 
               <Link href={`/admin/blog/${article.id}`} className="block">
@@ -161,6 +192,16 @@ export default function AdminBlogPage() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={confirmId !== null}
+        title={`¿Eliminar "${articleToDelete?.title ?? "este artículo"}"?`}
+        description="Se va a eliminar el artículo junto con todo su contenido (todos los bloques). Esta acción no se puede deshacer."
+        confirmLabel="Eliminar artículo"
+        loading={deletingId !== null}
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmId(null)}
+      />
     </div>
   );
 }

@@ -3,12 +3,13 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Plus, BookOpen, Layers, ChevronLeft, ChevronRight } from "lucide-react";
+import { Plus, BookOpen, Layers, ChevronLeft, ChevronRight, Trash2 } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
-import { listAdminCourses, reorderCourses, type AdminCourseSummary } from "@/lib/api/adminCourses";
+import { listAdminCourses, reorderCourses, deleteCourse, type AdminCourseSummary } from "@/lib/api/adminCourses";
 import { COURSE_LEVEL_LABEL } from "@/lib/data/courseLevels";
 import { formatDate } from "@/lib/format";
 import CourseCardSkeleton from "@/components/courses/CourseCardSkeleton";
+import ConfirmDialog from "@/components/ui/ConfirmDialog";
 
 // Mismo diseño y patron de reordenar que app/(app)/admin/blog/page.tsx (ago
 // 2026): grilla de cards cuadradas (foto arriba, info abajo) con flechas
@@ -21,6 +22,8 @@ export default function AdminCoursesPage() {
   const [courses, setCourses] = useState<AdminCourseSummary[] | null>(null);
   const [reordering, setReordering] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
     listAdminCourses(token)
@@ -51,6 +54,24 @@ export default function AdminCoursesPage() {
       setReordering(false);
     }
   }
+
+  async function confirmDelete() {
+    if (!confirmId) return;
+    const id = confirmId;
+    setConfirmId(null);
+    setDeletingId(id);
+    setError(null);
+    try {
+      await deleteCourse(token, id);
+      setCourses((prev) => (prev ? prev.filter((c) => c.id !== id) : prev));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo eliminar el curso");
+    } finally {
+      setDeletingId(null);
+    }
+  }
+
+  const courseToDelete = sorted.find((c) => c.id === confirmId) ?? null;
 
   return (
     <div className="max-w-6xl">
@@ -111,6 +132,16 @@ export default function AdminCoursesPage() {
                 >
                   <ChevronRight size={15} />
                 </button>
+                <span className="mx-0.5 h-4 w-px bg-navy/10" aria-hidden />
+                <button
+                  type="button"
+                  disabled={deletingId === course.id}
+                  onClick={() => setConfirmId(course.id)}
+                  className="rounded-pill p-2 text-navy/50 hover:bg-coral-soft hover:text-coral disabled:opacity-20"
+                  aria-label={`Eliminar ${course.title}`}
+                >
+                  <Trash2 size={15} />
+                </button>
               </div>
 
               <Link href={`/admin/courses/${course.id}`} className="block">
@@ -158,6 +189,16 @@ export default function AdminCoursesPage() {
           ))}
         </div>
       )}
+
+      <ConfirmDialog
+        open={confirmId !== null}
+        title={`¿Eliminar "${courseToDelete?.title ?? "este curso"}"?`}
+        description="Se va a eliminar el curso junto con todos sus módulos y lecciones. Esta acción no se puede deshacer."
+        confirmLabel="Eliminar curso"
+        loading={deletingId !== null}
+        onConfirm={confirmDelete}
+        onCancel={() => setConfirmId(null)}
+      />
     </div>
   );
 }
