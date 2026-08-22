@@ -27,7 +27,7 @@ export default function Hero() {
 
       <div className="relative mx-auto flex w-full max-w-[88rem] flex-1 flex-col items-center gap-10 px-6 pb-16 lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:px-12">
         <FadeInOnScroll className="w-full sm:max-w-xl lg:max-w-2xl">
-          <div className="mb-6 flex items-center gap-3 text-h4-label text-navy/50">
+          <div className="mb-6 flex items-center gap-3 text-h4-label text-navy/75">
             <span className="h-px w-8 bg-navy/20" />
             Fundación Pelo a Pelo Chile
           </div>

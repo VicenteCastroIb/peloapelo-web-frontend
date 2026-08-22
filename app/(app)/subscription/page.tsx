@@ -25,7 +25,7 @@ const STATUS_STYLE: Record<Subscription["status"], string> = {
   TRIAL: "bg-accent/10 text-accent",
   PENDING_PAYMENT: "bg-amber-100 text-amber-700",
   ACTIVE: "bg-accent/10 text-accent",
-  CANCELED: "bg-navy/10 text-navy/50",
+  CANCELED: "bg-navy/10 text-navy/75",
   EXPIRED: "bg-coral-soft text-coral",
 };
 
@@ -40,7 +40,7 @@ const PAYMENT_STATUS_STYLE: Record<Payment["status"], string> = {
   PENDING: "bg-amber-100 text-amber-700",
   PAID: "bg-accent/10 text-accent",
   FAILED: "bg-coral-soft text-coral",
-  REFUNDED: "bg-navy/10 text-navy/50",
+  REFUNDED: "bg-navy/10 text-navy/75",
 };
 
 export default function SubscriptionPage() {
@@ -104,7 +104,7 @@ export default function SubscriptionPage() {
           <div className="mt-6 rounded-card-md bg-white p-6 shadow-sm">
             <div className="flex items-start justify-between">
               <div>
-                <p className="flex items-center gap-2 text-h4-label text-navy/50">
+                <p className="flex items-center gap-2 text-h4-label text-navy/75">
                   <Shield size={14} /> Plan actual
                 </p>
                 <h2 className="mt-2 text-h3-md text-navy">{current.planName}</h2>
@@ -154,7 +154,7 @@ export default function SubscriptionPage() {
 
           {/* Metodo de pago */}
           <div className="mt-4 rounded-card-md bg-white p-6 shadow-sm">
-            <p className="flex items-center gap-2 text-h4-label text-navy/50">
+            <p className="flex items-center gap-2 text-h4-label text-navy/75">
               <CreditCard size={14} /> Método de pago
             </p>
             {current.paymentMethodBrand && current.paymentMethodLast4 ? (
@@ -201,7 +201,7 @@ export default function SubscriptionPage() {
 
           {/* Historial de pagos */}
           <div className="mt-4 rounded-card-md bg-white p-6 shadow-sm">
-            <p className="flex items-center gap-2 text-h4-label text-navy/50">
+            <p className="flex items-center gap-2 text-h4-label text-navy/75">
               <Receipt size={14} /> Historial de pagos
             </p>
 

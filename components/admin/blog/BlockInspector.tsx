@@ -128,7 +128,7 @@ function SectionStyleFields({ data, onChange }: { data: BlockData; onChange: (da
         ]}
       />
       {!allowDarkBackground && (
-        <p className="text-p-caption text-navy/40">
+        <p className="text-p-caption text-navy/75">
           Navy y degradado no están disponibles acá: el texto de este bloque no tiene su propia
           tarjeta clara y quedaría poco legible sobre un fondo oscuro.
           {data.type === "checklist" && " Cambiá el estilo a \"Tarjetas de color\" para poder usarlos."}

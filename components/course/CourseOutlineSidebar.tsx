@@ -206,7 +206,7 @@ export default function CourseOutlineSidebar({
                   <Collapse open={!isCollapsed}>
                     <div className="ml-[7px] space-y-0.5 border-l border-navy/10 py-1 pl-4">
                       {module.lessons.length === 0 && (
-                        <p className="py-2 text-p-caption text-navy/40">Sin lecciones todavía.</p>
+                        <p className="py-2 text-p-caption text-navy/75">Sin lecciones todavía.</p>
                       )}
                       {module.lessons.map((lesson) => {
                         const isActive = lesson.slug === activeLessonSlug;
@@ -251,7 +251,7 @@ export default function CourseOutlineSidebar({
                               }`}
                             >
                               <span className="block">{lesson.title}</span>
-                              <span className="mt-0.5 flex items-center gap-2 text-p-caption text-navy/45">
+                              <span className="mt-0.5 flex items-center gap-2 text-p-caption text-navy/75">
                                 <TypeIcon size={11} />
                                 <span className="flex items-center gap-1">
                                   <Clock3 size={11} /> {lesson.durationMinutes} min

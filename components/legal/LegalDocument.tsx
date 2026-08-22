@@ -87,7 +87,7 @@ export default function LegalDocument({ doc }: { doc: LegalDoc }) {
         </div>
 
         <div className="mt-14 border-t border-navy/10 pt-6">
-          <p className="text-p-caption text-navy/40">
+          <p className="text-p-caption text-navy/75">
             {doc.footerLabel} · Fundación Pelo a Pelo — borrador para revisión legal, versión del{" "}
             {new Date().toLocaleDateString("es-CL", { day: "numeric", month: "long", year: "numeric" })}.
           </p>

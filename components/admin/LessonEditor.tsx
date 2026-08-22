@@ -221,7 +221,7 @@ export default function LessonEditor({
               )}
             </span>
             {lesson && (
-              <span className="mt-0.5 flex items-center gap-2 text-p-caption text-navy/45">
+              <span className="mt-0.5 flex items-center gap-2 text-p-caption text-navy/75">
                 <Clock3 size={11} /> {lesson.durationMinutes} min
                 {mediaIcon &&
                   (mediaIcon === Video ? (
@@ -338,7 +338,7 @@ export default function LessonEditor({
                 />
               </div>
             ) : (
-              <p className="mt-1 rounded-card-md bg-cream p-4 text-center text-p-caption text-navy/50">
+              <p className="mt-1 rounded-card-md bg-cream p-4 text-center text-p-caption text-navy/75">
                 Creá la lección primero (botón &quot;Crear lección&quot; más abajo) para poder agregar
                 contenido en bloques.
               </p>

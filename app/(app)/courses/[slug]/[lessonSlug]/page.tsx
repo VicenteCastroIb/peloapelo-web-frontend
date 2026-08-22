@@ -208,7 +208,7 @@ export default function LessonPage() {
 
           {lesson.resources.length > 0 && (
             <div className="mt-8">
-              <p className="text-h4-label text-navy/50">Recursos</p>
+              <p className="text-h4-label text-navy/75">Recursos</p>
               <div className="mt-3 space-y-2">
                 {lesson.resources.map((resource) => {
                   const Icon = RESOURCE_ICON[resource.resourceType];

@@ -98,7 +98,7 @@ export default function LiveCoursePreview({
 
                   <div className="mt-3 space-y-2">
                     {rows.length === 0 && (
-                      <p className="rounded-card-md bg-cream px-4 py-3 text-p-caption text-navy/50">
+                      <p className="rounded-card-md bg-cream px-4 py-3 text-p-caption text-navy/75">
                         Sin lecciones todavía.
                       </p>
                     )}
@@ -114,8 +114,8 @@ export default function LiveCoursePreview({
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className="block font-semibold text-navy">{row.title || "Sin título"}</span>
-                          {row.summary && <span className="mt-0.5 block text-p-caption text-navy/60">{row.summary}</span>}
-                          <span className="mt-1 flex items-center gap-3 text-p-caption text-navy/45">
+                          {row.summary && <span className="mt-0.5 block text-p-caption text-navy/75">{row.summary}</span>}
+                          <span className="mt-1 flex items-center gap-3 text-p-caption text-navy/75">
                             <span className="flex items-center gap-1">
                               <Clock3 size={11} /> {row.durationMinutes} min
                             </span>

@@ -153,7 +153,7 @@ export default function CoursesPage() {
                 <div className="p-5">
                   <p className="text-h3-sm text-navy">{course.title}</p>
                   <p className="mt-1 text-p-small text-navy/60">{course.description}</p>
-                  <div className="mt-4 flex items-center gap-4 text-p-caption text-navy/50">
+                  <div className="mt-4 flex items-center gap-4 text-p-caption text-navy/75">
                     <span className="flex items-center gap-1">
                       <Clock3 size={14} /> {course.durationMinutes} min
                     </span>
@@ -163,7 +163,7 @@ export default function CoursesPage() {
                   </div>
                   {course.progressPercent !== null && (
                     <div className="mt-4">
-                      <div className="mb-1 flex items-center justify-between text-p-caption text-navy/50">
+                      <div className="mb-1 flex items-center justify-between text-p-caption text-navy/75">
                         <span>Tu avance</span>
                         <span className="font-semibold text-accent">{course.progressPercent}%</span>
                       </div>

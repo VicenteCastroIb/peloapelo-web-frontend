@@ -62,7 +62,7 @@ export default function ImageUploadField({
             <Image src={data.url} alt={data.alt} fill unoptimized sizes="400px" className="object-cover" />
           </div>
         ) : (
-          <div className="mt-1 flex aspect-[16/9] w-full items-center justify-center rounded-card-md border border-dashed border-navy/20 bg-cream text-p-caption text-navy/40">
+          <div className="mt-1 flex aspect-[16/9] w-full items-center justify-center rounded-card-md border border-dashed border-navy/20 bg-cream text-p-caption text-navy/75">
             Sin imagen todavía
           </div>
         )}

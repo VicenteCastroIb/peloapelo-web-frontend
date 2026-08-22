@@ -148,10 +148,10 @@ export default function CourseDetailPage() {
               <span className="rounded-pill bg-accent/10 px-2.5 py-1 text-p-caption font-semibold text-accent">
                 {COURSE_LEVEL_LABEL[course.level]}
               </span>
-              <span className="flex items-center gap-1 text-p-caption text-navy/50">
+              <span className="flex items-center gap-1 text-p-caption text-navy/75">
                 <Clock3 size={14} /> {totalDuration} min
               </span>
-              <span className="flex items-center gap-1 text-p-caption text-navy/50">
+              <span className="flex items-center gap-1 text-p-caption text-navy/75">
                 <BookOpen size={14} /> {lessons.length} lecciones
               </span>
             </div>
@@ -201,7 +201,7 @@ export default function CourseDetailPage() {
                     {lesson.summary && (
                       <span className="mt-0.5 block text-p-small text-navy/60">{lesson.summary}</span>
                     )}
-                    <span className="mt-1.5 flex items-center gap-1 text-p-caption text-navy/45">
+                    <span className="mt-1.5 flex items-center gap-1 text-p-caption text-navy/75">
                       <Clock3 size={11} /> {lesson.durationMinutes} min
                     </span>
                   </span>

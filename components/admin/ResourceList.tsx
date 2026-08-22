@@ -62,7 +62,7 @@ export default function ResourceList({
       <p className="mt-1 text-p-small text-navy/60">PDFs, audios o links adicionales para esta lección.</p>
 
       <div className="mt-4 divide-y divide-navy/10">
-        {resources.length === 0 && <p className="py-3 text-p-caption text-navy/50">Sin recursos todavía.</p>}
+        {resources.length === 0 && <p className="py-3 text-p-caption text-navy/75">Sin recursos todavía.</p>}
         {resources.map((resource) => {
           const Icon = RESOURCE_ICON[resource.resourceType];
           return (
@@ -71,7 +71,7 @@ export default function ResourceList({
                 <Icon size={15} className="shrink-0 text-accent" />
                 <div className="min-w-0">
                   <p className="truncate text-p-small font-semibold text-navy">{resource.label}</p>
-                  <p className="truncate text-p-caption text-navy/50">{resource.url}</p>
+                  <p className="truncate text-p-caption text-navy/75">{resource.url}</p>
                 </div>
               </div>
               <button

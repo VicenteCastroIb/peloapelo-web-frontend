@@ -157,7 +157,7 @@ export default function ModuleEditor({
               />
             </label>
           </div>
-          {savingModule && <p className="mt-1 text-p-caption text-navy/40">Guardando…</p>}
+          {savingModule && <p className="mt-1 text-p-caption text-navy/75">Guardando…</p>}
         </div>
 
         <button
@@ -174,7 +174,7 @@ export default function ModuleEditor({
 
       <div className="mt-4 space-y-2">
         {sortedLessons.length === 0 && !addingLesson && (
-          <p className="py-2 text-p-caption text-navy/50">Sin lecciones todavía.</p>
+          <p className="py-2 text-p-caption text-navy/75">Sin lecciones todavía.</p>
         )}
         {sortedLessons.map((lesson, i) => (
           <LessonEditor

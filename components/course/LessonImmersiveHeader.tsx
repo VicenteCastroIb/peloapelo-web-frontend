@@ -65,7 +65,7 @@ export default function LessonImmersiveHeader({
               desktop -- es contexto de pagina, no un duplicado del sidebar,
               que solo resalta la leccion activa dentro de la lista). */}
           {position && totalLessons > 0 && (
-            <p className="truncate text-p-caption text-navy/50">
+            <p className="truncate text-p-caption text-navy/75">
               Lección {position.position} de {totalLessons} · {position.moduleTitle}
             </p>
           )}
@@ -73,7 +73,7 @@ export default function LessonImmersiveHeader({
 
         {progressPercent !== null && progressPercent !== undefined && (
           <div className="hidden w-32 shrink-0 sm:block lg:hidden">
-            <div className="mb-1 flex items-center justify-between text-p-caption text-navy/50">
+            <div className="mb-1 flex items-center justify-between text-p-caption text-navy/75">
               <span>Avance</span>
               <span className="font-semibold text-accent">{progressPercent}%</span>
             </div>

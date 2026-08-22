@@ -41,7 +41,7 @@ export default function ArticleCard({ article }: { article: ArticleSummary }) {
         {article.category && <span className="text-h4-label text-accent">{article.category}</span>}
         <h3 className="mt-2 text-h3-md text-navy">{article.title}</h3>
         <p className="mt-2 flex-1 text-p-small text-navy/70">{article.excerpt}</p>
-        <div className="mt-4 flex items-center justify-between text-p-caption text-navy/50">
+        <div className="mt-4 flex items-center justify-between text-p-caption text-navy/75">
           <span>{article.readTime}</span>
           <span className="flex items-center gap-1 font-bold text-coral">
             Leer más

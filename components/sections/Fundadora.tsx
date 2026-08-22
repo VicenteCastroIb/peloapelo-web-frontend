@@ -97,7 +97,7 @@ export default function Fundadora() {
                 al lado -- se ajusta el ritmo vertical mas apretado en todo
                 el bloque para que el borde inferior de la tarjeta de agenda
                 quede a la altura del borde inferior de la foto. */}
-            <p className="text-h4-label text-navy/50">
+            <p className="text-h4-label text-navy/75">
               Psicóloga · Coach ontológica · Fundadora
             </p>
 

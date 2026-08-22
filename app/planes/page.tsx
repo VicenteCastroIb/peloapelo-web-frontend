@@ -38,7 +38,7 @@ export default async function PlanesPage() {
   return (
     <>
       <section className="px-6 py-20 text-center lg:px-12">
-        <p className="text-h4-label text-navy/50">
+        <p className="text-h4-label text-navy/75">
           Planes y precios
         </p>
         <h1 className="mx-auto mt-4 max-w-2xl text-h2-lg text-navy">

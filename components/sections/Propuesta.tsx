@@ -25,7 +25,7 @@ export default function Propuesta() {
       </div>
 
       <FadeInOnScroll className="mx-auto max-w-3xl">
-        <div className="mb-5 flex items-center gap-3 text-h4-label text-navy/50">
+        <div className="mb-5 flex items-center gap-3 text-h4-label text-navy/75">
           <span className="h-px w-8 bg-navy/20" />
           Cómo te acompañamos
         </div>

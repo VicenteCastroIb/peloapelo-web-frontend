@@ -22,7 +22,7 @@ export default function VideoEmbedBlock({ data }: { data: VideoEmbedBlockData })
           loading="lazy"
         />
       </div>
-      {data.caption && <figcaption className="mt-2 text-center text-p-caption text-navy/50">{data.caption}</figcaption>}
+      {data.caption && <figcaption className="mt-2 text-center text-p-caption text-navy/75">{data.caption}</figcaption>}
     </figure>
   );
 }

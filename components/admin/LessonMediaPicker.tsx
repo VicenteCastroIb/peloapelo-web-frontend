@@ -56,7 +56,7 @@ export default function LessonMediaPicker({
   return (
     <div className="rounded-card-md border border-navy/10 bg-cream/60 p-4">
       <p className="text-p-small font-semibold text-navy/70">Video o imagen (opcional)</p>
-      <p className="mt-0.5 text-p-caption text-navy/50">
+      <p className="mt-0.5 text-p-caption text-navy/75">
         Una lección puede no tener nada, un video o una imagen. Nunca son obligatorios.
       </p>
 

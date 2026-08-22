@@ -23,7 +23,7 @@ export default async function BlogPage() {
   return (
     <section className="px-6 py-20 lg:px-12">
       <div className="mx-auto max-w-6xl">
-        <p className="text-h4-label text-navy/50">Recursos</p>
+        <p className="text-h4-label text-navy/75">Recursos</p>
         <h1 className="mx-auto mt-4 max-w-2xl text-h2-lg text-navy">
           Blog <span className="italic text-accent">Pelo a Pelo</span>.
         </h1>
