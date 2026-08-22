@@ -123,12 +123,16 @@ export default function AdminBlogPage() {
               key={article.id}
               className="group relative overflow-hidden rounded-card-lg border border-navy/10 bg-white shadow-sm transition-shadow hover:shadow-md"
             >
+              {/* Botones a 44px (h-11 w-11, ago 2026 -- auditoria mobile): antes
+                  p-2 alrededor de un icono de 15px daba ~31px, por debajo del
+                  minimo tactil recomendado para 3 controles pegados uno al
+                  lado del otro. */}
               <div className="absolute left-2 top-2 z-10 flex items-center gap-0.5 rounded-pill bg-white/95 p-1 shadow-sm">
                 <button
                   type="button"
                   disabled={i === 0 || reordering}
                   onClick={() => move(i, -1)}
-                  className="rounded-pill p-2 text-navy/50 hover:bg-navy/5 disabled:opacity-20"
+                  className="flex h-11 w-11 items-center justify-center rounded-pill text-navy/50 hover:bg-navy/5 disabled:opacity-20"
                   aria-label="Mover a la izquierda"
                 >
                   <ChevronLeft size={15} />
@@ -137,7 +141,7 @@ export default function AdminBlogPage() {
                   type="button"
                   disabled={i === sorted.length - 1 || reordering}
                   onClick={() => move(i, 1)}
-                  className="rounded-pill p-2 text-navy/50 hover:bg-navy/5 disabled:opacity-20"
+                  className="flex h-11 w-11 items-center justify-center rounded-pill text-navy/50 hover:bg-navy/5 disabled:opacity-20"
                   aria-label="Mover a la derecha"
                 >
                   <ChevronRight size={15} />
@@ -147,7 +151,7 @@ export default function AdminBlogPage() {
                   type="button"
                   disabled={deletingId === article.id}
                   onClick={() => setConfirmId(article.id)}
-                  className="rounded-pill p-2 text-navy/50 hover:bg-coral-soft hover:text-coral disabled:opacity-20"
+                  className="flex h-11 w-11 items-center justify-center rounded-pill text-navy/50 hover:bg-coral-soft hover:text-coral disabled:opacity-20"
                   aria-label={`Eliminar ${article.title}`}
                 >
                   <Trash2 size={15} />
@@ -170,7 +174,7 @@ export default function AdminBlogPage() {
                   )}
                   <span
                     className={`absolute right-2 top-2 rounded-pill px-2.5 py-0.5 text-p-caption font-semibold ${
-                      article.published ? "bg-accent text-cream" : "bg-white/90 text-navy/60"
+                      article.published ? "bg-accent text-cream" : "bg-white/90 text-navy/75"
                     }`}
                   >
                     {article.published ? "Publicado" : "Borrador"}
@@ -179,8 +183,8 @@ export default function AdminBlogPage() {
 
                 <div className="p-4">
                   <p className="text-h3-sm text-navy line-clamp-1">{article.title}</p>
-                  <p className="mt-1 text-p-caption text-navy/50">{article.category ?? "Sin categoría"}</p>
-                  <div className="mt-3 flex items-center justify-between text-p-caption text-navy/50">
+                  <p className="mt-1 text-p-caption text-navy/75">{article.category ?? "Sin categoría"}</p>
+                  <div className="mt-3 flex items-center justify-between text-p-caption text-navy/75">
                     <span>Actualizado {formatDate(article.updatedAt)}</span>
                     <span className="flex items-center gap-1">
                       <Layers size={13} /> {article.blockCount}

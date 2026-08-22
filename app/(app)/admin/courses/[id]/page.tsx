@@ -26,6 +26,7 @@ import LiveCoursePreview, { type ActiveLessonDraft } from "@/components/admin/Li
 import PreviewErrorBoundary from "@/components/admin/PreviewErrorBoundary";
 import BlockList, { type BlockListApi } from "@/components/admin/blog/BlockList";
 import Collapse from "@/components/shared/Collapse";
+import DesktopOnlyNotice from "@/components/shared/DesktopOnlyNotice";
 
 const EMPTY_MODULE: ModuleRequest = { title: "", description: "", displayOrder: 0 };
 
@@ -151,6 +152,12 @@ export default function EditCoursePage() {
           </Link>
         )}
       </div>
+
+      <DesktopOnlyNotice>
+        Este editor de curso (contenido, módulos y lecciones) está pensado para
+        pantallas de escritorio. Podés revisarlo desde el celular, pero para
+        armar el contenido con comodidad, usá una computadora.
+      </DesktopOnlyNotice>
 
       <div className="mt-6">
         <button

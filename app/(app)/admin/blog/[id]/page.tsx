@@ -21,6 +21,7 @@ import ArticleForm from "@/components/admin/blog/ArticleForm";
 import ArticleHeaderPreview from "@/components/admin/blog/ArticleHeaderPreview";
 import BlockList, { type BlockListApi } from "@/components/admin/blog/BlockList";
 import Collapse from "@/components/shared/Collapse";
+import DesktopOnlyNotice from "@/components/shared/DesktopOnlyNotice";
 
 const BLOCK_API: BlockListApi = {
   create: createBlock,
@@ -180,6 +181,11 @@ export default function EditArticlePage() {
       </p>
 
       <div className="mt-4">
+        <DesktopOnlyNotice>
+          Este editor de contenido está pensado para pantallas de escritorio. Podés
+          revisarlo desde el celular, pero para armar o reordenar bloques con
+          comodidad, usá una computadora.
+        </DesktopOnlyNotice>
         <BlockList
           ownerId={id}
           blocks={article.blocks}
