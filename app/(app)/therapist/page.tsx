@@ -23,7 +23,7 @@ export default function TherapistPage() {
 
   return (
     <div className="max-w-2xl">
-      <p className="flex items-center gap-2 text-h4-label text-navy/50">
+      <p className="flex items-center gap-2 text-h4-label text-navy/75">
         <Heart size={14} /> Acompañamiento profesional
       </p>
       <h1 className="mt-2 text-h3-lg text-navy">Agenda con tu Terapeuta 🧠</h1>
@@ -60,7 +60,7 @@ export default function TherapistPage() {
               required
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-pill border border-navy/10 bg-cream px-4 py-3 text-p-small outline-none"
+              className="w-full rounded-pill border border-navy/10 bg-cream px-4 py-3 text-p-small outline-none focus:border-accent"
             />
           </div>
 
@@ -72,7 +72,7 @@ export default function TherapistPage() {
                   key={time}
                   type="button"
                   onClick={() => setSlot(time)}
-                  className={`rounded-pill border px-3.5 py-1.5 text-p-small transition-colors ${
+                  className={`flex min-h-11 items-center rounded-pill border px-3.5 text-p-small transition-colors ${
                     slot === time
                       ? "border-accent bg-accent text-white"
                       : "border-navy/10 text-navy/70 hover:border-accent/40"
@@ -92,7 +92,7 @@ export default function TherapistPage() {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               rows={3}
-              className="w-full rounded-2xl border border-navy/10 bg-cream px-4 py-3 text-p-small outline-none"
+              className="w-full rounded-card-md border border-navy/10 bg-cream px-4 py-3 text-p-small outline-none focus:border-accent"
             />
           </div>
 
@@ -119,7 +119,7 @@ export default function TherapistPage() {
         </form>
       )}
 
-      <p className="mt-6 flex items-start gap-2 text-p-caption text-navy/60">
+      <p className="mt-6 flex items-start gap-2 text-p-caption text-navy/75">
         <CalendarIcon size={16} className="mt-0.5 shrink-0 text-accent" />
         Este servicio es un complemento a tu proceso. Las sesiones son orientativas
         y no reemplazan un tratamiento clínico formal. Si estás en crisis, acude a

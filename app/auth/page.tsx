@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ArrowLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { useAuth, ApiError } from "@/lib/auth/AuthContext";
+import { gmailComposeUrl } from "@/lib/gmail";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -86,11 +87,12 @@ export default function AuthPage() {
                 <label className="mb-1.5 block text-p-small font-medium text-navy/70">
                   Nombre completo
                 </label>
-                <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3">
+                <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3 focus-within:border-accent">
                   <User size={16} className="text-navy/40" />
                   <input
                     type="text"
                     required
+                    autoComplete="name"
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="Tu nombre"
@@ -104,11 +106,12 @@ export default function AuthPage() {
               <label className="mb-1.5 block text-p-small font-medium text-navy/70">
                 Correo electrónico
               </label>
-              <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3">
+              <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3 focus-within:border-accent">
                 <Mail size={16} className="text-navy/40" />
                 <input
                   type="email"
                   required
+                  autoComplete="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="tu@email.com"
@@ -121,12 +124,13 @@ export default function AuthPage() {
               <label className="mb-1.5 block text-p-small font-medium text-navy/70">
                 Contraseña
               </label>
-              <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3">
+              <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3 focus-within:border-accent">
                 <Lock size={16} className="text-navy/40" />
                 <input
                   type={showPassword ? "text" : "password"}
                   required
                   minLength={6}
+                  autoComplete={isLogin ? "current-password" : "new-password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
@@ -136,7 +140,7 @@ export default function AuthPage() {
                   type="button"
                   onClick={() => setShowPassword((value) => !value)}
                   aria-label={showPassword ? "Ocultar contraseña" : "Mostrar contraseña"}
-                  className="text-navy/40 hover:text-navy/70"
+                  className="-mr-1.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-navy/40 hover:bg-navy/5 hover:text-navy/70"
                 >
                   {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                 </button>
@@ -144,9 +148,22 @@ export default function AuthPage() {
             </div>
 
             {isLogin && (
-              <Link href="/auth/forgot" className="inline-block text-a-inline text-accent">
+              // No hay endpoint de recuperacion de contrasena todavia (no existe
+              // /auth/forgot como pagina, era un link muerto -- 404 real). Mismo
+              // criterio que TherapistPage/TofacitinibPage: comunicar con calma
+              // en vez de simular un flujo que no existe.
+              <a
+                href={gmailComposeUrl(
+                  "jessica.lagno@peloapelo.cl",
+                  "Olvidé mi contraseña",
+                  "Hola, olvidé mi contraseña de Pelo a Pelo. Mi correo de cuenta es: "
+                )}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block text-a-inline text-accent"
+              >
                 ¿Olvidaste tu contraseña?
-              </Link>
+              </a>
             )}
 
             {!isLogin && (

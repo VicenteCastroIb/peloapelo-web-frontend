@@ -39,6 +39,7 @@ export default function ContactForm() {
           id="contact-name"
           type="text"
           required
+          autoComplete="name"
           value={name}
           onChange={(event) => setName(event.target.value)}
           className="w-full rounded-card-md border border-navy/15 bg-cream/40 px-4 py-2.5 text-p-body text-navy outline-none focus:border-accent"
@@ -53,6 +54,7 @@ export default function ContactForm() {
           id="contact-email"
           type="email"
           required
+          autoComplete="email"
           value={email}
           onChange={(event) => setEmail(event.target.value)}
           className="w-full rounded-card-md border border-navy/15 bg-cream/40 px-4 py-2.5 text-p-body text-navy outline-none focus:border-accent"
@@ -77,7 +79,7 @@ export default function ContactForm() {
         Enviar mensaje <Send size={15} />
       </Button>
 
-      <p className="text-p-caption text-navy/50">
+      <p className="text-p-caption text-navy/75">
         Al enviar, se abrirá Gmail con tu mensaje ya redactado hacia nuestro correo.
       </p>
     </form>

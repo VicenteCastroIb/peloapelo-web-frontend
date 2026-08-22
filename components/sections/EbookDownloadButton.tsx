@@ -103,12 +103,13 @@ export default function EbookDownloadButton({ className = "" }: { className?: st
                 <label className="mb-1.5 block text-p-small font-medium text-navy/70">
                   Nombre
                 </label>
-                <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3">
+                <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3 focus-within:border-accent">
                   <User size={16} className="text-navy/40" />
                   <input
                     type="text"
                     required
                     maxLength={200}
+                    autoComplete="name"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder="Tu nombre"
@@ -121,12 +122,13 @@ export default function EbookDownloadButton({ className = "" }: { className?: st
                 <label className="mb-1.5 block text-p-small font-medium text-navy/70">
                   Correo electrónico
                 </label>
-                <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3">
+                <div className="flex items-center gap-2 rounded-pill border border-navy/10 bg-cream px-4 py-3 focus-within:border-accent">
                   <Mail size={16} className="text-navy/40" />
                   <input
                     type="email"
                     required
                     maxLength={320}
+                    autoComplete="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="tu@email.com"
