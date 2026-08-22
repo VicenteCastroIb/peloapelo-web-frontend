@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { Check, X } from "lucide-react";
 import SectionBadge from "@/components/shared/SectionBadge";
 import PlanCard from "@/components/sections/PlanCard";
+import PlanesComparisonTable from "@/components/sections/PlanesComparisonTable";
 import Faq from "@/components/sections/Faq";
 import { plans as staticPlans, withLivePricing, comparisonTable } from "@/lib/data/plans";
 import { fetchBackendPlans } from "@/lib/api/plans";
@@ -11,17 +11,6 @@ export const metadata: Metadata = {
   description:
     "Cada suscripción sostiene nuestra comunidad y permite que otra persona reciba apoyo. Sin tarjeta para empezar.",
 };
-
-function Cell({ value }: { value: string | boolean }) {
-  if (typeof value === "boolean") {
-    return value ? (
-      <Check size={16} className="mx-auto text-accent" />
-    ) : (
-      <X size={16} className="mx-auto text-navy/25" />
-    );
-  }
-  return <span className="text-p-small">{value}</span>;
-}
 
 // Reubicada desde /pricing a /planes (ver tarea de reestructuracion, ago
 // 2026) -- mismo contenido, sin tocar copy. /pricing queda como redirect
@@ -80,54 +69,7 @@ export default async function PlanesPage() {
             Tabla <span className="italic text-accent">comparativa</span>
           </h2>
 
-          {/* overflow-x-auto, no overflow-hidden (ago 2026, auditoria
-              responsive): con overflow-hidden, las 4 columnas se apretaban
-              o recortaban en mobile (no entran comodas por debajo de
-              ~500px) sin ninguna forma de ver el resto -- con scroll
-              horizontal y un ancho minimo en la tabla, el contenido se lee
-              completo deslizando el dedo en vez de quedar cortado. */}
-          <div className="mt-10 overflow-x-auto rounded-card-lg border border-navy/10 bg-white">
-            <table className="w-full min-w-[560px] text-left text-p-small">
-              <thead>
-                <tr className="border-b border-navy/10">
-                  <th className="p-4 font-semibold">Característica</th>
-                  <th className="p-4 text-center font-semibold">Gratuito</th>
-                  <th className="p-4 text-center font-semibold text-accent">
-                    Plan 3 Meses
-                  </th>
-                  <th className="p-4 text-center font-semibold">Mensual</th>
-                </tr>
-              </thead>
-              <tbody>
-                {comparisonTable.map((row) => (
-                  <tr key={row.feature} className="border-b border-navy/5">
-                    <td className="p-4">{row.feature}</td>
-                    <td className="p-4 text-center">
-                      <Cell value={row.gratuito} />
-                    </td>
-                    <td className="p-4 text-center">
-                      <Cell value={row.trimestral} />
-                    </td>
-                    <td className="p-4 text-center">
-                      <Cell value={row.mensual} />
-                    </td>
-                  </tr>
-                ))}
-                <tr className="border-b border-navy/5 font-semibold">
-                  <td className="p-4">Precio</td>
-                  <td className="p-4 text-center">Gratis · 3 días</td>
-                  <td className="p-4 text-center">$92.000 CLP</td>
-                  <td className="p-4 text-center">$35.990 CLP / mes</td>
-                </tr>
-                <tr>
-                  <td className="p-4">Costo por día</td>
-                  <td className="p-4 text-center text-navy/40">—</td>
-                  <td className="p-4 text-center">$1.022</td>
-                  <td className="p-4 text-center">$1.199</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
+          <PlanesComparisonTable rows={comparisonTable} />
 
           <p className="mt-6 text-center text-p-small text-navy/60">
             Todos los pagos se procesan de forma segura con Mercado Pago. Puedes
