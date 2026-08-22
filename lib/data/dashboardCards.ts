@@ -43,7 +43,7 @@ export const dashboardCards: DashboardCard[] = [
   },
   {
     icon: Sparkles,
-    badge: "Premium",
+    badge: "Próximamente",
     title: "Programa de 3 Meses",
     description: "Viaje guiado de manejo de ansiedad con coach personal",
     href: null,

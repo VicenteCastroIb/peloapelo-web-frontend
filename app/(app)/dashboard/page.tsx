@@ -34,24 +34,45 @@ export default function DashboardPage() {
       <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {dashboardCards.map((card) => {
           const Icon = card.icon;
+          const available = Boolean(card.href);
+
+          // Tarjeta sin destino (href null, ej. "Programa de 3 Meses"): en
+          // touch no existe hover que la distinga de las 5 que si navegan,
+          // asi que la diferencia tiene que notarse en reposo -- icono y
+          // badge en gris apagado en vez del acento de marca, titulo/texto
+          // mas tenues. Comunica "todavia no esta listo" con calma, sin
+          // simular que tocarla va a llevar a algun lado (a pedido, ver
+          // docs/design/panel-rediseno-prompt.md).
           const content = (
             <>
               <div className="flex items-start justify-between">
-                <span className="flex h-10 w-10 items-center justify-center rounded-icon bg-accent/10 text-accent">
+                <span
+                  className={`flex h-10 w-10 items-center justify-center rounded-icon ${
+                    available ? "bg-accent/10 text-accent" : "bg-navy/5 text-navy/35"
+                  }`}
+                >
                   <Icon size={18} />
                 </span>
-                <span className="rounded-pill bg-navy/5 px-2.5 py-1 text-p-caption font-semibold text-navy/60">
+                <span
+                  className={`rounded-pill px-2.5 py-1 text-p-caption font-semibold ${
+                    available ? "bg-navy/5 text-navy/60" : "bg-navy/5 text-navy/40"
+                  }`}
+                >
                   {card.badge}
                 </span>
               </div>
-              <p className="mt-4 text-h3-sm text-navy">{card.title}</p>
-              <p className="mt-1 text-p-small text-navy/60">{card.description}</p>
+              <p className={`mt-4 text-h3-sm ${available ? "text-navy" : "text-navy/60"}`}>{card.title}</p>
+              <p className={`mt-1 text-p-small ${available ? "text-navy/60" : "text-navy/45"}`}>{card.description}</p>
             </>
           );
 
           if (!card.href) {
             return (
-              <div key={card.title} className="rounded-card-md bg-white p-5 shadow-sm">
+              <div
+                key={card.title}
+                aria-disabled="true"
+                className="cursor-default rounded-card-md border border-dashed border-navy/15 bg-navy/[0.02] p-5"
+              >
                 {content}
               </div>
             );
