@@ -14,7 +14,6 @@ import {
   FileText,
   Download,
   Check,
-  type LucideIcon,
 } from "lucide-react";
 import Button from "@/components/ui/Button";
 import Field from "@/components/ui/Field";
@@ -22,6 +21,7 @@ import TextInput from "@/components/ui/TextInput";
 import EmptyState from "@/components/ui/EmptyState";
 import Collapse from "@/components/shared/Collapse";
 import Skeleton from "@/components/shared/Skeleton";
+import MetricaChica from "@/components/shared/MetricaChica";
 import MoodPicker, { MOOD_SCALE, type MoodValue } from "@/components/progress/MoodPicker";
 import { useAuth, ApiError } from "@/lib/auth/AuthContext";
 import {
@@ -175,20 +175,6 @@ function LineaDeTiempo({
   );
 }
 
-function MetricaChica({ icon: Icon, valor, label }: { icon: LucideIcon; valor: string; label: string }) {
-  return (
-    <div className="flex items-center gap-3 rounded-card-md border border-navy/10 bg-white px-[18px] py-4">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-icon bg-accent/10 text-accent">
-        <Icon size={18} strokeWidth={1.9} />
-      </span>
-      <div className="min-w-0">
-        <p className="text-xl font-black tabular-nums text-navy">{valor}</p>
-        <p className="mt-0.5 text-p-caption text-navy/60">{label}</p>
-      </div>
-    </div>
-  );
-}
-
 export default function ProgressPage() {
   const { token, status } = useAuth();
 
@@ -289,7 +275,7 @@ export default function ProgressPage() {
 
   if (loading) {
     return (
-      <div className="grid max-w-[980px] gap-7">
+      <div className="mx-auto grid max-w-[1040px] gap-7">
         <Skeleton className="h-[34px] w-[260px] rounded-pill" />
         <Skeleton className="h-[190px] w-full rounded-card-lg" />
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -303,7 +289,7 @@ export default function ProgressPage() {
   }
 
   return (
-    <div className="grid max-w-[980px] gap-7">
+    <div className="mx-auto grid max-w-[1040px] gap-7">
       <header>
         <p className="text-h4-label text-navy/50">Seguimiento</p>
         <h1 className="mt-1.5 text-h3-lg text-navy">Tu espejo honesto 👁</h1>
