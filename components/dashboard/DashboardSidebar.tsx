@@ -2,11 +2,26 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Camera, BookOpen, CreditCard, User, ShieldCheck, Newspaper } from "lucide-react";
+import {
+  Home,
+  Camera,
+  BookOpen,
+  CreditCard,
+  User,
+  ShieldCheck,
+  Newspaper,
+  type LucideIcon,
+} from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
 import { usePanelSidebar } from "@/components/layout/PanelSidebarContext";
 
-const NAV_ITEMS = [
+interface NavItem {
+  href: string;
+  label: string;
+  icon: LucideIcon;
+}
+
+const NAV_ITEMS: NavItem[] = [
   { href: "/dashboard", label: "Inicio", icon: Home },
   { href: "/progress", label: "Progreso", icon: Camera },
   { href: "/courses", label: "Aprender", icon: BookOpen },
@@ -14,10 +29,35 @@ const NAV_ITEMS = [
   { href: "/profile", label: "Perfil", icon: User },
 ];
 
-const ADMIN_NAV_ITEMS = [
+const ADMIN_NAV_ITEMS: NavItem[] = [
   { href: "/admin/courses", label: "Panel de cursos", icon: ShieldCheck },
   { href: "/admin/blog", label: "Panel de blog", icon: Newspaper },
 ];
+
+function NavLink({
+  item,
+  pathname,
+  onNavigate,
+}: {
+  item: NavItem;
+  pathname: string;
+  onNavigate: () => void;
+}) {
+  const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+  const Icon = item.icon;
+  return (
+    <Link
+      href={item.href}
+      onClick={onNavigate}
+      className={`flex items-center gap-2.5 rounded-pill px-2.5 py-2 text-[17px] transition-colors ${
+        isActive ? "bg-accent/10 font-semibold text-accent" : "font-medium text-navy/70 hover:bg-navy/5"
+      }`}
+    >
+      <Icon size={19} className="shrink-0" />
+      <span className="truncate">{item.label}</span>
+    </Link>
+  );
+}
 
 // El logo y la sesión (nombre + "Cerrar sesión") ya viven en el Header
 // global (ver components/layout/Header.tsx + HeaderAuthCta.tsx, visible en
@@ -26,7 +66,7 @@ const ADMIN_NAV_ITEMS = [
 export default function DashboardSidebar() {
   const pathname = usePathname();
   const { user } = useAuth();
-  const navItems = user?.role === "ADMIN" ? [...NAV_ITEMS, ...ADMIN_NAV_ITEMS] : NAV_ITEMS;
+  const isAdmin = user?.role === "ADMIN";
 
   // Mobile (ago 2026, a pedido -- "adaptar para telefonos"): antes este
   // aside era un simple flex child siempre visible, sin ningun manejo para
@@ -57,26 +97,29 @@ export default function DashboardSidebar() {
         }`}
       >
         <nav className="space-y-1">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={close}
-                className={`flex items-center gap-2.5 rounded-pill px-2.5 py-2 text-[17px] transition-colors ${
-                  isActive
-                    ? "bg-accent/10 font-semibold text-accent"
-                    : "font-medium text-navy/70 hover:bg-navy/5"
-                }`}
-              >
-                <Icon size={19} className="shrink-0" />
-                <span className="truncate">{item.label}</span>
-              </Link>
-            );
-          })}
+          {NAV_ITEMS.map((item) => (
+            <NavLink key={item.href} item={item} pathname={pathname} onNavigate={close} />
+          ))}
         </nav>
+
+        {/* Rediseño panel interno (ago 2026, ver docs/design/panel-rediseno-prompt.md,
+            seccion 3): antes "Panel de cursos"/"Panel de blog" se concatenaban
+            abajo de la lista de un/a admin sin ninguna separacion -- 7 items de
+            navegacion mezclados sin jerarquia entre "mi cuenta" y "gestionar
+            contenido de la fundacion". Un divisor + label agrupa lo segundo
+            como una seccion aparte, sin necesitar un selector de modo completo. */}
+        {isAdmin && (
+          <>
+            <p className="mb-1 mt-6 px-2.5 text-p-caption font-semibold uppercase tracking-wide text-navy/40">
+              Gestión de contenido
+            </p>
+            <nav className="space-y-1">
+              {ADMIN_NAV_ITEMS.map((item) => (
+                <NavLink key={item.href} item={item} pathname={pathname} onNavigate={close} />
+              ))}
+            </nav>
+          </>
+        )}
       </aside>
     </>
   );

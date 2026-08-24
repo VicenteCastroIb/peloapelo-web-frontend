@@ -5,6 +5,7 @@ export interface AuthUser {
   email: string;
   fullName: string;
   role: "USER" | "ADMIN";
+  createdAt: string;
 }
 
 export interface AuthResponse {
