@@ -2,9 +2,9 @@ import Link from "next/link";
 import { ReactNode } from "react";
 
 type Variant = "solid" | "gradient" | "outline" | "ghost";
+type Size = "sm" | "md" | "lg";
 
-const base =
-  "inline-flex items-center justify-center gap-2 rounded-pill px-6 py-3 text-sm font-semibold transition-opacity hover:opacity-90";
+const base = "inline-flex items-center justify-center gap-2 rounded-pill font-semibold transition-opacity hover:opacity-90";
 
 const variants: Record<Variant, string> = {
   solid: "bg-navy text-cream",
@@ -14,9 +14,19 @@ const variants: Record<Variant, string> = {
   ghost: "text-navy",
 };
 
+// sm es para acciones secundarias dentro de una tarjeta (ej. "Elegir foto",
+// "Comparar dos fechas" -- ver docs/design del rediseno /progress); md es
+// el boton por defecto de siempre, con el objetivo tactil minimo de 44px.
+const sizes: Record<Size, string> = {
+  sm: "min-h-9 px-4 py-2 text-xs",
+  md: "min-h-11 px-6 py-3 text-sm",
+  lg: "min-h-11 px-7 py-3.5 text-base",
+};
+
 export default function Button({
   href,
   variant = "solid",
+  size = "md",
   children,
   className = "",
   type,
@@ -27,6 +37,7 @@ export default function Button({
 }: {
   href?: string;
   variant?: Variant;
+  size?: Size;
   children: ReactNode;
   className?: string;
   type?: "button" | "submit";
@@ -35,7 +46,7 @@ export default function Button({
   onClick?: () => void;
   disabled?: boolean;
 }) {
-  const classes = `${base} ${variants[variant]} ${disabled ? "pointer-events-none opacity-50" : ""} ${className}`;
+  const classes = `${base} ${variants[variant]} ${sizes[size]} ${disabled ? "pointer-events-none opacity-50" : ""} ${className}`;
 
   if (href) {
     return (

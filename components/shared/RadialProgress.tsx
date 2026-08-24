@@ -16,6 +16,7 @@ export default function RadialProgress({
   durationMs = 1200,
   trackClassName = "stroke-navy/10",
   progressClassName = "stroke-accent",
+  children,
 }: {
   value: number;
   size?: number;
@@ -23,6 +24,7 @@ export default function RadialProgress({
   durationMs?: number;
   trackClassName?: string;
   progressClassName?: string;
+  children?: React.ReactNode;
 }) {
   const ref = useRef<SVGSVGElement>(null);
   const [visible, setVisible] = useState(false);
@@ -50,27 +52,30 @@ export default function RadialProgress({
   const offset = circumference * (1 - (visible ? Math.min(value, 100) : 0) / 100);
 
   return (
-    <svg ref={ref} width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        fill="none"
-        strokeWidth={strokeWidth}
-        className={trackClassName}
-      />
-      <circle
-        cx={size / 2}
-        cy={size / 2}
-        r={radius}
-        fill="none"
-        strokeWidth={strokeWidth}
-        strokeLinecap="round"
-        strokeDasharray={circumference}
-        strokeDashoffset={offset}
-        style={{ transition: `stroke-dashoffset ${durationMs}ms ease-out` }}
-        className={progressClassName}
-      />
-    </svg>
+    <div className="relative shrink-0" style={{ width: size, height: size }}>
+      <svg ref={ref} width={size} height={size} viewBox={`0 0 ${size} ${size}`} className="-rotate-90">
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          strokeWidth={strokeWidth}
+          className={trackClassName}
+        />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={radius}
+          fill="none"
+          strokeWidth={strokeWidth}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          style={{ transition: `stroke-dashoffset ${durationMs}ms ease-out` }}
+          className={progressClassName}
+        />
+      </svg>
+      {children && <div className="absolute inset-0 flex items-center justify-center">{children}</div>}
+    </div>
   );
 }
