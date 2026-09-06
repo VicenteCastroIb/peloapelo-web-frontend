@@ -22,6 +22,17 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<void>;
   register: (email: string, password: string, fullName: string) => Promise<void>;
   logout: () => void;
+  /** Adopta el token+resumen de un AuthResponse sin volver a pasar por
+   * login/register -- lo usan "Guardar cambios" de /profile (el email pudo
+   * cambiar), cambiar contraseña y "Cerrar todas las sesiones": todos
+   * emiten un JWT nuevo que la sesion actual debe empezar a usar de
+   * inmediato (ver lib/api/users.ts y lib/api/auth.ts). */
+  applySession: (res: authApi.AuthResponse) => void;
+  /** Vuelve a pedir el perfil completo (fetchMe) para refrescar campos que
+   * el AuthResponse no trae (phone/bio/notify*, ver UserResponse del
+   * backend) -- se llama despues de applySession cuando ademas cambiaron
+   * esos campos (guardar perfil, actualizar recordatorios). */
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -51,16 +62,22 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
   }, []);
 
-  const applyAuthResponse = useCallback((res: authApi.AuthResponse) => {
+  // res.user es solo un resumen (id/email/fullName/role, ver AuthUserSummary
+  // en lib/api/auth.ts) -- login/register necesitan el perfil COMPLETO
+  // (phone/bio/notify*/createdAt) para que el resto de la app (ej. el badge
+  // "Miembro desde" en /profile) tenga esos datos desde el primer render,
+  // asi que se pide aparte con fetchMe() en vez de setUser(res.user) directo.
+  const applyAuthResponse = useCallback(async (res: authApi.AuthResponse) => {
     setToken(res.token);
-    setUser(res.user);
+    const me = await authApi.fetchMe(res.token);
+    setUser(me);
     setStatus("authenticated");
   }, []);
 
   const login = useCallback(
     async (email: string, password: string) => {
       const res = await authApi.login(email, password);
-      applyAuthResponse(res);
+      await applyAuthResponse(res);
     },
     [applyAuthResponse]
   );
@@ -68,7 +85,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const register = useCallback(
     async (email: string, password: string, fullName: string) => {
       const res = await authApi.register(email, password, fullName);
-      applyAuthResponse(res);
+      await applyAuthResponse(res);
     },
     [applyAuthResponse]
   );
@@ -83,9 +100,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setStatus("unauthenticated");
   }, []);
 
+  const applySession = useCallback((res: authApi.AuthResponse) => {
+    setToken(res.token);
+    setUser((prev) => (prev ? { ...prev, ...res.user } : null));
+  }, []);
+
+  const refreshUser = useCallback(async () => {
+    const me = await authApi.fetchMe();
+    setUser(me);
+  }, []);
+
   const value = useMemo(
-    () => ({ user, token, status, login, register, logout }),
-    [user, token, status, login, register, logout]
+    () => ({ user, token, status, login, register, logout, applySession, refreshUser }),
+    [user, token, status, login, register, logout, applySession, refreshUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

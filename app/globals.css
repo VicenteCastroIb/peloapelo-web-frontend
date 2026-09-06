@@ -357,3 +357,113 @@ input:-webkit-autofill:active {
   caret-color: var(--color-navy);
   transition: background-color 600000s 0s, color 600000s 0s;
 }
+
+/* Fondo decorativo del panel completo (dashboard, progreso, perfil,
+   suscripcion, cursos, etc. -- ago 2026, a pedido: "aplica el mismo fondo de
+   suscripcion a todo el panel"). Nacio en /subscription y se extendio a
+   todo app/(app)/layout.tsx para que el panel se vea consistente. Se dispara
+   agregando la clase "pap-panel-bg" al <body> (ver el useEffect en
+   app/(app)/layout.tsx), pero el fondo en si vive en un pseudo-elemento
+   ::before, NO directamente en el background del <body>. Dos capas de
+   background-image: arriba un degradado crema que se lo come hacia abajo
+   (transparente -> crema solido), abajo la acuarela en si -- mismo
+   tamaño/posicion en ambas capas para que el degradado quede alineado con la
+   imagen real y no con el alto total de la pagina.
+   Por que ::before y no background-attachment:fixed en body (bug real, ago
+   2026 -- "esta fijo pero al scrollear la imagen sigue bajando"):
+   background-attachment:fixed fija el fondo respecto del VIEWPORT solo
+   cuando el propio elemento que lo declara es el que scrollea. Aca quien
+   scrollea de verdad es el div interno de la columna de contenido
+   (overflow-y-auto, ver app/(app)/layout.tsx), no el <body> -- asi que ese
+   fixed queda en un estado ambiguo entre navegadores y en la practica el
+   fondo terminaba viajando con el contenido. La solucion robusta (mismo
+   truco que .pap-panel-bg-peek de mas abajo, que si funciona siempre) es un
+   ::before con position:fixed real, anclado al viewport de forma explicita
+   sin depender de cual elemento scrollea. z-index -1: debe quedar DETRAS del
+   contenido normal del panel (sidebar opaco, tarjetas, etc., que no
+   declaran z-index propio) sin taparles clicks -- ver mismo pointer-events:
+   none que .pap-panel-bg-peek.
+   Fade radial, no lineal (2do bug real, ago 2026 -- primero "se ve un corte
+   casi al medio izquierdo de la pantalla", y despues de agregar un fade
+   horizontal angosto, seguia viendose "el corte de color a la mitad del
+   header"): un linear-gradient(to bottom) SOLO se desvanece verticalmente
+   -- dentro de la franja del header (72px de alto, ver
+   .pap-panel-bg-peek mas abajo) casi no alcanza a actuar, porque recien
+   llega al 55% en los primeros ~279px (55% de 507px) de la caja, muy por
+   debajo de esos 72px. Ahi el header mostraba la foto casi a maxima
+   intensidad, con un corte duro contra el cream de la izquierda pese al
+   fade horizontal angosto agregado antes. La solucion real es un UNICO
+   radial-gradient anclado en la esquina superior derecha (100% 0%, mismo
+   tamaño que la caja): a lo largo del borde superior (y~0, la altura del
+   header) la distancia normalizada depende casi enteramente de x -- osea
+   que ahi se comporta como un fade horizontal ancho (parejo en todo el
+   header), y mas abajo en la pagina suma tambien el desvanecido vertical.
+   Un solo degradado, consistente en cualquier alto de franja. */
+body.pap-panel-bg {
+  position: relative;
+}
+
+body.pap-panel-bg::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image: radial-gradient(
+      ellipse 900px 507px at 100% 0%,
+      rgba(248, 246, 242, 0) 0%,
+      rgba(248, 246, 242, 0.5) 45%,
+      rgba(248, 246, 242, 1) 75%
+    ),
+    url("/images/backgrounds/fondo-suscripcion.jpg");
+  background-repeat: no-repeat, no-repeat;
+  background-position: top right, top right;
+  background-size: 900px 507px, 900px 507px;
+}
+
+@media (max-width: 900px) {
+  body.pap-panel-bg::before {
+    background-size: 100vw 56vw, 100vw 56vw;
+  }
+}
+
+/* .pap-panel-bg-peek (la franja que "asomaba" sobre el header con
+   mix-blend-mode) se elimino (ago 2026, a pedido: "deja el header blanco si
+   no puedes arreglarlo" -- pese a pasar el degradado a radial, seguia
+   viendose un corte de color ahi). El header del panel ahora es blanco
+   solido sin overlay, punto (ver Header.tsx, appPanel, y el div que se
+   sacaba en app/(app)/layout.tsx). El fondo del <body> (".pap-panel-bg" de
+   arriba) sigue cubriendo el resto de la pantalla normalmente. */
+
+/* Grid "Explora" del dashboard (ago 2026, a pedido: "la card de agendamiento
+   debe ser la mas grande y central, las demas deben estar alrededor").
+   Bajo lg sigue siendo el grid simple de Tailwind (grid-cols-1/2, orden
+   natural del DOM) que ya traia -- la card destacada ya se distingue por su
+   propio tratamiento visual (degradado de marca) sin necesitar spanning en
+   mobile/tablet, donde no hay columnas de sobra para "rodearla". A partir de
+   lg, 3 columnas x 2 filas: la destacada ocupa la columna central en ambas
+   filas (mas alta que las demas), dos cards a su izquierda y dos a su
+   derecha -- lectura en "marco" alrededor del centro. */
+@media (min-width: 1024px) {
+  .pap-explora-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-areas:
+      "a hero b"
+      "c hero d";
+  }
+  .pap-explora-a {
+    grid-area: a;
+  }
+  .pap-explora-b {
+    grid-area: b;
+  }
+  .pap-explora-c {
+    grid-area: c;
+  }
+  .pap-explora-d {
+    grid-area: d;
+  }
+  .pap-explora-hero {
+    grid-area: hero;
+  }
+}

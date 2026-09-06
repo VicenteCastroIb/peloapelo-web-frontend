@@ -67,7 +67,7 @@ export default function MoodPicker({
             />
             {showLabels && (
               <span
-                className={`text-center text-[11px] leading-[1.3] ${
+                className={`text-center text-[13px] leading-[1.3] ${
                   selected ? "font-bold text-navy" : "font-medium text-navy/50"
                 }`}
               >

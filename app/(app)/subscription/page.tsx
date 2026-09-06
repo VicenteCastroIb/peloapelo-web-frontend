@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import { CreditCard, Heart, AlertCircle } from "lucide-react";
+import Image from "next/image";
+import { Heart, AlertCircle } from "lucide-react";
 import { useAuth, ApiError } from "@/lib/auth/AuthContext";
 import {
   listMySubscriptions,
@@ -51,6 +52,10 @@ const SELECTABLE_PLANS = PLAN_DATA.filter((p) => p.id === "trimestral" || p.id =
 
 function daysBetween(a: Date, b: Date) {
   return Math.round((b.getTime() - a.getTime()) / 86_400_000);
+}
+
+function billingCadence(period: string): string {
+  return period === "trimestral" ? "cada 3 meses" : "cada mes";
 }
 
 function statusCopy(sub: Subscription, daysRemaining: number | null): { title: string; description: ReactNode } {
@@ -111,6 +116,14 @@ export default function SubscriptionPage() {
   const [subscribeError, setSubscribeError] = useState<string | null>(null);
 
   const current = subscriptions?.[0] ?? null;
+  // Una suscripcion CANCELED/EXPIRED sigue siendo la ultima fila devuelta por
+  // /subscriptions/me (historial), pero ya no es "tu plan" en ningun sentido
+  // util aca -- sin este chequeo, un plan que ya cancelaste se seguia
+  // marcando como "Tu plan" (badge + check) en "Elige tu camino" y desviaba
+  // la preseleccion de plan, contradiciendo el banner de arriba que sí dice
+  // "cancelada".
+  const hasEntitlement =
+    !!current && (current.status === "ACTIVE" || current.status === "TRIAL" || current.status === "PENDING_PAYMENT");
   // No hay nada que pedir a /payments sin una suscripcion (evita dejar
   // `payments` en null para siempre, sin necesitar un setState sincrono
   // dentro del efecto de abajo).
@@ -139,8 +152,8 @@ export default function SubscriptionPage() {
   const [choiceSeeded, setChoiceSeeded] = useState(false);
   if (subscriptions !== null && !choiceSeeded) {
     setChoiceSeeded(true);
-    if (current?.planCode === "trimestral") setElegido("mensual");
-    else if (current?.planCode === "mensual") setElegido("trimestral");
+    if (hasEntitlement && current?.planCode === "trimestral") setElegido("mensual");
+    else if (hasEntitlement && current?.planCode === "mensual") setElegido("trimestral");
   }
 
   async function handleCancel() {
@@ -183,10 +196,10 @@ export default function SubscriptionPage() {
 
   if (subscriptions === null) {
     return (
-      <div className="grid max-w-[860px] gap-7">
+      <div className="mx-auto grid w-full max-w-[860px] gap-8 xl:max-w-[960px]">
         <Skeleton className="h-[34px] w-[220px] rounded-pill" />
         <Skeleton className="h-[200px] w-full rounded-card-lg" />
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-5 md:grid-cols-2">
           <Skeleton className="h-[250px] w-full rounded-card-lg" />
           <Skeleton className="h-[250px] w-full rounded-card-lg" />
         </div>
@@ -195,7 +208,7 @@ export default function SubscriptionPage() {
   }
 
   return (
-    <div className="grid max-w-[860px] gap-7">
+    <div className="mx-auto grid w-full max-w-[860px] gap-8 xl:max-w-[960px]">
       <header>
         <p className="text-h4-label text-navy/50">Tu plan</p>
         <h1 className="mt-1.5 text-h3-lg text-navy">Mi Suscripción</h1>
@@ -215,8 +228,8 @@ export default function SubscriptionPage() {
                 </div>
               </RadialProgress>
             ) : (
-              <span className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-pill bg-accent/10 text-accent">
-                <CreditCard size={28} strokeWidth={1.9} />
+              <span className="flex h-[78px] w-[78px] shrink-0 items-center justify-center rounded-pill bg-accent/10">
+                <Image src="/images/icons/metodo-pago-icono.png" alt="" width={56} height={44} className="h-11 w-auto" />
               </span>
             )}
             <div className="min-w-[240px] flex-1">
@@ -228,6 +241,19 @@ export default function SubscriptionPage() {
                 {statusCopy(current, daysRemaining).description}
               </p>
             </div>
+            {current.status === "ACTIVE" && (
+              <div className="border-l border-navy/10 pl-[22px] text-right max-sm:hidden">
+                <p className="text-data-md text-navy">{formatClp(current.planPriceClp)}</p>
+                <p className="mt-0.5 text-p-caption text-navy/50">{billingCadence(current.planBillingPeriod)}</p>
+                {current.currentPeriodEnd && (
+                  <p className="mt-2 text-p-caption text-navy/50">
+                    Próximo cobro
+                    <br />
+                    <span className="font-semibold text-navy/70">{formatDate(current.currentPeriodEnd)}</span>
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         </section>
       )}
@@ -266,7 +292,7 @@ export default function SubscriptionPage() {
           <p className="text-p-caption text-navy/50">Cambias o paras cuando quieras</p>
         </div>
 
-        <div role="radiogroup" aria-label="Elegir plan" className="grid items-start gap-4 md:grid-cols-2">
+        <div role="radiogroup" aria-label="Elegir plan" className="grid items-start gap-5 md:grid-cols-2">
           {SELECTABLE_PLANS.map((p) => (
             <PlanOption
               key={p.id}
@@ -278,7 +304,7 @@ export default function SubscriptionPage() {
               features={p.features}
               note={p.id === "trimestral" ? "Garantía de 14 días: si no es para ti, te devolvemos todo." : "Se renueva solo hasta que decidas parar."}
               recommended={p.highlighted}
-              current={current?.planCode === p.id}
+              current={hasEntitlement && current?.planCode === p.id}
               selected={elegido === p.id}
               onSelect={() => setElegido(p.id as "trimestral" | "mensual")}
             />
@@ -293,15 +319,17 @@ export default function SubscriptionPage() {
           <div className="flex flex-col items-end gap-2">
             {subscribeError && <p className="text-p-caption text-coral">{subscribeError}</p>}
             <Button variant="gradient" disabled={subscribing} onClick={handleSubscribe}>
-              {subscribing ? "Un momento…" : `Continuar con ${elegido === "trimestral" ? "3 Meses" : "Mensual"}`}
+              {subscribing
+                ? "Un momento…"
+                : `${current ? "Cambiar a" : "Continuar con"} ${elegido === "trimestral" ? "3 Meses" : "Mensual"}`}
             </Button>
           </div>
         </div>
       </section>
 
       <section className="flex flex-wrap items-center gap-[18px] rounded-card-lg border border-navy/10 bg-white p-7 shadow-sm">
-        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-icon bg-navy/5 text-navy/60">
-          <CreditCard size={20} strokeWidth={1.9} />
+        <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-icon bg-navy/5">
+          <Image src="/images/icons/metodo-pago-icono.png" alt="" width={40} height={32} className="h-8 w-auto" />
         </span>
         <div className="min-w-[200px] flex-1">
           <p className="text-h3-sm text-navy">Método de pago</p>

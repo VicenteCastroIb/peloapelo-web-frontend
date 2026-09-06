@@ -1,10 +1,13 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Heart, Calendar, Camera, Check, Lock, ShieldCheck } from "lucide-react";
-import { useAuth } from "@/lib/auth/AuthContext";
+import { useAuth, ApiError } from "@/lib/auth/AuthContext";
 import { listMySubscriptions, type Subscription } from "@/lib/api/subscriptions";
 import { getSummary, type ProgressSummary } from "@/lib/api/progress";
+import { updateProfile, updateNotifications, deleteAccount } from "@/lib/api/users";
+import { changePassword, revokeOtherSessions } from "@/lib/api/auth";
 import { plans } from "@/lib/data/plans";
 import { formatClp, formatDate } from "@/lib/format";
 import Button from "@/components/ui/Button";
@@ -13,6 +16,7 @@ import Field from "@/components/ui/Field";
 import TextInput from "@/components/ui/TextInput";
 import Switch from "@/components/ui/Switch";
 import ConfirmDialog from "@/components/ui/ConfirmDialog";
+import Collapse from "@/components/shared/Collapse";
 import Skeleton from "@/components/shared/Skeleton";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 
@@ -30,17 +34,9 @@ function memberSince(iso: string): string {
   return new Intl.DateTimeFormat("es-CL", { month: "short", year: "numeric" }).format(new Date(iso)).replace(".", "");
 }
 
-// Telefono/nota no tienen campo propio en el backend todavia (User.java solo
-// guarda email/fullName/role) -- se editan como estado local nada mas, igual
-// que en el prototipo de diseno (su propio "guardar" tampoco llama a ninguna
-// API, ver DCLogic.guardar del handoff). Cuando exista un PATCH real de
-// perfil, estos placeholders se reemplazan por los valores que traiga esa
-// respuesta.
-const TELEFONO_INICIAL = "+56 9 8123 4567";
-const NOTA_INICIAL = "";
-
 export default function ProfilePage() {
-  const { user, token, status } = useAuth();
+  const { user, token, status, applySession, refreshUser, logout } = useAuth();
+  const router = useRouter();
   const [subscriptions, setSubscriptions] = useState<Subscription[] | null>(null);
   const [summary, setSummary] = useState<ProgressSummary | null>(null);
 
@@ -64,33 +60,201 @@ export default function ProfilePage() {
   const [nombre, setNombre] = useState(nombreInicial);
   const [apellido, setApellido] = useState(apellidoInicial);
   const [correo, setCorreo] = useState(user?.email ?? "");
-  const [telefono, setTelefono] = useState(TELEFONO_INICIAL);
-  const [nota, setNota] = useState(NOTA_INICIAL);
+  const [telefono, setTelefono] = useState(user?.phone ?? "");
+  const [nota, setNota] = useState(user?.bio ?? "");
+  const [guardando, setGuardando] = useState(false);
+  const [guardarError, setGuardarError] = useState<string | null>(null);
+
+  // Sincroniza los campos con el usuario real cuando llega/cambia (login,
+  // fetchMe inicial, o el refreshUser() de mas abajo tras guardar) -- salvo
+  // que este editando: no queremos pisar lo que la persona esta escribiendo
+  // a mitad de una edicion si por algun motivo `user` se refresca solo.
+  // Ajuste de estado durante el render (no en un useEffect, ver
+  // https://react.dev/learn/you-might-not-need-an-effect#adjusting-some-state-when-a-prop-changes)
+  // -- comparar contra la referencia ya sincronizada evita el loop infinito
+  // sin depender de un efecto que dispare un render extra.
+  const [profileSyncedUser, setProfileSyncedUser] = useState(user);
+  if (!editando && user !== profileSyncedUser) {
+    setProfileSyncedUser(user);
+    const partes = (user?.fullName ?? "").trim().split(/\s+/).filter(Boolean);
+    setNombre(partes[0] ?? "");
+    setApellido(partes.slice(1).join(" "));
+    setCorreo(user?.email ?? "");
+    setTelefono(user?.phone ?? "");
+    setNota(user?.bio ?? "");
+  }
 
   function toggleEditar() {
+    setGuardarError(null);
     setEditando((v) => !v);
   }
 
-  function guardar() {
-    // Sin PATCH /api/users/me todavia: "guardar" solo cierra el modo
-    // edicion, los valores ya viven en el estado de arriba.
-    setEditando(false);
+  // "Guardar cambios" (ago 2026, a pedido: "el usuario podra editar su
+  // perfil y guardarlo, quedando con una vista ordenada del perfil") --
+  // PATCH real a /api/users/me. applySession adopta el JWT nuevo (el email
+  // pudo cambiar, ver lib/api/users.ts) y refreshUser() vuelve a pedir el
+  // perfil completo para que phone/bio queden sincronizados igual que en el
+  // backend. Recien cuando las dos resuelven se cierra el modo edicion --
+  // si algo falla (ej. "ya existe una cuenta con ese correo"), la persona
+  // se queda en modo edicion viendo el error, no pierde lo que escribio.
+  async function guardar() {
+    if (status !== "authenticated") return;
+    setGuardando(true);
+    setGuardarError(null);
+    try {
+      const fullName = [nombre.trim(), apellido.trim()].filter(Boolean).join(" ");
+      const res = await updateProfile(token, { fullName, email: correo.trim(), phone: telefono, bio: nota });
+      applySession(res);
+      await refreshUser();
+      setEditando(false);
+    } catch (err) {
+      setGuardarError(err instanceof ApiError ? err.message : "No pudimos guardar tus datos.");
+    } finally {
+      setGuardando(false);
+    }
   }
 
   function cancelar() {
+    setGuardarError(null);
     setNombre(nombreInicial);
     setApellido(apellidoInicial);
     setCorreo(user?.email ?? "");
-    setTelefono(TELEFONO_INICIAL);
-    setNota(NOTA_INICIAL);
+    setTelefono(user?.phone ?? "");
+    setNota(user?.bio ?? "");
     setEditando(false);
   }
 
+  // Recordatorios: cambio optimista (el switch ya se ve encendido/apagado
+  // de inmediato) + persistencia inmediata; si el PATCH falla se revierte
+  // al valor anterior, para no dejar a la UI mintiendo sobre lo guardado.
   const [animoDiario, setAnimoDiario] = useState(true);
   const [resumenSemanal, setResumenSemanal] = useState(true);
   const [novedades, setNovedades] = useState(false);
 
+  // Mismo patron de ajuste-durante-el-render que profileSyncedUser arriba.
+  const [notifSyncedUser, setNotifSyncedUser] = useState(user);
+  if (user !== notifSyncedUser) {
+    setNotifSyncedUser(user);
+    if (user) {
+      setAnimoDiario(user.notifyMoodDaily);
+      setResumenSemanal(user.notifyWeeklySummary);
+      setNovedades(user.notifyNewsletter);
+    }
+  }
+
+  async function persistNotification(
+    next: { notifyMoodDaily: boolean; notifyWeeklySummary: boolean; notifyNewsletter: boolean },
+    revert: () => void
+  ) {
+    try {
+      await updateNotifications(token, next);
+    } catch {
+      revert();
+    }
+  }
+
+  function toggleAnimoDiario() {
+    const nextValue = !animoDiario;
+    setAnimoDiario(nextValue);
+    persistNotification(
+      { notifyMoodDaily: nextValue, notifyWeeklySummary: resumenSemanal, notifyNewsletter: novedades },
+      () => setAnimoDiario(!nextValue)
+    );
+  }
+
+  function toggleResumenSemanal() {
+    const nextValue = !resumenSemanal;
+    setResumenSemanal(nextValue);
+    persistNotification(
+      { notifyMoodDaily: animoDiario, notifyWeeklySummary: nextValue, notifyNewsletter: novedades },
+      () => setResumenSemanal(!nextValue)
+    );
+  }
+
+  function toggleNovedades() {
+    const nextValue = !novedades;
+    setNovedades(nextValue);
+    persistNotification(
+      { notifyMoodDaily: animoDiario, notifyWeeklySummary: resumenSemanal, notifyNewsletter: nextValue },
+      () => setNovedades(!nextValue)
+    );
+  }
+
+  // Seguridad: cambio de contraseña
+  const [cambiandoPassword, setCambiandoPassword] = useState(false);
+  const [passwordActual, setPasswordActual] = useState("");
+  const [passwordNueva, setPasswordNueva] = useState("");
+  const [guardandoPassword, setGuardandoPassword] = useState(false);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordListo, setPasswordListo] = useState(false);
+
+  function abrirCambioPassword() {
+    setPasswordError(null);
+    setPasswordListo(false);
+    setPasswordActual("");
+    setPasswordNueva("");
+    setCambiandoPassword(true);
+  }
+
+  async function guardarPassword() {
+    if (status !== "authenticated") return;
+    setGuardandoPassword(true);
+    setPasswordError(null);
+    try {
+      const res = await changePassword(token, passwordActual, passwordNueva);
+      applySession(res);
+      setPasswordListo(true);
+      setPasswordActual("");
+      setPasswordNueva("");
+      setTimeout(() => setCambiandoPassword(false), 1500);
+    } catch (err) {
+      setPasswordError(err instanceof ApiError ? err.message : "No pudimos cambiar tu contraseña.");
+    } finally {
+      setGuardandoPassword(false);
+    }
+  }
+
+  // Seguridad: cerrar todas las demas sesiones
+  const [cerrandoSesiones, setCerrandoSesiones] = useState(false);
+  const [sesionesListo, setSesionesListo] = useState(false);
+
+  async function cerrarOtrasSesiones() {
+    if (status !== "authenticated") return;
+    setCerrandoSesiones(true);
+    setSesionesListo(false);
+    try {
+      const res = await revokeOtherSessions(token);
+      applySession(res);
+      setSesionesListo(true);
+    } catch {
+      // Best-effort: si falla, la persona puede simplemente reintentar.
+    } finally {
+      setCerrandoSesiones(false);
+    }
+  }
+
+  // Eliminar cuenta: sin paso de confirmacion por correo (no hay
+  // infraestructura de email para esto todavia) -- el unico portazo es este
+  // ConfirmDialog, que es real: "Si, eliminar" borra la cuenta de inmediato
+  // en el backend (ver UserController#deleteAccount) y redirige a /auth.
   const [confirmandoEliminar, setConfirmandoEliminar] = useState(false);
+  const [eliminando, setEliminando] = useState(false);
+  const [eliminarError, setEliminarError] = useState<string | null>(null);
+
+  async function confirmarEliminar() {
+    if (status !== "authenticated") return;
+    setEliminando(true);
+    setEliminarError(null);
+    try {
+      await deleteAccount(token);
+      logout();
+      router.replace("/auth");
+    } catch (err) {
+      setEliminarError(err instanceof ApiError ? err.message : "No pudimos eliminar tu cuenta.");
+      setEliminando(false);
+      setConfirmandoEliminar(false);
+    }
+  }
 
   const costoPorDia = TRIMESTRAL.costPerDay?.split("/")[0] ?? "";
 
@@ -126,12 +290,14 @@ export default function ProfilePage() {
               <div className="mt-3 flex flex-wrap gap-2">
                 <Badge tone="neutral">Santiago, Chile</Badge>
                 <Badge tone="neutral">Alopecia areata</Badge>
-                {summary ? (
-                  <Badge tone="accent">
-                    {summary.streakDays} {summary.streakDays === 1 ? "día" : "días"} registrando tu ánimo
-                  </Badge>
-                ) : (
+                {summary === null ? (
                   <Skeleton className="h-[22px] w-[190px] rounded-pill" />
+                ) : (
+                  summary.streakDays > 0 && (
+                    <Badge tone="accent">
+                      {summary.streakDays} {summary.streakDays === 1 ? "día" : "días"} registrando tu ánimo
+                    </Badge>
+                  )
                 )}
               </div>
             </div>
@@ -204,12 +370,13 @@ export default function ProfilePage() {
             <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-navy/10 pt-5">
               {editando ? (
                 <>
-                  <Button variant="gradient" onClick={guardar}>
-                    Guardar cambios
+                  <Button variant="gradient" onClick={guardar} disabled={guardando}>
+                    {guardando ? "Guardando…" : "Guardar cambios"}
                   </Button>
-                  <Button variant="ghost" onClick={cancelar}>
+                  <Button variant="ghost" onClick={cancelar} disabled={guardando}>
                     Cancelar
                   </Button>
+                  {guardarError && <p className="text-p-caption text-coral">{guardarError}</p>}
                 </>
               ) : (
                 <p className="text-p-small text-navy/50">
@@ -342,25 +509,21 @@ export default function ProfilePage() {
                   <p className="text-p-small font-semibold text-navy">Registro diario de ánimo</p>
                   <p className="mt-0.5 text-p-caption text-navy/50">Cada día a las 21:00</p>
                 </div>
-                <Switch
-                  checked={animoDiario}
-                  onChange={() => setAnimoDiario((v) => !v)}
-                  label="Recordatorio de registro diario"
-                />
+                <Switch checked={animoDiario} onChange={toggleAnimoDiario} label="Recordatorio de registro diario" />
               </div>
               <div className="flex items-center justify-between gap-3.5">
                 <div>
                   <p className="text-p-small font-semibold text-navy">Resumen de tu semana</p>
                   <p className="mt-0.5 text-p-caption text-navy/50">Domingos por la mañana</p>
                 </div>
-                <Switch checked={resumenSemanal} onChange={() => setResumenSemanal((v) => !v)} label="Resumen semanal" />
+                <Switch checked={resumenSemanal} onChange={toggleResumenSemanal} label="Resumen semanal" />
               </div>
               <div className="flex items-center justify-between gap-3.5">
                 <div>
                   <p className="text-p-small font-semibold text-navy">Novedades de la fundación</p>
                   <p className="mt-0.5 text-p-caption text-navy/50">Nuevos cursos y encuentros</p>
                 </div>
-                <Switch checked={novedades} onChange={() => setNovedades((v) => !v)} label="Novedades de la fundación" />
+                <Switch checked={novedades} onChange={toggleNovedades} label="Novedades de la fundación" />
               </div>
             </div>
           </div>
@@ -374,22 +537,65 @@ export default function ProfilePage() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-p-small font-semibold text-navy">Contraseña</p>
-                  <p className="mt-0.5 text-p-caption text-navy/50">Actualizada hace 4 meses</p>
+                  <p className="mt-0.5 text-p-caption text-navy/50">
+                    {cambiandoPassword ? "Elige una contraseña nueva" : "Cámbiala cuando quieras"}
+                  </p>
                 </div>
-                <Button variant="ghost" size="sm">
-                  Cambiar
-                </Button>
+                {!cambiandoPassword && (
+                  <Button variant="ghost" size="sm" onClick={abrirCambioPassword}>
+                    Cambiar
+                  </Button>
+                )}
               </div>
+              <Collapse open={cambiandoPassword}>
+                <div className="flex flex-col gap-3 pb-3.5 pl-12">
+                  <Field label="Contraseña actual" htmlFor="perfil-password-actual">
+                    <TextInput
+                      id="perfil-password-actual"
+                      type="password"
+                      value={passwordActual}
+                      onChange={(e) => setPasswordActual(e.target.value)}
+                      autoComplete="current-password"
+                    />
+                  </Field>
+                  <Field label="Contraseña nueva" htmlFor="perfil-password-nueva" hint="Mínimo 6 caracteres.">
+                    <TextInput
+                      id="perfil-password-nueva"
+                      type="password"
+                      value={passwordNueva}
+                      onChange={(e) => setPasswordNueva(e.target.value)}
+                      autoComplete="new-password"
+                    />
+                  </Field>
+                  {passwordError && <p className="text-p-caption text-coral">{passwordError}</p>}
+                  {passwordListo && <p className="text-p-caption text-accent">Contraseña actualizada.</p>}
+                  <div className="flex items-center gap-2.5">
+                    <Button
+                      variant="gradient"
+                      size="sm"
+                      onClick={guardarPassword}
+                      disabled={guardandoPassword || passwordActual.length === 0 || passwordNueva.length < 6}
+                    >
+                      {guardandoPassword ? "Guardando…" : "Guardar contraseña"}
+                    </Button>
+                    <Button variant="ghost" size="sm" onClick={() => setCambiandoPassword(false)} disabled={guardandoPassword}>
+                      Cancelar
+                    </Button>
+                  </div>
+                </div>
+              </Collapse>
               <div className="flex items-center gap-3 border-t border-navy/10 py-2.5">
                 <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-icon bg-navy/5 text-navy/70">
                   <ShieldCheck size={17} />
                 </span>
                 <div className="min-w-0 flex-1">
                   <p className="text-p-small font-semibold text-navy">Sesiones activas</p>
-                  <p className="mt-0.5 text-p-caption text-navy/50">Este equipo y un teléfono</p>
+                  <p className="mt-0.5 text-p-caption text-navy/50">
+                    {sesionesListo ? "Listo, cerramos tus otras sesiones." : "Cierra el acceso desde cualquier otro dispositivo"}
+                  </p>
                 </div>
-                <Button variant="ghost" size="sm">
-                  Cerrar todas
+                <Button variant="ghost" size="sm" onClick={cerrarOtrasSesiones} disabled={cerrandoSesiones}>
+                  {cerrandoSesiones ? "Cerrando…" : "Cerrar todas"}
                 </Button>
               </div>
             </div>
@@ -402,23 +608,22 @@ export default function ProfilePage() {
                 Eliminar mi cuenta
               </button>
               <p className="mt-1.5 text-p-caption leading-relaxed text-navy/50">
-                Borramos tus registros y fotos para siempre. Antes te lo confirmamos por correo.
+                Se borra de inmediato: tus registros, fotos y suscripción no se pueden recuperar.
               </p>
+              {eliminarError && <p className="mt-1.5 text-p-caption text-coral">{eliminarError}</p>}
             </div>
           </div>
         </div>
       </div>
 
-      {/* Sin endpoint de baja de cuenta todavia -- el dialogo confirma la
-          intencion pero por ahora solo se cierra (ver comentario de
-          TELEFONO_INICIAL mas arriba sobre el mismo alcance). */}
       <ConfirmDialog
         open={confirmandoEliminar}
         title="¿Eliminar tu cuenta?"
-        description="Borramos tus registros y fotos para siempre. Antes te lo confirmamos por correo."
+        description="Se borra de inmediato: tus registros de ánimo, fotos y suscripción no se pueden recuperar."
         confirmLabel="Sí, eliminar"
         cancelLabel="Mejor no"
-        onConfirm={() => setConfirmandoEliminar(false)}
+        loading={eliminando}
+        onConfirm={confirmarEliminar}
         onCancel={() => setConfirmandoEliminar(false)}
       />
     </div>

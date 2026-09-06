@@ -110,7 +110,7 @@ export default function CoursesPage() {
           <p className="mt-4 text-h3-sm text-navy">
             {tab === "all" ? "Todavía no hay cursos publicados" : "Nada por aquí todavía"}
           </p>
-          <p className="mx-auto mt-1 max-w-sm text-p-small text-navy/60">{emptyMessage[tab]}</p>
+          <p className="mx-auto mt-1 max-w-sm text-p-body text-navy/60">{emptyMessage[tab]}</p>
           {tab === "all" && user?.role === "ADMIN" && (
             <Link
               href="/admin/courses"
@@ -127,7 +127,12 @@ export default function CoursesPage() {
           {visibleCourses.map((course) => (
             <div key={course.id} className="group relative overflow-hidden rounded-card-lg bg-white shadow-sm transition-shadow hover:shadow-md">
               <Link href={`/courses/${course.slug}`} className="block">
-                <div className="relative flex h-36 items-center justify-center overflow-hidden bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]">
+                {/* Imagen dominante (ago 2026, a pedido: "que la card sea dominada por
+                    la imagen, no por el texto") -- mismo aspect-[16/10] que las cards
+                    de /admin/courses (ver CourseCardSkeleton), en vez del h-36 fijo
+                    que dejaba la foto como una franja chica arriba de un bloque de
+                    texto mas alto que ella. */}
+                <div className="relative aspect-[16/10] w-full overflow-hidden bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]">
                   {course.coverImageUrl && (
                     <Image
                       src={course.coverImageUrl}
@@ -135,34 +140,39 @@ export default function CoursesPage() {
                       fill
                       unoptimized
                       sizes="(min-width: 1024px) 33vw, (min-width: 640px) 50vw, 100vw"
-                      className="object-cover"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                   )}
-                  <span className="absolute left-3 top-3 rounded-pill bg-white/90 px-2.5 py-1 text-p-caption font-semibold text-navy">
+                  <span className="absolute left-3 top-3 rounded-pill bg-white/90 px-2.5 py-1 text-p-small font-semibold text-navy">
                     {COURSE_LEVEL_LABEL[course.level]}
                   </span>
                   {course.progressPercent === 100 && (
-                    <span className="absolute bottom-3 left-3 flex items-center gap-1 rounded-pill bg-white/90 px-2.5 py-1 text-p-caption font-semibold text-accent">
+                    <span className="absolute bottom-3 left-3 flex items-center gap-1 rounded-pill bg-white/90 px-2.5 py-1 text-p-small font-semibold text-accent">
                       <CheckCircle2 size={12} /> Completado
                     </span>
                   )}
-                  <span className="absolute flex h-10 w-10 items-center justify-center rounded-full bg-white/90 text-accent shadow-sm">
-                    <Play size={16} />
+                  <span className="absolute inset-0 flex items-center justify-center">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 text-accent shadow-sm transition-transform duration-300 group-hover:scale-110">
+                      <Play size={17} />
+                    </span>
                   </span>
                 </div>
-                <div className="p-5">
-                  <p className="text-h3-sm text-navy">{course.title}</p>
-                  <p className="mt-1 text-p-small text-navy/60">{course.description}</p>
-                  <div className="mt-4 flex items-center gap-4 text-p-caption text-navy/75">
+                {/* Texto compacto a proposito: el titulo y el avance son lo unico
+                    que hace falta para decidir si entrar -- la descripcion larga se
+                    saco de la card (se sigue viendo completa en /courses/[slug]),
+                    asi la foto queda como el elemento dominante de la tarjeta. */}
+                <div className="p-4">
+                  <p className="text-h3-sm text-navy line-clamp-1">{course.title}</p>
+                  <div className="mt-2 flex items-center gap-3.5 text-p-small text-navy/75">
                     <span className="flex items-center gap-1">
-                      <Clock3 size={14} /> {course.durationMinutes} min
+                      <Clock3 size={13} /> {course.durationMinutes} min
                     </span>
                     <span className="flex items-center gap-1">
-                      <BookOpen size={14} /> {course.lessonCount} lecciones
+                      <BookOpen size={13} /> {course.lessonCount} lecciones
                     </span>
                   </div>
                   {course.progressPercent !== null && (
-                    <div className="mt-4">
+                    <div className="mt-2.5">
                       <div className="mb-1 flex items-center justify-between text-p-caption text-navy/75">
                         <span>Tu avance</span>
                         <span className="font-semibold text-accent">{course.progressPercent}%</span>

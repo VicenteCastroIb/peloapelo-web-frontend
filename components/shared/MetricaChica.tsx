@@ -16,12 +16,12 @@ export default function MetricaChica({
 }) {
   return (
     <div className="flex items-center gap-3 rounded-card-md border border-navy/10 bg-white px-[18px] py-4">
-      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-icon bg-accent/10 text-accent">
-        <Icon size={18} strokeWidth={1.9} />
+      <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-icon bg-accent/10 text-accent">
+        <Icon size={20} strokeWidth={1.9} />
       </span>
       <div className="min-w-0">
-        <p className="text-xl font-black tabular-nums text-navy">{valor}</p>
-        <p className="mt-0.5 text-p-caption text-navy/60">{label}</p>
+        <p className="text-2xl font-black tabular-nums text-navy">{valor}</p>
+        <p className="mt-0.5 text-p-small text-navy/60">{label}</p>
       </div>
     </div>
   );

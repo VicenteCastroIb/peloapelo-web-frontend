@@ -23,6 +23,22 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     }
   }, [status, router]);
 
+  // Fondo decorativo del panel completo (ago 2026, a pedido: "aplica el
+  // mismo fondo de suscripcion a todo el panel, que tome desde el header
+  // hacia abajo"). Nacio en /subscription (ver commits previos) y se subio
+  // aca para que las demas pantallas del panel (dashboard, progreso,
+  // perfil, cursos, etc.) lo compartan sin repetir el useEffect por pagina.
+  // Vive en el <body>, no en un div de este layout, para que llegue de
+  // verdad al extremo de la ventana en vez de quedar acotado al ancho de la
+  // columna de contenido (ver ".pap-panel-bg" en globals.css). No se activa
+  // en la leccion inmersiva (immersive, mas abajo): esa pantalla ya
+  // reemplaza este layout entero con su propio header compacto.
+  useEffect(() => {
+    if (immersive) return;
+    document.body.classList.add("pap-panel-bg");
+    return () => document.body.classList.remove("pap-panel-bg");
+  }, [immersive]);
+
   if (status !== "authenticated") {
     // La leccion inmersiva sigue con spinner simple (pantalla completa, sin
     // sidebar ni columnas que esbozar); el resto del panel usa el esqueleto
@@ -53,6 +69,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     // scrollea el solo -- el sidebar queda fijo, como se ve que era la
     // intencion original (aside con h-full + el resto del layout de la app).
     <div className="flex h-[calc(100vh-72px)]">
+      {/* La franja decorativa que asomaba sobre el header (mix-blend-mode
+          sobre la acuarela, ver ".pap-panel-bg-peek", ahora sin uso en
+          globals.css) se saco (ago 2026, a pedido: "deja el header blanco
+          si no puedes arreglarlo" -- pese al ajuste del degradado a radial,
+          seguia viendose un corte de color ahi). El header del panel queda
+          blanco solido sin ningun overlay (ver Header.tsx, appPanel); el
+          fondo del <body> (ver el useEffect de arriba) sigue cubriendo el
+          resto de la pantalla normalmente. */}
       <DashboardSidebar />
       {/* CompactFooter vive ADENTRO de esta columna con scroll propio (no
           como hermano a nivel de SiteChrome.tsx) para que aparezca al final

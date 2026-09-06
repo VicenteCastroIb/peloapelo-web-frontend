@@ -7,7 +7,6 @@ import Link from "next/link";
 import { ArrowLeft, Mail, Lock, User, Eye, EyeOff } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { useAuth, ApiError } from "@/lib/auth/AuthContext";
-import { gmailComposeUrl } from "@/lib/gmail";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -148,22 +147,9 @@ export default function AuthPage() {
             </div>
 
             {isLogin && (
-              // No hay endpoint de recuperacion de contrasena todavia (no existe
-              // /auth/forgot como pagina, era un link muerto -- 404 real). Mismo
-              // criterio que TherapistPage/TofacitinibPage: comunicar con calma
-              // en vez de simular un flujo que no existe.
-              <a
-                href={gmailComposeUrl(
-                  "jessica.lagno@peloapelo.cl",
-                  "Olvidé mi contraseña",
-                  "Hola, olvidé mi contraseña de Pelo a Pelo. Mi correo de cuenta es: "
-                )}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block text-a-inline text-accent"
-              >
+              <Link href="/auth/olvide-password" className="inline-block text-a-inline text-accent">
                 ¿Olvidaste tu contraseña?
-              </a>
+              </Link>
             )}
 
             {!isLogin && (

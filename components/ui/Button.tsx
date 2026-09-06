@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ReactNode } from "react";
 
-type Variant = "solid" | "gradient" | "outline" | "ghost";
+type Variant = "solid" | "gradient" | "outline" | "ghost" | "inverted";
 type Size = "sm" | "md" | "lg";
 
 const base = "inline-flex items-center justify-center gap-2 rounded-pill font-semibold transition-opacity hover:opacity-90";
@@ -12,6 +12,14 @@ const variants: Record<Variant, string> = {
     "text-white bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))]",
   outline: "border-2 border-navy/20 text-navy bg-transparent",
   ghost: "text-navy",
+  // CTA blanco solido para usar SOBRE el degradado de marca (ej. banner
+  // "Mensaje del dia" de /dashboard) -- variant propio en vez de className
+  // override sobre "solid" porque bg-white/text-accent chocaban en
+  // especificidad con bg-navy/text-cream (mismas utilidades, mismo peso:
+  // Tailwind resuelve el empate por orden en la hoja de estilos, no por
+  // cual clase viene despues en el string), y el override perdia -- texto
+  // casi invisible (crema sobre blanco).
+  inverted: "bg-white text-accent",
 };
 
 // sm es para acciones secundarias dentro de una tarjeta (ej. "Elegir foto",
@@ -32,6 +40,7 @@ export default function Button({
   type,
   download,
   target,
+  rel,
   onClick,
   disabled,
 }: {
@@ -43,6 +52,9 @@ export default function Button({
   type?: "button" | "submit";
   download?: boolean | string;
   target?: string;
+  /** Solo hace falta pasarlo para links externos con target="_blank" (ej.
+   * "noopener noreferrer") -- los internos no lo necesitan. */
+  rel?: string;
   onClick?: () => void;
   disabled?: boolean;
 }) {
@@ -50,7 +62,7 @@ export default function Button({
 
   if (href) {
     return (
-      <Link href={href} className={classes} download={download} target={target}>
+      <Link href={href} className={classes} download={download} target={target} rel={rel}>
         {children}
       </Link>
     );

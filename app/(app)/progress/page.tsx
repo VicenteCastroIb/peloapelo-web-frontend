@@ -77,7 +77,7 @@ function AnimoChart({ data }: { data: (number | null)[] }) {
           );
         })}
       </div>
-      <div className="mt-2 flex justify-between text-p-caption text-navy/50">
+      <div className="mt-2 flex justify-between text-p-small text-navy/50">
         <span>Hace 2 semanas</span>
         <span>Hoy</span>
       </div>
@@ -121,10 +121,10 @@ function LineaDeTiempo({
         </Button>
       </div>
 
-      <p className="mt-2.5 max-w-[520px] text-p-small text-navy/60">
+      <p className="mt-2.5 max-w-[520px] text-p-body text-navy/60">
         Tus fotos se ven difuminadas hasta que tú decidas. Nadie más que tú entra acá.
       </p>
-      {error && <p className="mt-2 text-p-caption text-coral">{error}</p>}
+      {error && <p className="mt-2 text-p-small text-coral">{error}</p>}
 
       <div className="mt-5 grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(132px, 1fr))" }}>
         {photos.map((f) => {
@@ -164,7 +164,7 @@ function LineaDeTiempo({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-card-md border-2 border-dashed border-navy/20 bg-transparent text-p-small font-semibold text-navy/60 disabled:opacity-50"
+          className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-card-md border-2 border-dashed border-navy/20 bg-transparent text-p-body font-semibold text-navy/60 disabled:opacity-50"
         >
           <Plus size={20} />
           {uploading ? "Subiendo…" : "Sumar foto"}
@@ -311,7 +311,7 @@ export default function ProgressPage() {
         </button>
         <Collapse open={porQue}>
           <div className="mt-3 max-w-[620px] border-l-2 border-accent/25 pl-4">
-            <p className="text-p-small leading-relaxed text-navy/70">
+            <p className="text-p-body leading-relaxed text-navy/70">
               Muchas veces, por miedo, nos desconectamos de nuestro cuerpo. Dejamos de mirarnos, de registrar lo
               que pasa. Este módulo existe para que estés presente en tu sanación: al mirar seguido y sin drama,
               los cambios dejan de ser una sorpresa y pasan a ser información.
@@ -337,7 +337,7 @@ export default function ProgressPage() {
           <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
             <div>
               <h2 className="text-h3-md text-navy">¿Cómo estás hoy?</h2>
-              <p className="mb-[18px] mt-1 text-p-small text-navy/60">
+              <p className="mb-[18px] mt-1 text-p-body text-navy/60">
                 No hay respuestas correctas. Toca la que se parezca a tu día.
               </p>
               <MoodPicker value={mood} onChange={setMood} />
@@ -361,11 +361,11 @@ export default function ProgressPage() {
           </div>
 
           <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
-            <p className="flex items-center gap-1.5 text-p-caption text-navy/60">
+            <p className="flex items-center gap-1.5 text-p-small text-navy/60">
               <Lock size={13} /> Solo tú ves esto. Nada se comparte sin que lo pidas.
             </p>
             <div className="flex flex-col items-end gap-2">
-              {saveError && <p className="text-p-caption text-coral">{saveError}</p>}
+              {saveError && <p className="text-p-small text-coral">{saveError}</p>}
               <Button variant="gradient" disabled={mood === null || saving} onClick={handleSave}>
                 {saving ? "Guardando…" : "Guardar mi registro"}
               </Button>
@@ -402,7 +402,7 @@ export default function ProgressPage() {
                 <p className="text-h4-label text-navy/50">Tu ánimo</p>
                 <h2 className="mt-1.5 text-h3-md text-navy">Últimas dos semanas</h2>
               </div>
-              <div className="flex items-center gap-2.5 text-p-caption text-navy/50">
+              <div className="flex items-center gap-2.5 text-p-small text-navy/50">
                 <span className="flex items-center gap-1.5">
                   <span className="h-2.5 w-2.5 rounded-[3px]" style={{ background: MOOD_SCALE[0].color }} />
                   Muy difícil
@@ -427,12 +427,12 @@ export default function ProgressPage() {
               <FileText size={22} strokeWidth={1.9} />
             </span>
             <div className="min-w-[220px] flex-1">
-              <p className="text-h3-sm text-navy">Reporte para tu médico</p>
-              <p className="mt-1 max-w-[460px] text-p-small leading-relaxed text-navy/60 text-pretty">
+              <p className="text-h3-md text-navy">Reporte para tu médico</p>
+              <p className="mt-1 max-w-[460px] text-p-body leading-relaxed text-navy/60 text-pretty">
                 Tus fotos y tu ánimo del período, en un PDF ordenado. Llegas a la consulta con todo dicho, sin
                 tener que acordarte de nada.
               </p>
-              {reportError && <p className="mt-1.5 text-p-caption text-coral">{reportError}</p>}
+              {reportError && <p className="mt-1.5 text-p-small text-coral">{reportError}</p>}
             </div>
             <Button variant="outline" disabled={generatingReport} onClick={handleGenerateReport}>
               <Download size={15} />
@@ -467,14 +467,14 @@ function PhotoPicker({
       <span className="inline-flex h-11 w-11 items-center justify-center rounded-pill bg-accent/10 text-accent">
         <Camera size={20} strokeWidth={1.9} />
       </span>
-      <p className="mt-3 text-p-small font-semibold text-navy">Suma la foto de hoy</p>
-      <p className="mb-3.5 mt-1 text-p-caption leading-relaxed text-navy/60">
+      <p className="mt-3 text-p-body font-semibold text-navy">Suma la foto de hoy</p>
+      <p className="mb-3.5 mt-1 text-p-small leading-relaxed text-navy/60">
         Opcional. Con luz pareja y el mismo encuadre se comparan mejor.
       </p>
       <Button size="sm" variant="outline" disabled={uploading} onClick={() => fileInputRef.current?.click()}>
         {uploading ? "Subiendo…" : "Elegir foto"}
       </Button>
-      {error && <p className="mt-2 text-p-caption text-coral">{error}</p>}
+      {error && <p className="mt-2 text-p-small text-coral">{error}</p>}
       <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={handleFileChange} />
     </div>
   );

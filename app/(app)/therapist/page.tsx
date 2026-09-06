@@ -1,26 +1,21 @@
 "use client";
 
-import { useState } from "react";
 import { Heart, Calendar as CalendarIcon, Mail } from "lucide-react";
 import Button from "@/components/ui/Button";
 import { gmailComposeUrl } from "@/lib/gmail";
 
-const MORNING_SLOTS = ["09:00", "09:30", "10:00", "10:30", "11:00", "11:30"];
-const AFTERNOON_SLOTS = ["14:00", "14:30", "15:00", "15:30", "16:00", "16:30", "17:00", "17:30"];
+// Agenda REAL de Jessica (Google Calendar Appointment Schedules) -- link
+// entregado directo por la fundacion. Reemplaza el formulario propio que
+// esta pantalla tenia antes (fecha + horario + nota): ese formulario nunca
+// tuvo un endpoint de agendamiento detras (ver historial de este archivo y
+// backend/README.md "Pendiente") y al enviarlo solo mostraba un mensaje de
+// exito falso, sin agendar nada de verdad. Google Calendar ya resuelve
+// disponibilidad real, confirmacion y recordatorios -- no tiene sentido
+// reconstruir eso a mano para el lanzamiento en Hostinger.
+const GOOGLE_CALENDAR_BOOKING_URL =
+  "https://calendar.google.com/calendar/u/0/appointments/schedules/AcZssZ3MqsICDUyHMi1xJXo7E-SO5_gopdasFBA-XH0iFggXENno_nTl7MvQtOIo-4eK9xXXR3bU7aTM";
 
 export default function TherapistPage() {
-  const [date, setDate] = useState("");
-  const [slot, setSlot] = useState<string | null>(null);
-  const [note, setNote] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-
-  function handleSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    // TODO: no existe endpoint de agendamiento todavia (ver backend/README.md
-    // "Pendiente"). Por ahora solo confirmamos en pantalla, sin persistir nada.
-    setSubmitted(true);
-  }
-
   return (
     <div className="max-w-2xl">
       <p className="flex items-center gap-2 text-h4-label text-navy/75">
@@ -39,85 +34,39 @@ export default function TherapistPage() {
         <div>
           <p className="text-h3-sm text-navy">Jessica Lagno</p>
           <p className="text-p-small text-navy/60">Profesional de salud mental · Pelo a Pelo</p>
-          <p className="text-p-small text-navy/50">jessica.lagno@beehrteam.com</p>
+          <p className="text-p-small text-navy/50">jessica.lagno@peloapelo.cl</p>
         </div>
       </div>
 
-      {submitted ? (
-        <div className="mt-6 rounded-card-md bg-accent/10 p-6 text-center">
-          <p className="text-h3-sm text-accent">¡Solicitud enviada!</p>
-          <p className="mt-1 text-p-small text-navy/70">
-            Esta función todavía no está conectada a un sistema de agendamiento
-            real — por ahora, escríbenos directo para coordinar tu sesión.
-          </p>
+      <div className="mt-6 rounded-card-md bg-white p-6 text-center shadow-sm">
+        <p className="text-h3-sm text-navy">Reserva tu hora</p>
+        <p className="mx-auto mt-1.5 max-w-[42ch] text-p-small text-navy/60">
+          Elige el día y horario que más te acomode, directo en la agenda real de
+          Jessica. Vas a recibir la confirmación por correo al instante.
+        </p>
+        <Button
+          variant="gradient"
+          href={GOOGLE_CALENDAR_BOOKING_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 w-full"
+        >
+          Agendar sesión
+        </Button>
+
+        <div className="mt-5 border-t border-navy/10 pt-5 text-p-small text-navy/60">
+          ¿Prefieres escribir directo?
+          <br />
+          <a
+            href={gmailComposeUrl("jessica.lagno@peloapelo.cl")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-1 inline-flex items-center gap-1.5 text-a-inline font-semibold text-accent"
+          >
+            <Mail size={14} /> Escribir directo
+          </a>
         </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="mt-6 space-y-6 rounded-card-md bg-white p-6 shadow-sm">
-          <div>
-            <label className="mb-1.5 block text-p-small font-medium text-navy/70">Selecciona una fecha</label>
-            <input
-              type="date"
-              required
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
-              className="w-full rounded-pill border border-navy/10 bg-cream px-4 py-3 text-p-small outline-none focus:border-accent"
-            />
-          </div>
-
-          <div>
-            <p className="mb-2 text-p-small font-medium text-navy/70">Horario disponible</p>
-            <div className="flex flex-wrap gap-2">
-              {[...MORNING_SLOTS, ...AFTERNOON_SLOTS].map((time) => (
-                <button
-                  key={time}
-                  type="button"
-                  onClick={() => setSlot(time)}
-                  className={`flex min-h-11 items-center rounded-pill border px-3.5 text-p-small transition-colors ${
-                    slot === time
-                      ? "border-accent bg-accent text-white"
-                      : "border-navy/10 text-navy/70 hover:border-accent/40"
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <label className="mb-1.5 block text-p-small font-medium text-navy/70">
-              ¿Sobre qué te gustaría hablar? (opcional)
-            </label>
-            <textarea
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              rows={3}
-              className="w-full rounded-card-md border border-navy/10 bg-cream px-4 py-3 text-p-small outline-none focus:border-accent"
-            />
-          </div>
-
-          <Button type="submit" variant="gradient" className="w-full" disabled={!date || !slot}>
-            Agendar sesión
-          </Button>
-
-          <div className="text-center text-p-small text-navy/60">
-            ¿Prefieres agendar directamente?
-            <br />
-            {/* Correo corregido (27 jul 2026, auditoria de links): tenia un
-                dominio equivocado (@beehrteam.com, ajeno a la fundacion) en
-                vez del correo real de contacto. Ademas pasa por Gmail en
-                vez de mailto:, a peticion explicita. */}
-            <a
-              href={gmailComposeUrl("jessica.lagno@peloapelo.cl")}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-1 inline-flex items-center gap-1.5 text-a-inline font-semibold text-accent"
-            >
-              <Mail size={14} /> Escribir directo
-            </a>
-          </div>
-        </form>
-      )}
+      </div>
 
       <p className="mt-6 flex items-start gap-2 text-p-caption text-navy/75">
         <CalendarIcon size={16} className="mt-0.5 shrink-0 text-accent" />

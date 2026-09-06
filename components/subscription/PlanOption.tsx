@@ -44,7 +44,9 @@ export default function PlanOption({
       disabled={current}
       onClick={onSelect}
       className={`relative flex w-full flex-col gap-4 rounded-card-lg border-2 px-6 pt-6 pb-[22px] text-left ${
-        selected
+        current
+          ? "border-navy/15 bg-navy/[0.03]"
+          : selected
           ? "border-accent bg-accent/5 shadow-md"
           : "border-navy/10 bg-white shadow-sm hover:border-accent/25"
       } ${current ? "cursor-default" : "cursor-pointer"} ${className}`}
@@ -52,6 +54,11 @@ export default function PlanOption({
       {recommended && (
         <span className="absolute -top-[11px] left-[22px] rounded-pill bg-accent px-3 py-[3px] text-p-caption font-bold text-white">
           Recomendado
+        </span>
+      )}
+      {current && (
+        <span className="absolute -top-[11px] right-[22px] rounded-pill bg-navy px-3 py-[3px] text-p-caption font-bold text-white">
+          Tu plan
         </span>
       )}
 
@@ -70,10 +77,10 @@ export default function PlanOption({
         <span
           aria-hidden
           className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-pill ${
-            selected ? "bg-accent text-white" : "border-2 border-navy/20"
+            selected || current ? "bg-accent text-white" : "border-2 border-navy/20"
           }`}
         >
-          {selected && <Check size={14} strokeWidth={3} />}
+          {(selected || current) && <Check size={14} strokeWidth={3} />}
         </span>
       </div>
 
@@ -89,7 +96,6 @@ export default function PlanOption({
       )}
 
       {note && <p className="text-p-caption text-navy/50">{note}</p>}
-      {current && <p className="text-p-caption font-bold text-accent">Tu plan actual</p>}
     </button>
   );
 }

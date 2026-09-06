@@ -10,6 +10,7 @@ import {
   User,
   ShieldCheck,
   Newspaper,
+  Sparkles,
   type LucideIcon,
 } from "lucide-react";
 import { useAuth } from "@/lib/auth/AuthContext";
@@ -32,6 +33,7 @@ const NAV_ITEMS: NavItem[] = [
 const ADMIN_NAV_ITEMS: NavItem[] = [
   { href: "/admin/courses", label: "Panel de cursos", icon: ShieldCheck },
   { href: "/admin/blog", label: "Panel de blog", icon: Newspaper },
+  { href: "/admin/mensajes", label: "Mensajes del día", icon: Sparkles },
 ];
 
 function NavLink({

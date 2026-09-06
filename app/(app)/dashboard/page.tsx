@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
-import { Sparkles, Heart, Camera, BookOpen, CreditCard, Lock, Check } from "lucide-react";
+import { Sparkles, Heart, Camera, BookOpen, CreditCard, Check } from "lucide-react";
 import { useAuth, ApiError } from "@/lib/auth/AuthContext";
 import {
   getSummary,
@@ -13,6 +13,7 @@ import {
 } from "@/lib/api/progress";
 import { fetchCourses, fetchCourseDetail, type CourseSummary, type CourseDetail } from "@/lib/api/courses";
 import { listMySubscriptions, type Subscription } from "@/lib/api/subscriptions";
+import { fetchTodayMessage, type DailyMessage } from "@/lib/api/dailyMessages";
 import Button from "@/components/ui/Button";
 import MoodPicker, { type MoodValue } from "@/components/progress/MoodPicker";
 import RadialProgress from "@/components/shared/RadialProgress";
@@ -28,6 +29,13 @@ function todayLocalIso(): string {
 function todayEyebrow(): string {
   const raw = new Intl.DateTimeFormat("es-CL", { weekday: "long", day: "numeric", month: "long" }).format(new Date());
   return raw.replace(",", "").replace(/^./, (c) => c.toUpperCase());
+}
+
+function timeGreeting(): string {
+  const hour = new Date().getHours();
+  if (hour < 12) return "Buenos días";
+  if (hour < 20) return "Buenas tardes";
+  return "Buenas noches";
 }
 
 interface ResumeInfo {
@@ -74,6 +82,7 @@ export default function DashboardPage() {
   const [todayEntry, setTodayEntry] = useState<ProgressEntry | null | undefined>(undefined);
   const [subscriptions, setSubscriptions] = useState<Subscription[] | null>(null);
   const [courses, setCourses] = useState<CourseSummary[] | null>(null);
+  const [dailyMessage, setDailyMessage] = useState<DailyMessage | null>(null);
   const [resume, setResume] = useState<ResumeInfo | null>(null);
   const [resumeLoading, setResumeLoading] = useState(true);
 
@@ -96,6 +105,16 @@ export default function DashboardPage() {
       .catch(() => setTodayEntry(null));
 
     listMySubscriptions(token).then(setSubscriptions).catch(() => setSubscriptions([]));
+
+    fetchTodayMessage()
+      .then(setDailyMessage)
+      .catch(() =>
+        setDailyMessage({
+          id: null,
+          phrase: "No estás sola en esto.",
+          body: "Mente, cuerpo y emoción, en un mismo lugar. No reemplaza a tus doctores: te ayuda a llegar a esa consulta con todo más claro.",
+        })
+      );
 
     fetchCourses(token)
       .then((list) => {
@@ -138,18 +157,23 @@ export default function DashboardPage() {
   }
 
   const loading =
-    summary === null || todayEntry === undefined || subscriptions === null || courses === null || resumeLoading;
+    summary === null ||
+    todayEntry === undefined ||
+    subscriptions === null ||
+    courses === null ||
+    resumeLoading ||
+    dailyMessage === null;
 
   if (loading) {
     return (
-      <div className="grid max-w-[1080px] gap-7">
+      <div className="mx-auto grid w-full max-w-[1080px] gap-8 xl:max-w-[1240px]">
         <Skeleton className="h-[90px] w-full rounded-card-lg" />
-        <div className="grid gap-5 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
-          <Skeleton className="h-[270px] w-full rounded-card-lg" />
-          <Skeleton className="h-[270px] w-full rounded-card-lg" />
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
+          <Skeleton className="h-[290px] w-full rounded-card-lg" />
+          <Skeleton className="h-[290px] w-full rounded-card-lg" />
         </div>
         <Skeleton className="h-[122px] w-full rounded-card-lg" />
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
             <Skeleton key={i} className="h-[208px] w-full rounded-card-md" />
           ))}
@@ -177,12 +201,13 @@ export default function DashboardPage() {
   const streakPercent = Math.min(100, (summary.streakDays / 30) * 100);
 
   return (
-    <div className="grid max-w-[1080px] gap-7">
+    <div className="mx-auto grid w-full max-w-[1080px] gap-8 xl:max-w-[1240px]">
       <header className="flex flex-wrap items-end justify-between gap-6">
         <div>
           <p className="text-h4-label text-navy/50">{todayEyebrow()}</p>
-          <h1 className="mt-1.5 text-h3-lg text-navy">Hola, {firstName} 👋</h1>
-          <p className="mt-1.5 text-p-body text-navy/60">Tu espacio para hoy. Sin exigencias, a tu ritmo.</p>
+          <h1 className="mt-1.5 text-h3-lg text-navy">
+            {timeGreeting()}, {firstName}
+          </h1>
         </div>
         <div className="flex items-center gap-2.5">
           <Button variant="outline" href="/progress">
@@ -194,8 +219,8 @@ export default function DashboardPage() {
         </div>
       </header>
 
-      <div className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
-        <section className="relative flex min-h-[270px] flex-col justify-center overflow-hidden rounded-card-lg bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] px-[38px] py-[34px] text-white shadow-[0_28px_60px_-14px_rgba(96,73,141,0.4),0_8px_20px_-6px_rgba(43,61,79,0.22)]">
+      <div className="grid items-stretch gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(0,1fr)]">
+        <section className="relative flex min-h-[290px] flex-col justify-center overflow-hidden rounded-card-lg bg-[linear-gradient(135deg,var(--color-gradient-from),var(--color-gradient-to))] px-10 py-9 text-white shadow-[0_28px_60px_-14px_rgba(96,73,141,0.4),0_8px_20px_-6px_rgba(43,61,79,0.22)]">
           <div
             aria-hidden
             className="absolute inset-0"
@@ -213,22 +238,15 @@ export default function DashboardPage() {
             <p className="flex items-center gap-2 text-h4-label text-cream/80">
               <Sparkles size={14} /> Mensaje del día
             </p>
-            <h2 className="mt-4 max-w-[560px] text-[42px] font-normal leading-[1.08] text-pretty">
-              No estás <span className="font-bold italic">sola</span> en esto.
+            <h2 className="mt-4 max-w-[560px] text-[44px] font-black italic leading-[1.05] tracking-tight text-pretty drop-shadow-sm">
+              {dailyMessage.phrase}
             </h2>
             <p className="mt-3.5 max-w-[470px] text-p-body leading-relaxed text-white/92 text-pretty">
-              Mente, cuerpo y emoción, en un mismo lugar. No reemplaza a tus doctores: te ayuda a llegar a esa
-              consulta con todo más claro.
+              {dailyMessage.body}
             </p>
             <div className="mt-5 flex flex-wrap items-center gap-2.5">
-              {/* Sin pagina de "reflexion del dia" todavia -- boton visual sin
-                  destino real por ahora, mismo alcance que otras acciones no
-                  wireadas del panel (ver comentario de Seguridad en /profile). */}
-              <Button variant="solid" className="bg-white text-accent">
-                Leer la reflexión de hoy
-              </Button>
               <span className="inline-flex items-center gap-2 rounded-pill border border-cream/40 px-3.5 py-2.5 text-p-caption text-cream/80">
-                <Heart size={13} /> 2 min de lectura
+                <Heart size={13} /> Fundación Pelo a Pelo
               </span>
             </div>
           </div>
@@ -335,25 +353,27 @@ export default function DashboardPage() {
         </Button>
       </section>
 
-      <section className="grid gap-4">
+      <section className="grid gap-5">
         <div className="flex flex-wrap items-end justify-between gap-4">
           <div>
             <p className="text-h4-label text-navy/50">Tu espacio</p>
             <h2 className="mt-1.5 text-h3-md text-navy">Explora</h2>
           </div>
           <p className="text-p-small text-navy/50">
-            {isNew ? "6 secciones · 2 disponibles ahora" : "6 secciones · 2 con avance"}
+            {isNew ? "5 secciones · 2 disponibles ahora" : "5 secciones · 2 con avance"}
           </p>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="pap-explora-grid grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           <DashboardCard
+            className="pap-explora-a"
             icon={Camera}
             badge={summary.photosThisMonth === 0 ? "Empieza aquí" : "Al día"}
             badgeTone="accent"
             title="Seguimiento de Progreso"
             description="Sube una foto y cuéntanos cómo estuvo tu día"
             href="/progress"
+            image="/images/dashboard/card-progreso.png"
             progress={summary.photosThisMonth === 0 ? undefined : pctFotos}
             progressLabel={
               summary.photosThisMonth === 0
@@ -362,45 +382,51 @@ export default function DashboardPage() {
             }
           />
           <DashboardCard
+            className="pap-explora-c"
             icon={BookOpen}
             badge={resume ? "En curso" : `${courses.length} cursos`}
             badgeTone="accent"
             title="Cursos"
             description="Ansiedad, cuerpo y crecimiento personal, a tu ritmo"
             href="/courses"
+            image="/images/dashboard/card-cursos.png"
             progress={resume ? Math.round((resume.completedLessons / resume.totalLessons) * 100) : undefined}
             progressLabel={resume ? `${resume.completedLessons} de ${resume.totalLessons} lecciones · ${resume.courseTitle}` : undefined}
           />
+          {/* Protagonista de la grilla (ago 2026, a pedido: "la card de
+              agendamiento debe ser la mas grande y central") -- ver
+              ".pap-explora-hero" en globals.css: ocupa la columna central en
+              2 filas desde lg, con el tratamiento "featured" (degradado de
+              marca) de DashboardCard. */}
           <DashboardCard
+            className="pap-explora-hero"
+            featured
             icon={Heart}
+            iconImage="/images/icons/agenda-terapeuta-icono.png"
             badge="Nuevo"
-            badgeTone="gradient"
             title="Agenda con Terapeuta"
             description="Una hora para ti, con alguien que sabe escuchar"
             href="/therapist"
+            image="/images/dashboard/card-terapeuta.png"
           />
           <DashboardCard
+            className="pap-explora-b"
             icon={CreditCard}
             badge={badgeSuscripcion}
             badgeTone={toneSuscripcion}
             title="Mi Suscripción"
             description="Revisa tu plan y tus pagos cuando quieras"
             href="/subscription"
+            image="/images/dashboard/card-suscripcion.png"
           />
           <DashboardCard
+            className="pap-explora-d"
             icon={Sparkles}
             badge="Premium"
             title="Programa de 3 Meses"
             description="Un viaje guiado de ansiedad, acompañado por una coach"
             href="/planes"
-          />
-          <DashboardCard
-            icon={Lock}
-            badge="Pronto"
-            title="Acceso a Tofacitinib"
-            description="Te avisamos por correo en cuanto esté disponible"
-            href="/tofacitinib"
-            locked
+            image="/images/dashboard/card-programa.png"
           />
         </div>
       </section>

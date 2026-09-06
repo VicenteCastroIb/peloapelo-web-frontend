@@ -49,6 +49,17 @@ export default function Header() {
   // del sidebar (ver el mismo px-6 en DashboardSidebar.tsx).
   const appPanel = isAppPanelPath(pathname);
 
+  // Fondo del panel (nacio en /subscription, ago 2026, a pedido -- "el
+  // header debe ser blanco, pero la imagen debe mezclarse con un mayor z
+  // posicionamiento"; hoy cubre todo el panel, ver app/(app)/layout.tsx):
+  // el header en el panel SIGUE siendo el mismo bloque blanco solido de
+  // siempre, sin ningun caso especial aca -- la acuarela de fondo (ver
+  // globals.css, busca "pap-panel-bg-peek") no vive tocando la opacidad del
+  // header, sino como una franja aparte con z-index MAYOR al de este header
+  // (60 > 50) que se dibuja encima con mix-blend-mode: multiply. Se probo
+  // antes aflojar la opacidad del header (bg-cream/NN translucido) y no era
+  // lo pedido -- esto reemplaza esa idea, no la complementa.
+
   // Transparente al tope de la pagina; pasa a un cream translucido + blur
   // (no solido) despues de 40px de scroll, para que el nav se lea sobre
   // cualquier imagen de fondo sin perder el efecto de vidrio esmerilado.
