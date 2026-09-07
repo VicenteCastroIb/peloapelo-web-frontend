@@ -22,6 +22,7 @@ import EmptyState from "@/components/ui/EmptyState";
 import Collapse from "@/components/shared/Collapse";
 import Skeleton from "@/components/shared/Skeleton";
 import MetricaChica from "@/components/shared/MetricaChica";
+import DailyMessageCard from "@/components/dashboard/DailyMessageCard";
 import MoodPicker, { MOOD_SCALE, type MoodValue } from "@/components/progress/MoodPicker";
 import { useAuth, ApiError } from "@/lib/auth/AuthContext";
 import {
@@ -148,9 +149,9 @@ function LineaDeTiempo({
                 type="button"
                 onClick={() => setRevelada(abierta ? null : f.id)}
                 aria-label={`${abierta ? "Ocultar" : "Ver"} foto del ${fecha}`}
-                className="absolute inset-0 flex items-center justify-center border-none bg-transparent text-navy/70"
+                className="group absolute inset-0 flex items-center justify-center border-none bg-transparent text-navy/70"
               >
-                <span className="flex h-10 w-10 items-center justify-center rounded-pill bg-white/90 shadow-sm">
+                <span className="flex h-10 w-10 items-center justify-center rounded-pill bg-white/90 shadow-sm transition-transform duration-200 group-hover:scale-110 group-active:scale-95">
                   {abierta ? <EyeOff size={17} /> : <Eye size={17} />}
                 </span>
               </button>
@@ -164,7 +165,7 @@ function LineaDeTiempo({
           type="button"
           onClick={() => fileInputRef.current?.click()}
           disabled={uploading}
-          className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-card-md border-2 border-dashed border-navy/20 bg-transparent text-p-body font-semibold text-navy/60 disabled:opacity-50"
+          className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-card-md border-2 border-dashed border-navy/20 bg-transparent text-p-body font-semibold text-navy/60 transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 hover:text-accent active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50"
         >
           <Plus size={20} />
           {uploading ? "Subiendo…" : "Sumar foto"}
@@ -300,7 +301,7 @@ export default function ProgressPage() {
           type="button"
           onClick={() => setPorQue((v) => !v)}
           aria-expanded={porQue}
-          className="mt-3 inline-flex min-h-9 items-center gap-1.5 rounded-pill border-none bg-transparent px-1 text-a-inline font-semibold text-accent"
+          className="mt-3 inline-flex min-h-9 items-center gap-1.5 rounded-pill border-none bg-transparent px-1 text-a-inline font-semibold text-accent transition-colors duration-200 hover:text-navy"
         >
           Por qué te pedimos esto
           <span
@@ -320,6 +321,18 @@ export default function ProgressPage() {
         </Collapse>
       </header>
 
+      {/* Seccion siempre visible (ago 2026, a pedido: "el mensaje del dia
+          mas la opcion de la foto deben poder verse tambien en una seccion
+          de /progress") -- antes el mensaje del dia solo vivia en /dashboard,
+          y la opcion de subir foto quedaba escondida dentro de la tarjeta de
+          animo, que desaparece detras de "Listo por hoy" apenas registras tu
+          animo. Ahora ambas quedan disponibles ademas aca, sin depender de
+          si ya registraste el animo de hoy. */}
+      <section className="grid items-stretch gap-5 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)]">
+        <DailyMessageCard />
+        <PhotoPicker onSelect={handleUploadPhoto} uploading={uploadingPhoto} error={photoError} />
+      </section>
+
       {showConfirmation ? (
         <EmptyState
           tone="accent"
@@ -334,29 +347,23 @@ export default function ProgressPage() {
         />
       ) : (
         <section className="rounded-card-lg border border-accent/25 bg-[linear-gradient(160deg,#ffffff,rgba(143,124,182,0.16))] p-7 shadow-sm">
-          <div className="grid items-start gap-6 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
-            <div>
-              <h2 className="text-h3-md text-navy">¿Cómo estás hoy?</h2>
-              <p className="mb-[18px] mt-1 text-p-body text-navy/60">
-                No hay respuestas correctas. Toca la que se parezca a tu día.
-              </p>
-              <MoodPicker value={mood} onChange={setMood} />
-              <div className="mt-5">
-                <Field label="¿Quieres contarnos algo? (opcional)" htmlFor="animo-nota">
-                  <TextInput
-                    as="textarea"
-                    id="animo-nota"
-                    rows={2}
-                    value={nota}
-                    onChange={(e) => setNota(e.target.value)}
-                    placeholder="Hoy me costó salir, pero salí."
-                  />
-                </Field>
-              </div>
-            </div>
-
-            <div className="grid gap-3">
-              <PhotoPicker onSelect={handleUploadPhoto} uploading={uploadingPhoto} error={photoError} />
+          <div className="max-w-[560px]">
+            <h2 className="text-h3-md text-navy">¿Cómo estás hoy?</h2>
+            <p className="mb-[18px] mt-1 text-p-body text-navy/60">
+              No hay respuestas correctas. Toca la que se parezca a tu día.
+            </p>
+            <MoodPicker value={mood} onChange={setMood} />
+            <div className="mt-5">
+              <Field label="¿Quieres contarnos algo? (opcional)" htmlFor="animo-nota">
+                <TextInput
+                  as="textarea"
+                  id="animo-nota"
+                  rows={2}
+                  value={nota}
+                  onChange={(e) => setNota(e.target.value)}
+                  placeholder="Hoy me costó salir, pero salí."
+                />
+              </Field>
             </div>
           </div>
 
@@ -463,7 +470,7 @@ function PhotoPicker({
   }
 
   return (
-    <div className="rounded-card-md border-2 border-dashed border-accent/25 bg-cream/60 px-5 py-[22px] text-center">
+    <div className="flex h-full flex-col items-center justify-center rounded-card-md border-2 border-dashed border-accent/25 bg-cream/60 px-5 py-[22px] text-center transition-colors duration-200 hover:border-accent/45 hover:bg-cream">
       <span className="inline-flex h-11 w-11 items-center justify-center rounded-pill bg-accent/10 text-accent">
         <Camera size={20} strokeWidth={1.9} />
       </span>

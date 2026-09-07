@@ -4,7 +4,8 @@ import { ReactNode } from "react";
 type Variant = "solid" | "gradient" | "outline" | "ghost" | "inverted";
 type Size = "sm" | "md" | "lg";
 
-const base = "inline-flex items-center justify-center gap-2 rounded-pill font-semibold transition-opacity hover:opacity-90";
+const base =
+  "inline-flex items-center justify-center gap-2 rounded-pill font-semibold transition-all duration-200 ease-out hover:opacity-95 hover:-translate-y-0.5 hover:shadow-md active:translate-y-0 active:scale-[0.97] active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/50 focus-visible:ring-offset-2 focus-visible:ring-offset-cream motion-reduce:transition-none motion-reduce:hover:translate-y-0 motion-reduce:active:scale-100";
 
 const variants: Record<Variant, string> = {
   solid: "bg-navy text-cream",
@@ -58,7 +59,7 @@ export default function Button({
   onClick?: () => void;
   disabled?: boolean;
 }) {
-  const classes = `${base} ${variants[variant]} ${sizes[size]} ${disabled ? "pointer-events-none opacity-50" : ""} ${className}`;
+  const classes = `${base} ${variants[variant]} ${sizes[size]} ${disabled ? "pointer-events-none opacity-50 hover:translate-y-0 hover:shadow-none" : ""} ${className}`;
 
   if (href) {
     return (

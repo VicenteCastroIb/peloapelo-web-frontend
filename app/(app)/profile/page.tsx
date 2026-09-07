@@ -34,6 +34,25 @@ function memberSince(iso: string): string {
   return new Intl.DateTimeFormat("es-CL", { month: "short", year: "numeric" }).format(new Date(iso)).replace(".", "");
 }
 
+// Par label/valor de solo lectura para la ficha de perfil (ver StaticField
+// mas abajo en el render): texto plano, sin borde ni fondo de input, para
+// distinguir claramente "viendo tus datos" de "editando tus datos".
+function StaticField({ label, value, multiline = false }: { label: string; value: string; multiline?: boolean }) {
+  const display = value.trim().length > 0 ? value : "—";
+  return (
+    <div>
+      <p className="text-p-caption font-semibold uppercase tracking-wide text-navy/40">{label}</p>
+      <p
+        className={`mt-1.5 text-p-body text-navy ${
+          multiline ? "whitespace-pre-wrap leading-relaxed text-pretty" : "truncate"
+        }`}
+      >
+        {display}
+      </p>
+    </div>
+  );
+}
+
 export default function ProfilePage() {
   const { user, token, status, applySession, refreshUser, logout } = useAuth();
   const router = useRouter();
@@ -259,7 +278,7 @@ export default function ProfilePage() {
   const costoPorDia = TRIMESTRAL.costPerDay?.split("/")[0] ?? "";
 
   return (
-    <div className="grid max-w-[1180px] gap-6">
+    <div className="mx-auto grid max-w-[1180px] gap-6">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
           <p className="text-h4-label text-accent">Tu cuenta</p>
@@ -312,60 +331,70 @@ export default function ProfilePage() {
               <p className="text-p-small text-navy/50">Solo los ve el equipo de Pelo a Pelo</p>
             </div>
 
-            <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
-              <Field label="Nombre" htmlFor="perfil-nombre">
-                <TextInput
-                  id="perfil-nombre"
-                  value={nombre}
-                  onChange={(e) => setNombre(e.target.value)}
-                  readOnly={!editando}
-                />
-              </Field>
-              <Field label="Apellido" htmlFor="perfil-apellido">
-                <TextInput
-                  id="perfil-apellido"
-                  value={apellido}
-                  onChange={(e) => setApellido(e.target.value)}
-                  readOnly={!editando}
-                />
-              </Field>
-              <Field label="Correo electrónico" htmlFor="perfil-correo">
-                <TextInput
-                  id="perfil-correo"
-                  type="email"
-                  value={correo}
-                  onChange={(e) => setCorreo(e.target.value)}
-                  readOnly={!editando}
-                />
-              </Field>
-              <Field label="Teléfono" htmlFor="perfil-telefono">
-                <TextInput
-                  id="perfil-telefono"
-                  type="tel"
-                  value={telefono}
-                  onChange={(e) => setTelefono(e.target.value)}
-                  readOnly={!editando}
-                />
-              </Field>
-            </div>
+            {editando ? (
+              <>
+                <div className="grid gap-4" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
+                  <Field label="Nombre" htmlFor="perfil-nombre">
+                    <TextInput id="perfil-nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+                  </Field>
+                  <Field label="Apellido" htmlFor="perfil-apellido">
+                    <TextInput id="perfil-apellido" value={apellido} onChange={(e) => setApellido(e.target.value)} />
+                  </Field>
+                  <Field label="Correo electrónico" htmlFor="perfil-correo">
+                    <TextInput
+                      id="perfil-correo"
+                      type="email"
+                      value={correo}
+                      onChange={(e) => setCorreo(e.target.value)}
+                    />
+                  </Field>
+                  <Field label="Teléfono" htmlFor="perfil-telefono">
+                    <TextInput
+                      id="perfil-telefono"
+                      type="tel"
+                      value={telefono}
+                      onChange={(e) => setTelefono(e.target.value)}
+                    />
+                  </Field>
+                </div>
 
-            <div className="mt-4">
-              <Field
-                label="Lo que quieres que sepamos de tu proceso"
-                hint="Opcional. Tu terapeuta lo lee antes de la primera sesión."
-                htmlFor="perfil-nota"
-              >
-                <TextInput
-                  as="textarea"
-                  id="perfil-nota"
-                  rows={3}
-                  value={nota}
-                  onChange={(e) => setNota(e.target.value)}
-                  readOnly={!editando}
-                  placeholder="Convivo con alopecia areata desde los 5 años. Estoy trabajando en volver a mirarme al espejo sin pelear."
-                />
-              </Field>
-            </div>
+                <div className="mt-4">
+                  <Field
+                    label="Lo que quieres que sepamos de tu proceso"
+                    hint="Opcional. Tu terapeuta lo lee antes de la primera sesión."
+                    htmlFor="perfil-nota"
+                  >
+                    <TextInput
+                      as="textarea"
+                      id="perfil-nota"
+                      rows={3}
+                      value={nota}
+                      onChange={(e) => setNota(e.target.value)}
+                      placeholder="Convivo con alopecia areata desde los 5 años. Estoy trabajando en volver a mirarme al espejo sin pelear."
+                    />
+                  </Field>
+                </div>
+              </>
+            ) : (
+              <>
+                {/* Vista de solo lectura (ago 2026, a pedido: "los datos deben
+                    verse de manera ordenada y estatica, no con formato de
+                    edicion" -- antes esto mostraba los mismos TextInput con
+                    readOnly, que seguian viendose como campos de formulario
+                    (borde, pildora, fondo). Ahora es texto plano tipo ficha;
+                    el formulario de edicion de arriba solo aparece al
+                    clickear "Editar datos" en la tarjeta de cabecera. */}
+                <div className="grid gap-5" style={{ gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))" }}>
+                  <StaticField label="Nombre" value={nombre} />
+                  <StaticField label="Apellido" value={apellido} />
+                  <StaticField label="Correo electrónico" value={correo} />
+                  <StaticField label="Teléfono" value={telefono} />
+                </div>
+                <div className="mt-5">
+                  <StaticField label="Lo que quieres que sepamos de tu proceso" value={nota} multiline />
+                </div>
+              </>
+            )}
 
             <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-navy/10 pt-5">
               {editando ? (
