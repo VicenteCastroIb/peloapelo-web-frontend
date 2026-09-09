@@ -38,7 +38,3 @@ export function extractYouTubeId(input: string): string | null {
 export function youtubeEmbedUrl(youtubeId: string): string {
   return `https://www.youtube-nocookie.com/embed/${youtubeId}`;
 }
-
-export function youtubeThumbnailUrl(youtubeId: string): string {
-  return `https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`;
-}

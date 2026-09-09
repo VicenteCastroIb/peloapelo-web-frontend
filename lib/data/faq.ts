@@ -4,10 +4,8 @@ export interface FaqItem {
 }
 
 // Tal cual el mockup "Landing Rediseñada" (26 jul 2026): solo 5 preguntas,
-// wording exacto. Las 2 que tenia esta pagina antes (movil, cancelacion) se
-// guardan en faqItemsArchived mas abajo -- no se borraron, solo no se
-// renderizan (a pedido explicito, mismo criterio que las secciones que el
-// mockup no incluye).
+// wording exacto (a pedido explicito, mismo criterio que las secciones que
+// el mockup no incluye).
 export const faqItems: FaqItem[] = [
   {
     question: "¿Es privada mi información?",
@@ -37,15 +35,5 @@ export const faqItems: FaqItem[] = [
   {
     question: "¿Funciona en el móvil?",
     answer: "Sí, la plataforma está 100% optimizada para iOS y Android. Accede desde cualquier lugar.",
-  },
-];
-
-// No renderizadas actualmente (ver arriba). Conservadas por si se decide
-// reincorporarlas.
-export const faqItemsArchived: FaqItem[] = [
-  {
-    question: "¿Puedo cancelar cuando quiera?",
-    answer:
-      "Sí. El plan mensual se cancela en cualquier momento. Además, ofrecemos garantía de 14 días en el Plan 3 Meses.",
   },
 ];

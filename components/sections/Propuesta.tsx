@@ -3,9 +3,7 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 
 /**
  * "Como te acompañamos" — tal cual el mockup: bloque de prosa angosto, no el
- * grid de 3 columnas que tenia esta seccion antes (ver
- * lib/data/propuesta.ts, que queda sin usar por si se decide recuperar ese
- * tratamiento).
+ * grid de 3 columnas que tenia esta seccion antes.
  */
 export default function Propuesta() {
   return (

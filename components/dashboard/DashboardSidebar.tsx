@@ -112,8 +112,7 @@ export default function DashboardSidebar() {
           ))}
         </nav>
 
-        {/* Rediseño panel interno (ago 2026, ver docs/design/panel-rediseno-prompt.md,
-            seccion 3): antes "Panel de cursos"/"Panel de blog" se concatenaban
+        {/* Rediseño panel interno (ago 2026): antes "Panel de cursos"/"Panel de blog" se concatenaban
             abajo de la lista de un/a admin sin ninguna separacion -- 7 items de
             navegacion mezclados sin jerarquia entre "mi cuenta" y "gestionar
             contenido de la fundacion". Un divisor + label agrupa lo segundo
