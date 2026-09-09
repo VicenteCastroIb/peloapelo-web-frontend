@@ -10,8 +10,8 @@ export interface Step {
 // Copy tal cual el mockup "Landing Rediseñada" (26 jul 2026).
 // actionHref de los pasos 1 y 2 corregidos (27 jul 2026, auditoria de
 // links): apuntaban a anclas #quiz y #articulos que no existen en ninguna
-// seccion del home. Paso 1 -> /auth (ahi vive el quiz real, mismo destino
-// que el CTA "Haz el quiz gratuito" del Hero).
+// seccion del home. Paso 1 -> /quiz (el quiz inicial de autoevaluacion,
+// ruta publica, mismo destino que el CTA "Haz el quiz gratuito" del Hero).
 // Paso 2 actualizado de nuevo (ver tarea de reestructuracion, ago 2026):
 // apuntaba a #ebook, seccion que salio del home en el reorden -- el ebook
 // gratuito ahora vive en /blog (ver app/blog/page.tsx), que tambien es el
@@ -23,7 +23,7 @@ export const comoFuncionaSteps: Step[] = [
     description:
       "Un quiz breve para reconocer tu tipo de pérdida, el impacto emocional y lo que más necesitas. Recibes una recomendación al instante.",
     icon: "/images/icons/como-funciona-paso1-quiz-icono.jpg",
-    actionHref: "/auth",
+    actionHref: "/quiz",
     actionLabel: "Pincha aquí →",
   },
   {

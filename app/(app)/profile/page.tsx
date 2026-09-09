@@ -1,13 +1,16 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Heart, Calendar, Camera, Check, Lock, ShieldCheck } from "lucide-react";
 import { useAuth, ApiError } from "@/lib/auth/AuthContext";
 import { listMySubscriptions, type Subscription } from "@/lib/api/subscriptions";
 import { getSummary, type ProgressSummary } from "@/lib/api/progress";
+import { getMyQuizResult, type QuizResultResponse } from "@/lib/api/quiz";
 import { updateProfile, updateNotifications, deleteAccount } from "@/lib/api/users";
 import { changePassword, revokeOtherSessions } from "@/lib/api/auth";
+import { alopeciaTypeByCode } from "@/lib/data/alopeciaTypes";
 import { plans } from "@/lib/data/plans";
 import { formatClp, formatDate } from "@/lib/format";
 import Button from "@/components/ui/Button";
@@ -58,6 +61,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const [subscriptions, setSubscriptions] = useState<Subscription[] | null>(null);
   const [summary, setSummary] = useState<ProgressSummary | null>(null);
+  // undefined = cargando; null = nunca hizo el quiz (o el fetch fallo).
+  const [quizResult, setQuizResult] = useState<QuizResultResponse | null | undefined>(undefined);
 
   useEffect(() => {
     if (status !== "authenticated") return;
@@ -65,6 +70,9 @@ export default function ProfilePage() {
     getSummary(token)
       .then(setSummary)
       .catch(() => setSummary({ streakDays: 0, photosThisMonth: 0, monthsWithUs: 0 }));
+    getMyQuizResult(token)
+      .then((result) => setQuizResult(result ?? null))
+      .catch(() => setQuizResult(null));
   }, [status, token]);
 
   const current = subscriptions?.[0] ?? null;
@@ -308,7 +316,17 @@ export default function ProfilePage() {
               <p className="mt-1 text-p-small text-navy/60">{user?.email}</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <Badge tone="neutral">Santiago, Chile</Badge>
-                <Badge tone="neutral">Alopecia areata</Badge>
+                {/* Tipo de alopecia real, del quiz de /quiz. Si nunca lo hizo,
+                    ofrecemos el quiz ahi mismo en vez de inventar un valor. */}
+                {quizResult === undefined ? (
+                  <Skeleton className="h-[22px] w-[120px] rounded-pill" />
+                ) : quizResult && quizResult.primaryType ? (
+                  <Badge tone="neutral">{alopeciaTypeByCode(quizResult.primaryType).name}</Badge>
+                ) : (
+                  <Link href="/quiz" className="inline-flex">
+                    <Badge tone="accent">Haz el quiz de alopecia →</Badge>
+                  </Link>
+                )}
                 {summary === null ? (
                   <Skeleton className="h-[22px] w-[190px] rounded-pill" />
                 ) : (

@@ -47,7 +47,7 @@ export default function Hero() {
           </p>
 
           <div className="mt-8 flex flex-wrap items-center gap-4">
-            <Button href="/auth" variant="gradient" className="px-7 py-3.5 text-base">
+            <Button href="/quiz" variant="gradient" className="px-7 py-3.5 text-base">
               Haz el quiz gratuito
             </Button>
             <Button href="/therapist" variant="outline" className="px-7 py-3.5 text-base">

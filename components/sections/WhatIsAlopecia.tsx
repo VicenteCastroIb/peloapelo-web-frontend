@@ -1,6 +1,7 @@
 import Image from "next/image";
 import SectionBadge from "@/components/shared/SectionBadge";
 import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
+import { ALOPECIA_TYPES } from "@/lib/data/alopeciaTypes";
 
 // Rediseno (ago 2026, feedback de diseno): antes fue un acordeon vertical
 // (mismo patron que el FAQ mas abajo, sentia repetido), despues una grilla
@@ -19,48 +20,10 @@ import FadeInOnScroll from "@/components/shared/FadeInOnScroll";
 // tarea): areata.jpg, androgenetica.jpg, efluvio-telogeno.jpg,
 // tricotilomania.jpg. Mientras no existan, la zona superior de la tarjeta
 // solo muestra el tinte de color (no rompe el layout).
-const TIPOS_ALOPECIA = [
-  {
-    image: "/images/alopecia-types/areata.jpg",
-    tag: "Autoinmune",
-    name: "Alopecia areata",
-    description:
-      "El sistema inmune ataca por error los folículos capilares, provocando parches de pérdida repentina. Puede afectar el cuero cabelludo, cejas, pestañas o todo el cuerpo (areata universal). No es contagiosa ni está causada por algo que hayas hecho.",
-  },
-  {
-    image: "/images/alopecia-types/androgenetica.jpg",
-    tag: "La más común",
-    name: "Alopecia androgenética",
-    description:
-      "La más común. Determinada genéticamente y ligada a hormonas, se presenta como un adelgazamiento progresivo y gradual del cabello, con un patrón distinto entre hombres y mujeres.",
-  },
-  {
-    image: "/images/alopecia-types/efluvio-telogeno.jpg",
-    tag: "Reversible",
-    name: "Efluvio telógeno",
-    description:
-      "Una caída generalizada y temporal, gatillada por estrés físico o emocional intenso, cambios hormonales, o eventos como un parto o una enfermedad. Suele revertir con el tiempo y el cuidado adecuado.",
-  },
-  {
-    image: "/images/alopecia-types/tricotilomania.jpg",
-    tag: "Relacionada a la ansiedad",
-    name: "Tricotilomanía",
-    description:
-      "Un trastorno relacionado a la ansiedad que lleva a arrancarse el propio cabello, muchas veces sin plena conciencia del acto. Requiere abordaje psicológico junto con el físico.",
-  },
-];
-
-// Mismo patron que STEP_GRADIENTS en ComoFunciona.tsx / PLAN_GRADIENTS en
-// PlanCard.tsx: base blanca + tinte de marca muy sutil, uno distinto por
-// tarjeta. La foto se disuelve hacia este mismo color (ver estilo inline
-// del mask de abajo), asi que el tinte tambien define hacia que color se
-// funde cada foto.
-const TYPE_GRADIENTS = [
-  "linear-gradient(160deg,#ffffff,rgba(239,67,67,0.06))",
-  "linear-gradient(160deg,#ffffff,rgba(143,124,182,0.12))",
-  "linear-gradient(160deg,#ffffff,rgba(137,207,235,0.16))",
-  "linear-gradient(160deg,#ffffff,rgba(96,73,141,0.10))",
-];
+//
+// El contenido de los 4 tipos (tag/nombre/descripcion/tinte) vive ahora en
+// lib/data/alopeciaTypes.ts -- misma fuente que el resultado del quiz
+// (/quiz) y el badge de /profile.
 
 export default function WhatIsAlopecia() {
   return (
@@ -83,11 +46,11 @@ export default function WhatIsAlopecia() {
         </p>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2">
-          {TIPOS_ALOPECIA.map(({ image, tag, name, description }, index) => (
+          {ALOPECIA_TYPES.map(({ image, tag, name, description, tintGradient }) => (
             <div
               key={name}
               className="group relative flex flex-col overflow-hidden rounded-card-lg border border-navy/12 transition-all duration-300 hover:-translate-y-1 hover:border-transparent hover:shadow-lg"
-              style={{ background: TYPE_GRADIENTS[index % TYPE_GRADIENTS.length] }}
+              style={{ background: tintGradient }}
             >
               <div className="relative h-44 w-full shrink-0">
                 <Image

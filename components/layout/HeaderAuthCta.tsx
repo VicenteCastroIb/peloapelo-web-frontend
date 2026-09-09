@@ -51,18 +51,17 @@ export default function HeaderAuthCta() {
     );
   }
 
-  // CTA destacado a la derecha del Header (ver tarea de reestructuracion,
-  // ago 2026): antes solo "Iniciar sesión". /auth ya maneja login/registro
-  // en la misma pantalla (mismo destino que "Haz el quiz gratuito" del
-  // Hero), asi que un mismo boton sirve para ambos casos -- se deja un
-  // link secundario mas discreto para quien ya tiene cuenta y solo quiere
-  // entrar, sin competir visualmente con el CTA principal.
+  // CTA destacado a la derecha del Header: "Haz el Quiz" lleva al quiz inicial
+  // de autoevaluacion en /quiz (ruta publica, mismo destino que "Haz el quiz
+  // gratuito" del Hero). Se deja un link secundario mas discreto a /auth para
+  // quien ya tiene cuenta y solo quiere entrar, sin competir visualmente con
+  // el CTA principal.
   return (
     <div className="flex items-center gap-4">
       <Link href="/auth" className="hidden text-a-nav text-navy/70 hover:text-navy sm:inline">
         Iniciar sesión
       </Link>
-      <Button href="/auth" variant="gradient">
+      <Button href="/quiz" variant="gradient">
         Haz el Quiz
       </Button>
     </div>
