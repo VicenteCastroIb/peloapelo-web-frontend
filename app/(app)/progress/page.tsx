@@ -8,8 +8,6 @@ import {
   Flame,
   Heart,
   ArrowLeftRight,
-  Eye,
-  EyeOff,
   Plus,
   FileText,
   Download,
@@ -23,7 +21,9 @@ import Collapse from "@/components/shared/Collapse";
 import Skeleton from "@/components/shared/Skeleton";
 import MetricaChica from "@/components/shared/MetricaChica";
 import DailyMessageCard from "@/components/dashboard/DailyMessageCard";
-import MoodPicker, { MOOD_SCALE, type MoodValue } from "@/components/progress/MoodPicker";
+import MoodPicker, { type MoodValue } from "@/components/progress/MoodPicker";
+import MoodChart, { buildMoodGrid, MoodScaleLegend } from "@/components/progress/MoodChart";
+import ProgressPhotoGrid from "@/components/progress/ProgressPhotoGrid";
 import { useAuth, ApiError } from "@/lib/auth/AuthContext";
 import {
   getSummary,
@@ -44,48 +44,6 @@ function todayLocalIso(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
 }
 
-function shortDateLabel(iso: string): string {
-  return new Intl.DateTimeFormat("es-CL", { day: "numeric", month: "short" }).format(new Date(iso + "T00:00:00"));
-}
-
-/** Los ultimos 14 dias (incluido hoy) como una grilla fija -- null para los dias sin registro, que se dibujan igual (ver AnimoChart). */
-function buildLast14(entries: ProgressEntry[]): (number | null)[] {
-  const byDate = new Map(entries.map((e) => [e.date, e.mood]));
-  const days: (number | null)[] = [];
-  for (let i = 13; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(d.getDate() - i);
-    const iso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-    days.push(byDate.get(iso) ?? null);
-  }
-  return days;
-}
-
-function AnimoChart({ data }: { data: (number | null)[] }) {
-  return (
-    <div>
-      <div className="flex h-[84px] items-end gap-[5px]">
-        {data.map((v, i) => {
-          const m = v ? MOOD_SCALE[v - 1] : null;
-          return (
-            <div key={i} className="flex h-full flex-1 flex-col justify-end" title={m ? m.label : "Sin registro"}>
-              {m ? (
-                <div className="rounded-lg opacity-90" style={{ height: `${20 + (v! / 5) * 64}%`, background: m.color }} />
-              ) : (
-                <div className="h-[18%] rounded-lg border border-dashed border-navy/20" />
-              )}
-            </div>
-          );
-        })}
-      </div>
-      <div className="mt-2 flex justify-between text-p-small text-navy/50">
-        <span>Hace 2 semanas</span>
-        <span>Hoy</span>
-      </div>
-    </div>
-  );
-}
-
 function LineaDeTiempo({
   photos,
   onAddPhoto,
@@ -97,7 +55,6 @@ function LineaDeTiempo({
   uploading: boolean;
   error: string | null;
 }) {
-  const [revelada, setRevelada] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   function handleFileChange(e: ChangeEvent<HTMLInputElement>) {
@@ -127,49 +84,22 @@ function LineaDeTiempo({
       </p>
       {error && <p className="mt-2 text-p-small text-coral">{error}</p>}
 
-      <div className="mt-5 grid gap-3" style={{ gridTemplateColumns: "repeat(auto-fill, minmax(132px, 1fr))" }}>
-        {photos.map((f) => {
-          const abierta = revelada === f.id;
-          const fecha = shortDateLabel(f.date);
-          return (
-            <div
-              key={f.id}
-              className="relative aspect-[3/4] overflow-hidden rounded-card-md border border-navy/10 bg-navy/5"
+      <div className="mt-5">
+        <ProgressPhotoGrid
+          photos={photos}
+          srcFor={photoImageUrl}
+          trailing={
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              disabled={uploading}
+              className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-card-md border-2 border-dashed border-navy/20 bg-transparent text-p-body font-semibold text-navy/60 transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 hover:text-accent active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50"
             >
-              {/* eslint-disable-next-line @next/next/no-img-element -- imagen privada servida via cookie, no puede pasar por el optimizador de Next */}
-              <img src={photoImageUrl(f)} alt="" className="h-full w-full object-cover" />
-              <div
-                className="absolute inset-0 transition-[background-color] duration-200 motion-reduce:transition-none"
-                style={{
-                  backdropFilter: abierta ? "none" : "blur(10px)",
-                  background: abierta ? "transparent" : "rgba(248,246,242,0.25)",
-                }}
-              />
-              <button
-                type="button"
-                onClick={() => setRevelada(abierta ? null : f.id)}
-                aria-label={`${abierta ? "Ocultar" : "Ver"} foto del ${fecha}`}
-                className="group absolute inset-0 flex items-center justify-center border-none bg-transparent text-navy/70"
-              >
-                <span className="flex h-10 w-10 items-center justify-center rounded-pill bg-white/90 shadow-sm transition-transform duration-200 group-hover:scale-110 group-active:scale-95">
-                  {abierta ? <EyeOff size={17} /> : <Eye size={17} />}
-                </span>
-              </button>
-              <span className="absolute bottom-2.5 left-2.5 rounded-pill bg-white/92 px-2.5 py-[3px] text-p-caption font-semibold text-navy">
-                {fecha}
-              </span>
-            </div>
-          );
-        })}
-        <button
-          type="button"
-          onClick={() => fileInputRef.current?.click()}
-          disabled={uploading}
-          className="flex aspect-[3/4] flex-col items-center justify-center gap-2 rounded-card-md border-2 border-dashed border-navy/20 bg-transparent text-p-body font-semibold text-navy/60 transition-all duration-200 hover:border-accent/40 hover:bg-accent/5 hover:text-accent active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50"
-        >
-          <Plus size={20} />
-          {uploading ? "Subiendo…" : "Sumar foto"}
-        </button>
+              <Plus size={20} />
+              {uploading ? "Subiendo…" : "Sumar foto"}
+            </button>
+          }
+        />
         <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={handleFileChange} />
       </div>
     </section>
@@ -409,22 +339,9 @@ export default function ProgressPage() {
                 <p className="text-h4-label text-navy/50">Tu ánimo</p>
                 <h2 className="mt-1.5 text-h3-md text-navy">Últimas dos semanas</h2>
               </div>
-              <div className="flex items-center gap-2.5 text-p-small text-navy/50">
-                <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-[3px]" style={{ background: MOOD_SCALE[0].color }} />
-                  Muy difícil
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-[3px]" style={{ background: MOOD_SCALE[4].color }} />
-                  Muy bien
-                </span>
-                <span className="flex items-center gap-1.5">
-                  <span className="h-2.5 w-2.5 rounded-[3px] border border-dashed border-navy/20" />
-                  Sin registro
-                </span>
-              </div>
+              <MoodScaleLegend />
             </div>
-            <AnimoChart data={buildLast14(recentEntries)} />
+            <MoodChart data={buildMoodGrid(recentEntries)} />
           </section>
 
           <LineaDeTiempo photos={photos} onAddPhoto={handleUploadPhoto} uploading={uploadingPhoto} error={photoError} />

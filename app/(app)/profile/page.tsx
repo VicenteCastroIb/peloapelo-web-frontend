@@ -10,7 +10,7 @@ import { getSummary, type ProgressSummary } from "@/lib/api/progress";
 import { getMyQuizResult, type QuizResultResponse } from "@/lib/api/quiz";
 import { updateProfile, updateNotifications, deleteAccount } from "@/lib/api/users";
 import { changePassword, revokeOtherSessions } from "@/lib/api/auth";
-import { alopeciaTypeByCode } from "@/lib/data/alopeciaTypes";
+import AlopeciaTypeBadge from "@/components/shared/AlopeciaTypeBadge";
 import { plans } from "@/lib/data/plans";
 import { formatClp, formatDate } from "@/lib/format";
 import Button from "@/components/ui/Button";
@@ -321,7 +321,7 @@ export default function ProfilePage() {
                 {quizResult === undefined ? (
                   <Skeleton className="h-[22px] w-[120px] rounded-pill" />
                 ) : quizResult && quizResult.primaryType ? (
-                  <Badge tone="neutral">{alopeciaTypeByCode(quizResult.primaryType).name}</Badge>
+                  <AlopeciaTypeBadge code={quizResult.primaryType} />
                 ) : (
                   <Link href="/quiz" className="inline-flex">
                     <Badge tone="accent">Haz el quiz de alopecia →</Badge>

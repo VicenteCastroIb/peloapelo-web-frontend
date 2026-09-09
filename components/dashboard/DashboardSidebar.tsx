@@ -8,6 +8,7 @@ import {
   BookOpen,
   CreditCard,
   User,
+  Users,
   ShieldCheck,
   Newspaper,
   Sparkles,
@@ -30,10 +31,17 @@ const NAV_ITEMS: NavItem[] = [
   { href: "/profile", label: "Perfil", icon: User },
 ];
 
+// "Gestión de contenido" es sobre el CONTENIDO de la fundación (blog, cursos,
+// mensajes). El seguimiento de usuarias es sobre PERSONAS -- va en su propio
+// grupo, no mezclado acá.
 const ADMIN_NAV_ITEMS: NavItem[] = [
   { href: "/admin/courses", label: "Panel de cursos", icon: ShieldCheck },
   { href: "/admin/blog", label: "Panel de blog", icon: Newspaper },
   { href: "/admin/mensajes", label: "Mensajes del día", icon: Sparkles },
+];
+
+const ADMIN_TRACKING_NAV_ITEMS: NavItem[] = [
+  { href: "/admin/usuarios", label: "Usuarias", icon: Users },
 ];
 
 function NavLink({
@@ -112,6 +120,15 @@ export default function DashboardSidebar() {
             como una seccion aparte, sin necesitar un selector de modo completo. */}
         {isAdmin && (
           <>
+            <p className="mb-1 mt-6 px-2.5 text-p-caption font-semibold uppercase tracking-wide text-navy/40">
+              Seguimiento
+            </p>
+            <nav className="space-y-1">
+              {ADMIN_TRACKING_NAV_ITEMS.map((item) => (
+                <NavLink key={item.href} item={item} pathname={pathname} onNavigate={close} />
+              ))}
+            </nav>
+
             <p className="mb-1 mt-6 px-2.5 text-p-caption font-semibold uppercase tracking-wide text-navy/40">
               Gestión de contenido
             </p>
